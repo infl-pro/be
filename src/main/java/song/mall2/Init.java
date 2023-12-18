@@ -5,7 +5,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import song.mall2.domain.user.dto.SignupDto;
+import song.mall2.domain.user.entity.UserRole;
 import song.mall2.domain.user.service.UserService;
+
+import static song.mall2.domain.user.entity.UserRole.Role.*;
 
 @Slf4j
 @Component
@@ -24,12 +27,19 @@ public class Init {
         private final UserService userService;
 
         public void setData() {
-            SignupDto signupDto = new SignupDto();
-            signupDto.setUsername("a");
-            signupDto.setPassword("a");
-            signupDto.setAddress("address");
+            Long userA = saveUser("a", "a", "address A");
+            Long userB = saveUser("b", "b", "address B");
 
-            Long userA = userService.save(signupDto);
+            userService.grantRole(userA, ROLE_SELLER.name());
+        }
+
+        private Long saveUser(String username, String password, String address) {
+            SignupDto signupDto = new SignupDto();
+            signupDto.setUsername(username);
+            signupDto.setPassword(password);
+            signupDto.setAddress(address);
+
+            return userService.save(signupDto);
         }
     }
 }
