@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import song.mall2.domain.user.entity.User;
+import song.mall2.exception.invalid.exceptions.InvalidStockQuantityException;
 
 @Entity
 @Getter
@@ -32,5 +33,13 @@ public class Product {
 
     public static Product create(User user, String name, Integer price, String description, Integer stockQuantity) {
         return new Product(user, name, price, description, stockQuantity);
+    }
+
+    public void decreaseStockQuantity(Integer quantity) {
+        if (stockQuantity - quantity < 0) {
+            throw new InvalidStockQuantityException();
+        }
+
+        stockQuantity -= quantity;
     }
 }
