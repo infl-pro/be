@@ -24,7 +24,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public Long save(SignupDto signupDto) {
+    public Long saveUser(SignupDto signupDto) {
         User user = User.create(signupDto.getUsername(), passwordEncoder.encode(signupDto.getPassword()), signupDto.getAddress());
         User saveUser = userRepository.save(user);
 

@@ -4,11 +4,9 @@ import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import song.mall2.domain.product.dto.ProductIdDto;
 import song.mall2.domain.product.dto.SaveProductDto;
 import song.mall2.domain.product.service.ProductService;
 import song.mall2.domain.user.dto.SignupDto;
-import song.mall2.domain.user.entity.UserRole;
 import song.mall2.domain.user.service.UserService;
 
 import static song.mall2.domain.user.entity.UserRole.Role.*;
@@ -47,7 +45,7 @@ public class Init {
             signupDto.setPassword(password);
             signupDto.setAddress(address);
 
-            return userService.save(signupDto);
+            return userService.saveUser(signupDto);
         }
 
         private Long saveProduct(Long userA, String name, Integer price, String description, Integer stockQuantity) {
@@ -57,7 +55,7 @@ public class Init {
             saveProductDto.setDescription(description);
             saveProductDto.setStockQuantity(stockQuantity);
 
-            return productService.save(userA, saveProductDto).getProductId();
+            return productService.saveProduct(userA, saveProductDto).getProductId();
         }
     }
 }

@@ -23,9 +23,9 @@ public class ProductController {
     private final ProductService productService;
 
     @PostMapping("/save")
-    public ResponseEntity<ProductIdDto> postSave(@AuthenticationPrincipal UserPrincipal userPrincipal,
-                                                 @RequestBody SaveProductDto saveProductDto) {
-        ProductIdDto productId = productService.save(userPrincipal.getId(), saveProductDto);
+    public ResponseEntity<ProductIdDto> postSaveProduct(@AuthenticationPrincipal UserPrincipal userPrincipal,
+                                                        @RequestBody SaveProductDto saveProductDto) {
+        ProductIdDto productId = productService.saveProduct(userPrincipal.getId(), saveProductDto);
 
         return ResponseEntity.ok(productId);
     }

@@ -22,14 +22,14 @@ class ProductServiceTest {
     Long userId = 1L;
 
     @Test
-    void save() {
+    void saveProduct() {
         SaveProductDto saveProductDto = new SaveProductDto();
         saveProductDto.setName("test product");
         saveProductDto.setPrice(10000);
         saveProductDto.setDescription("test description");
         saveProductDto.setStockQuantity(100);
 
-        assertDoesNotThrow(() -> productService.save(userId, saveProductDto));
+        assertDoesNotThrow(() -> productService.saveProduct(userId, saveProductDto));
     }
 
 }

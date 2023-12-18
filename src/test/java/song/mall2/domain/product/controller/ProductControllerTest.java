@@ -10,12 +10,8 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import song.mall2.domain.product.dto.SaveProductDto;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -34,7 +30,7 @@ class ProductControllerTest {
 
     @Test
     @WithUserDetails("a")
-    void postSave() throws Exception {
+    void postSaveProduct() throws Exception {
         SaveProductDto saveProductDto = new SaveProductDto();
         saveProductDto.setName("test name");
         saveProductDto.setPrice(10000);

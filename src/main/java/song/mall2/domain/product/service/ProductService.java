@@ -20,7 +20,7 @@ public class ProductService {
     private final UserJpaRepository userRepository;
 
     @Transactional
-    public ProductIdDto save(Long userId, SaveProductDto saveProductDto) {
+    public ProductIdDto saveProduct(Long userId, SaveProductDto saveProductDto) {
         User user = getUserById(userId);
         Product product = Product.create(user, saveProductDto.getName(), saveProductDto.getPrice(), saveProductDto.getDescription(), saveProductDto.getStockQuantity());
 

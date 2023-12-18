@@ -11,7 +11,6 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import song.mall2.domain.user.dto.SignupDto;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -29,7 +28,7 @@ class UserControllerTest {
     ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
-    void postSave() throws Exception {
+    void postSaveUser() throws Exception {
         SignupDto signupDto = new SignupDto();
         signupDto.setUsername("testUsername");
         signupDto.setPassword("testPassword");

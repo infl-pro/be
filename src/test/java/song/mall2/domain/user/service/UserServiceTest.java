@@ -8,8 +8,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import song.mall2.domain.user.dto.SignupDto;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @Slf4j
 @SpringBootTest
 @TestPropertySource(properties = {
@@ -21,13 +19,13 @@ class UserServiceTest {
     UserService userService;
 
     @Test
-    void save() {
+    void saveUser() {
         SignupDto signupDto = new SignupDto();
         signupDto.setUsername("testUsername");
         signupDto.setPassword("testPassword");
         signupDto.setAddress("testAddress");
 
-        Assertions.assertDoesNotThrow(() -> userService.save(signupDto));
+        Assertions.assertDoesNotThrow(() -> userService.saveUser(signupDto));
     }
 
 }

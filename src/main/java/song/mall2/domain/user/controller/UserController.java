@@ -2,7 +2,6 @@ package song.mall2.domain.user.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -18,8 +17,8 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/save")
-    public ResponseEntity<Object> postSave(@RequestBody SignupDto signupDto) {
-        userService.save(signupDto);
+    public ResponseEntity<Object> postSaveUser(@RequestBody SignupDto signupDto) {
+        userService.saveUser(signupDto);
 
         return ResponseEntity.ok().build();
     }
