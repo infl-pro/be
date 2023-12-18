@@ -18,7 +18,9 @@ public class SecurityConfig {
         return http
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.disable())
-                .authorizeHttpRequests(authorize -> authorize.anyRequest().permitAll())
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/product/save").hasRole("SELLER")
+                        .anyRequest().permitAll())
                 .formLogin(login -> login.disable())
                 .logout(logout -> logout.disable())
                 .build();
