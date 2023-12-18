@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import song.mall2.domain.product.dto.ProductIdDto;
@@ -23,7 +24,7 @@ public class ProductController {
 
     @PostMapping("/save")
     public ResponseEntity<ProductIdDto> postSave(@AuthenticationPrincipal UserPrincipal userPrincipal,
-                                                 SaveProductDto saveProductDto) {
+                                                 @RequestBody SaveProductDto saveProductDto) {
         ProductIdDto productId = productService.save(userPrincipal.getId(), saveProductDto);
 
         return ResponseEntity.ok(productId);
