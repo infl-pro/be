@@ -4,6 +4,9 @@ import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import song.mall2.domain.product.dto.ProductIdDto;
+import song.mall2.domain.product.dto.SaveProductDto;
+import song.mall2.domain.product.service.ProductService;
 import song.mall2.domain.user.dto.SignupDto;
 import song.mall2.domain.user.entity.UserRole;
 import song.mall2.domain.user.service.UserService;
@@ -25,12 +28,17 @@ public class Init {
     @RequiredArgsConstructor
     private static class InitService {
         private final UserService userService;
+        private final ProductService productService;
 
         public void setData() {
             Long userA = saveUser("a", "a", "address A");
             Long userB = saveUser("b", "b", "address B");
 
             userService.grantRole(userA, ROLE_SELLER.name());
+
+            Long productA = saveProduct(userA, "productA", 10000, "This is productA", 100);
+            Long productB = saveProduct(userA, "productB", 50000, "This is productB", 30);
+
         }
 
         private Long saveUser(String username, String password, String address) {
@@ -40,6 +48,16 @@ public class Init {
             signupDto.setAddress(address);
 
             return userService.save(signupDto);
+        }
+
+        private Long saveProduct(Long userA, String name, Integer price, String description, Integer stockQuantity) {
+            SaveProductDto saveProductDto = new SaveProductDto();
+            saveProductDto.setName(name);
+            saveProductDto.setPrice(price);
+            saveProductDto.setDescription(description);
+            saveProductDto.setStockQuantity(stockQuantity);
+
+            return productService.save(userA, saveProductDto).getProductId();
         }
     }
 }
