@@ -4,10 +4,15 @@ import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import song.mall2.domain.order.dto.SaveOrderProductDto;
+import song.mall2.domain.order.service.OrderService;
 import song.mall2.domain.product.dto.SaveProductDto;
 import song.mall2.domain.product.service.ProductService;
 import song.mall2.domain.user.dto.SignupDto;
 import song.mall2.domain.user.service.UserService;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static song.mall2.domain.user.entity.UserRole.Role.*;
 
@@ -27,6 +32,7 @@ public class Init {
     private static class InitService {
         private final UserService userService;
         private final ProductService productService;
+        private final OrderService orderService;
 
         public void setData() {
             Long userA = saveUser("a", "a", "address A");
@@ -37,6 +43,18 @@ public class Init {
             Long productA = saveProduct(userA, "productA", 10000, "This is productA", 100);
             Long productB = saveProduct(userA, "productB", 50000, "This is productB", 30);
 
+            List<SaveOrderProductDto> saveOrderProductDtoList = new ArrayList<>();
+            addOrderProductDto(saveOrderProductDtoList, productA, 10);
+
+            orderService.saveOrders(userA, saveOrderProductDtoList);
+        }
+
+        private void addOrderProductDto(List<SaveOrderProductDto> saveOrderProductDtoList, Long productId, Integer quantity) {
+            SaveOrderProductDto saveOrderProductDto = new SaveOrderProductDto();
+            saveOrderProductDto.setProductId(productId);
+            saveOrderProductDto.setQuantity(quantity);
+
+            saveOrderProductDtoList.add(saveOrderProductDto);
         }
 
         private Long saveUser(String username, String password, String address) {
