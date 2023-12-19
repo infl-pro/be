@@ -34,10 +34,7 @@ public class OrderProduct {
     }
 
     public static OrderProduct create(Orders orders, Product product, Integer quantity) {
-        OrderProduct orderProduct = new OrderProduct(orders, product, quantity);
-
-        orders.addOrderProduct(orderProduct);
-        return orderProduct;
+        return new OrderProduct(orders, product, quantity);
     }
 
     private enum Status {

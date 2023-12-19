@@ -45,6 +45,8 @@ public class OrderService {
 
             Integer quantity = saveOrderProductDto.getQuantity();
             OrderProduct orderProduct = OrderProduct.create(orders, product, quantity);
+            orders.addOrderProduct(orderProduct);
+
             product.decreaseStockQuantity(quantity);
         }
 
