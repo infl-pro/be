@@ -30,11 +30,9 @@ public class OrderService {
     private final ProductJpaRepository productRepository;
 
     @Transactional
-    public OrdersIdDto saveOrder(Long userId, SaveOrdersDto saveOrdersDto) {
+    public OrdersIdDto saveOrders(Long userId, List<SaveOrderProductDto> saveOrderProductDtoList) {
         User user = getUserById(userId);
         Orders orders = Orders.create(user);
-
-        List<SaveOrderProductDto> saveOrderProductDtoList = saveOrdersDto.getSaveOrderProductDtoList();
 
         Map<Long, Product> products = getProducts(getProductIdList(saveOrderProductDtoList));
         for (SaveOrderProductDto saveOrderProductDto : saveOrderProductDtoList) {

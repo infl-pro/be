@@ -5,8 +5,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
-import song.mall2.domain.order.dto.SaveOrdersDto;
 import song.mall2.domain.order.dto.SaveOrderProductDto;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -29,10 +31,10 @@ class OrdersServiceTest {
         SaveOrderProductDto saveOrderProductDto1 = createOrderProductDto(productAId, 10);
         SaveOrderProductDto saveOrderProductDto2 = createOrderProductDto(productBId, 10);
 
-        SaveOrdersDto saveOrdersDto = new SaveOrdersDto();
-        saveOrdersDto.getSaveOrderProductDtoList().add(saveOrderProductDto1);
-        saveOrdersDto.getSaveOrderProductDtoList().add(saveOrderProductDto2);
-        assertDoesNotThrow(() -> orderService.saveOrder(userId, saveOrdersDto));
+        List<SaveOrderProductDto> saveOrderProductDtoList = new ArrayList<>();
+        saveOrderProductDtoList.add(saveOrderProductDto1);
+        saveOrderProductDtoList.add(saveOrderProductDto2);
+        assertDoesNotThrow(() -> orderService.saveOrders(userId, saveOrderProductDtoList));
     }
 
     private SaveOrderProductDto createOrderProductDto(Long productId, Integer quantity) {
