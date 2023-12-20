@@ -67,8 +67,8 @@ public class OrderService {
                 .toList();
     }
 
-    public List<OrderProductDto> getOrderProductList(Long userId, Long orderId) {
-        return orderProductRepository.findByOrdersId(orderId)
+    public List<OrderProductDto> getOrderProductList(Long userId, Long ordersId) {
+        return orderProductRepository.findByOrdersId(ordersId)
                 .stream()
                 .map(orderProduct -> new OrderProductDto(orderProduct.getId(), orderProduct.getQuantity(), orderProduct.getStatus().name(),
                         orderProduct.getProduct().getId(), orderProduct.getProduct().getName()))
