@@ -4,6 +4,7 @@ import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import song.mall2.domain.cart.service.CartService;
 import song.mall2.domain.order.dto.SaveOrderProductDto;
 import song.mall2.domain.order.service.OrderService;
 import song.mall2.domain.product.dto.SaveProductDto;
@@ -32,6 +33,7 @@ public class Init {
     private static class InitService {
         private final UserService userService;
         private final ProductService productService;
+        private final CartService cartService;
         private final OrderService orderService;
 
         public void setData() {
@@ -43,18 +45,9 @@ public class Init {
             Long productA = saveProduct(userA, "productA", 10000, "This is productA", 100);
             Long productB = saveProduct(userA, "productB", 50000, "This is productB", 30);
 
-            List<SaveOrderProductDto> saveOrderProductDtoList = new ArrayList<>();
-            addOrderProductDto(saveOrderProductDtoList, productA, 10);
+            cartService.addCart(userA, productB, 10);
 
-            orderService.saveOrders(userA, saveOrderProductDtoList);
-        }
-
-        private void addOrderProductDto(List<SaveOrderProductDto> saveOrderProductDtoList, Long productId, Integer quantity) {
-            SaveOrderProductDto saveOrderProductDto = new SaveOrderProductDto();
-            saveOrderProductDto.setProductId(productId);
-            saveOrderProductDto.setQuantity(quantity);
-
-            saveOrderProductDtoList.add(saveOrderProductDto);
+            Long order1Id = saveOrder(userA, productA, 10);
         }
 
         private Long saveUser(String username, String password, String address) {
@@ -66,14 +59,31 @@ public class Init {
             return userService.saveUser(signupDto);
         }
 
-        private Long saveProduct(Long userA, String name, Integer price, String description, Integer stockQuantity) {
+        private Long saveProduct(Long userId, String name, Integer price, String description, Integer stockQuantity) {
             SaveProductDto saveProductDto = new SaveProductDto();
             saveProductDto.setName(name);
             saveProductDto.setPrice(price);
             saveProductDto.setDescription(description);
             saveProductDto.setStockQuantity(stockQuantity);
 
-            return productService.saveProduct(userA, saveProductDto).getProductId();
+            return productService.saveProduct(userId, saveProductDto).getProductId();
+        }
+
+
+        private Long saveOrder(Long userId, Long productId, Integer quantity) {
+            List<SaveOrderProductDto> saveOrderProductDtoList = new ArrayList<>();
+
+            addOrderProductDto(saveOrderProductDtoList, productId, quantity);
+
+            return orderService.saveOrders(userId, saveOrderProductDtoList).getOrderId();
+        }
+
+        private void addOrderProductDto(List<SaveOrderProductDto> saveOrderProductDtoList, Long productId, Integer quantity) {
+            SaveOrderProductDto saveOrderProductDto = new SaveOrderProductDto();
+            saveOrderProductDto.setProductId(productId);
+            saveOrderProductDto.setQuantity(quantity);
+
+            saveOrderProductDtoList.add(saveOrderProductDto);
         }
     }
 }
