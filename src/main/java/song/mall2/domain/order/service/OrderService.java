@@ -4,16 +4,19 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import song.mall2.domain.order.dto.OrderDto;
+import song.mall2.domain.order.dto.OrderProductDto;
 import song.mall2.domain.order.dto.OrdersIdDto;
-import song.mall2.domain.order.dto.SaveOrdersDto;
 import song.mall2.domain.order.dto.SaveOrderProductDto;
 import song.mall2.domain.order.entity.Orders;
 import song.mall2.domain.order.entity.OrderProduct;
+import song.mall2.domain.order.repository.OrderProductJpaRepository;
 import song.mall2.domain.order.repository.OrdersJpaRepository;
 import song.mall2.domain.product.entity.Product;
 import song.mall2.domain.product.repository.ProductJpaRepository;
 import song.mall2.domain.user.entity.User;
 import song.mall2.domain.user.repository.UserJpaRepository;
+import song.mall2.exception.notfound.exceptions.OrderProductNotFoundException;
 import song.mall2.exception.notfound.exceptions.ProductNotFoundException;
 import song.mall2.exception.notfound.exceptions.UserNotFoundException;
 
@@ -26,6 +29,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class OrderService {
     private final OrdersJpaRepository ordersRepository;
+    private final OrderProductJpaRepository orderProductRepository;
     private final UserJpaRepository userRepository;
     private final ProductJpaRepository productRepository;
 
@@ -54,6 +58,29 @@ public class OrderService {
         ordersIdDto.setOrderId(saveOrders.getId());
 
         return ordersIdDto;
+    }
+
+    public List<OrderDto> getOrderList(Long userId) {
+        return ordersRepository.findAllByUserId(userId)
+                .stream()
+                .map(orders -> new OrderDto(orders.getId()))
+                .toList();
+    }
+
+    public List<OrderProductDto> getOrderProductList(Long userId, Long orderId) {
+        return orderProductRepository.findByOrdersId(orderId)
+                .stream()
+                .map(orderProduct -> new OrderProductDto(orderProduct.getId(), orderProduct.getQuantity(), orderProduct.getStatus().name(),
+                        orderProduct.getProduct().getId(), orderProduct.getProduct().getName()))
+                .toList();
+    }
+
+    public OrderProductDto getOrderProduct(Long userId, Long orderProductId) {
+        OrderProduct orderProduct = orderProductRepository.findById(orderProductId)
+                .orElseThrow(OrderProductNotFoundException::new);
+
+        return new OrderProductDto(orderProduct.getId(), orderProduct.getQuantity(), orderProduct.getStatus().name(),
+                orderProduct.getProduct().getId(), orderProduct.getProduct().getName());
     }
 
     private User getUserById(Long userId) {

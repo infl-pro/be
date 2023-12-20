@@ -13,7 +13,7 @@ public class OrderProduct {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @JoinColumn(name = "user_order_id")
+    @JoinColumn(name = "orders_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Orders orders;
 
@@ -37,7 +37,7 @@ public class OrderProduct {
         return new OrderProduct(orders, product, quantity);
     }
 
-    private enum Status {
+    public enum Status {
         PREPARING, SHIPPING, COMPLETED, CANCELLED
     }
 }
