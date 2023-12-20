@@ -6,9 +6,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import song.mall2.domain.cart.dto.CartDto;
 import song.mall2.domain.cart.dto.SaveCartDto;
 import song.mall2.domain.cart.service.CartService;
 import song.mall2.security.authentication.principal.UserPrincipal;
+
+import java.util.List;
 
 @Slf4j
 @Controller
@@ -19,8 +22,10 @@ public class CartController {
     private final CartService cartService;
 
     @GetMapping
-    public void getCart() {
+    public ResponseEntity<List<CartDto>> getCart(@AuthenticationPrincipal UserPrincipal userPrincipal) {
+        List<CartDto> cartList = cartService.getCartList(userPrincipal.getId());
 
+        return ResponseEntity.ok(cartList);
     }
 
     @PostMapping("/add")
