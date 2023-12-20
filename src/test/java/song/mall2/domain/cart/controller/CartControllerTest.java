@@ -1,6 +1,7 @@
 package song.mall2.domain.cart.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,11 +11,10 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.test.web.servlet.MvcResult;
 import song.mall2.domain.cart.dto.SaveCartDto;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -33,6 +33,19 @@ class CartControllerTest {
 
     @Test
     @WithUserDetails("a")
+    void getCartList() throws Exception {
+        MvcResult result = mockMvc.perform(get("/cart"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andReturn();
+
+        String content = result.getResponse().getContentAsString();
+        log.info("{}", content);
+    }
+
+    @Test
+    @WithUserDetails("a")
+    @Transactional
     void postAddCart() throws Exception {
         SaveCartDto saveCartDto = new SaveCartDto();
         saveCartDto.setProductId(1L);
