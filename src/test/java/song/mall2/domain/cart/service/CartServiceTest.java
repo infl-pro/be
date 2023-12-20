@@ -20,18 +20,25 @@ class CartServiceTest {
     CartService cartService;
 
     Long userAId = 1L;
-    Long productId = 1L;
+    Long productAId = 1L;
+    Long cart1Id = 1L;
 
     @DisplayName("장바구니 추가")
     @Test
     void addCart() {
-        assertDoesNotThrow(() -> cartService.addCart(userAId, productId, 10));
+        assertDoesNotThrow(() -> cartService.addCart(userAId, productAId, 10));
     }
 
     @DisplayName("장바구니 조회")
     @Test
     void getCartList() {
         assertDoesNotThrow(() -> cartService.getCartList(userAId));
+    }
+
+    @DisplayName("장바구니 삭제")
+    @Test
+    void deleteCart() {
+        assertDoesNotThrow(() -> cartService.deleteCart(userAId, cart1Id));
     }
 
 }
