@@ -35,4 +35,12 @@ public class CartController {
 
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping("/delete/{cartId}")
+    public ResponseEntity<Object> postDeleteCart(@AuthenticationPrincipal UserPrincipal userPrincipal,
+                               @PathVariable("cartId") Long cartId) {
+        cartService.deleteCart(userPrincipal.getId(), cartId);
+
+        return ResponseEntity.ok().build();
+    }
 }
