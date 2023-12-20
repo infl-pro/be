@@ -30,6 +30,7 @@ class CartControllerTest {
     MockMvc mockMvc;
 
     ObjectMapper objectMapper = new ObjectMapper();
+    Long cart1Id = 1L;
 
     @Test
     @WithUserDetails("a")
@@ -55,6 +56,14 @@ class CartControllerTest {
         mockMvc.perform(post("/cart/add")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithUserDetails("a")
+    @Transactional
+    void postDeleteCart() throws Exception {
+        mockMvc.perform(post("/cart/delete/{cartId}", cart1Id))
                 .andExpect(status().isOk());
     }
 
