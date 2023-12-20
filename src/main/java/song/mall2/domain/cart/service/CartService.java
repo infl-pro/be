@@ -42,6 +42,11 @@ public class CartService {
                 .toList();
     }
 
+    @Transactional
+    public void deleteCart(Long userId, Long cartId) {
+        cartRepository.deleteCart(userId, cartId);
+    }
+
     private Product getProductById(Long productId) {
         return productRepository.findById(productId)
                 .orElseThrow(ProductNotFoundException::new);
