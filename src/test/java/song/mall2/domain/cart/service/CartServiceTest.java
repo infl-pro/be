@@ -1,6 +1,7 @@
 package song.mall2.domain.cart.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,12 +19,19 @@ class CartServiceTest {
     @Autowired
     CartService cartService;
 
-    Long userId = 1L;
+    Long userAId = 1L;
     Long productId = 1L;
 
+    @DisplayName("장바구니 추가")
     @Test
-    void add() {
-        assertDoesNotThrow(() -> cartService.addCart(userId, productId, 10));
+    void addCart() {
+        assertDoesNotThrow(() -> cartService.addCart(userAId, productId, 10));
+    }
+
+    @DisplayName("장바구니 조회")
+    @Test
+    void getCartList() {
+        assertDoesNotThrow(() -> cartService.getCartList(userAId));
     }
 
 }
