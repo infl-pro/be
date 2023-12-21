@@ -12,12 +12,18 @@ public class OrderProductDto {
     private Long productId;
     private String productName;
 
-    public OrderProductDto(Long id, Integer quantity, String status, Long productId, String productName) {
+    private Long userId;
+    private String username;
+
+    public OrderProductDto(Long id, Integer quantity, String status, Long productId, String productName, Long userId, String username) {
         this.id = id;
         this.quantity = quantity;
         this.status = status;
 
         this.productId = productId;
         this.productName = productName;
+
+        this.userId = userId;
+        this.username = username;
     }
 }

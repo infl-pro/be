@@ -22,7 +22,8 @@ public class OrderProductService {
 
         return orderProductList.stream()
                 .map(orderProduct -> new OrderProductDto(orderProduct.getId(), orderProduct.getQuantity(), orderProduct.getStatus().name(),
-                        orderProduct.getProduct().getId(), orderProduct.getProduct().getName()))
+                        orderProduct.getProduct().getId(), orderProduct.getProduct().getName(),
+                        orderProduct.getUser().getId(), orderProduct.getUser().getUsername()))
                 .toList();
     }
 

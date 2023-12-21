@@ -46,7 +46,7 @@ public class OrderService {
             }
 
             Integer quantity = saveOrderProductDto.getQuantity();
-            OrderProduct orderProduct = OrderProduct.create(orders, product, quantity);
+            OrderProduct orderProduct = OrderProduct.create(orders, product, user, quantity);
             orders.addOrderProduct(orderProduct);
 
             product.decreaseStockQuantity(quantity);
@@ -71,7 +71,8 @@ public class OrderService {
         return orderProductRepository.findByOrdersId(ordersId)
                 .stream()
                 .map(orderProduct -> new OrderProductDto(orderProduct.getId(), orderProduct.getQuantity(), orderProduct.getStatus().name(),
-                        orderProduct.getProduct().getId(), orderProduct.getProduct().getName()))
+                        orderProduct.getProduct().getId(), orderProduct.getProduct().getName(),
+                        orderProduct.getUser().getId(), orderProduct.getUser().getUsername()))
                 .toList();
     }
 
@@ -80,7 +81,8 @@ public class OrderService {
                 .orElseThrow(OrderProductNotFoundException::new);
 
         return new OrderProductDto(orderProduct.getId(), orderProduct.getQuantity(), orderProduct.getStatus().name(),
-                orderProduct.getProduct().getId(), orderProduct.getProduct().getName());
+                orderProduct.getProduct().getId(), orderProduct.getProduct().getName(),
+                orderProduct.getUser().getId(), orderProduct.getUser().getUsername());
     }
 
     private User getUserById(Long userId) {
