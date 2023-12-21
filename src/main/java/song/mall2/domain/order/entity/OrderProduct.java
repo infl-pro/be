@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import song.mall2.domain.product.entity.Product;
+import song.mall2.exception.invalid.exceptions.InvalidRequestException;
 
 @Entity
 @Getter
@@ -37,7 +38,22 @@ public class OrderProduct {
         return new OrderProduct(orders, product, quantity);
     }
 
+    public void updateStatus(Long userId, String statusName) {
+        product.isSeller(userId);
+
+        this.status = Status.of(statusName);
+    }
+
     public enum Status {
-        PREPARING, SHIPPING, COMPLETED, CANCELLED
+        PREPARING, SHIPPING, COMPLETED, CANCELLED;
+
+        public static Status of(String statusName) {
+            for (Status status : values()) {
+                if (statusName.equals(status.name())) {
+                    return status;
+                }
+            }
+            throw new InvalidRequestException();
+        }
     }
 }
