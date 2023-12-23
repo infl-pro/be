@@ -40,7 +40,7 @@ class OrdersServiceTest {
         List<SaveOrderProductDto> saveOrderProductDtoList = new ArrayList<>();
         saveOrderProductDtoList.add(saveOrderProductDto1);
         saveOrderProductDtoList.add(saveOrderProductDto2);
-        assertDoesNotThrow(() -> orderService.saveOrders(userAId, saveOrderProductDtoList));
+        assertDoesNotThrow(() -> orderService.saveOrder(userAId, saveOrderProductDtoList));
     }
 
     @DisplayName("주문 조회")

@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import song.mall2.domain.order.dto.OrderDto;
 import song.mall2.domain.order.dto.OrderProductDto;
-import song.mall2.domain.order.dto.OrdersIdDto;
+import song.mall2.domain.order.dto.OrderIdDto;
 import song.mall2.domain.order.dto.SaveOrderProductDto;
 import song.mall2.domain.order.entity.Orders;
 import song.mall2.domain.order.entity.OrderProduct;
@@ -34,7 +34,7 @@ public class OrderService {
     private final ProductJpaRepository productRepository;
 
     @Transactional
-    public OrdersIdDto saveOrders(Long userId, List<SaveOrderProductDto> saveOrderProductDtoList) {
+    public OrderIdDto saveOrder(Long userId, List<SaveOrderProductDto> saveOrderProductDtoList) {
         User user = getUserById(userId);
         Orders orders = Orders.create(user);
 
@@ -54,10 +54,10 @@ public class OrderService {
 
         Orders saveOrders = ordersRepository.save(orders);
 
-        OrdersIdDto ordersIdDto = new OrdersIdDto();
-        ordersIdDto.setOrderId(saveOrders.getId());
+        OrderIdDto orderIdDto = new OrderIdDto();
+        orderIdDto.setOrderId(saveOrders.getId());
 
-        return ordersIdDto;
+        return orderIdDto;
     }
 
     public List<OrderDto> getOrderList(Long userId) {

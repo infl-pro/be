@@ -14,7 +14,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import song.mall2.domain.order.dto.SaveOrderProductDto;
-import song.mall2.domain.order.dto.SaveOrdersDto;
+import song.mall2.domain.order.dto.SaveOrderDto;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -47,10 +47,10 @@ class OrderControllerTest {
         SaveOrderProductDto saveOrderProductDto1 = createOrderProductDto(productAId, 10);
         SaveOrderProductDto saveOrderProductDto2 = createOrderProductDto(productBId, 5);
 
-        SaveOrdersDto saveOrdersDto = new SaveOrdersDto();
-        saveOrdersDto.getSaveOrderProductDtoList().add(saveOrderProductDto1);
-        saveOrdersDto.getSaveOrderProductDtoList().add(saveOrderProductDto2);
-        String content = objectMapper.writeValueAsString(saveOrdersDto);
+        SaveOrderDto saveOrderDto = new SaveOrderDto();
+        saveOrderDto.getSaveOrderProductDtoList().add(saveOrderProductDto1);
+        saveOrderDto.getSaveOrderProductDtoList().add(saveOrderProductDto2);
+        String content = objectMapper.writeValueAsString(saveOrderDto);
 
         mockMvc.perform(post("/orders/save")
                         .contentType(MediaType.APPLICATION_JSON)

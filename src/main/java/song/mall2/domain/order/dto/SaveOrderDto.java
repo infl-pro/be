@@ -7,6 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter @Setter
-public class SaveOrdersDto {
+public class SaveOrderDto {
     private List<SaveOrderProductDto> saveOrderProductDtoList = new ArrayList<>();
 }

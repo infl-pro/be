@@ -8,8 +8,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import song.mall2.domain.order.dto.OrderDto;
 import song.mall2.domain.order.dto.OrderProductDto;
-import song.mall2.domain.order.dto.OrdersIdDto;
-import song.mall2.domain.order.dto.SaveOrdersDto;
+import song.mall2.domain.order.dto.OrderIdDto;
+import song.mall2.domain.order.dto.SaveOrderDto;
 import song.mall2.domain.order.service.OrderService;
 import song.mall2.security.authentication.principal.UserPrincipal;
 
@@ -24,11 +24,11 @@ public class OrderController {
     private final OrderService orderService;
 
     @PostMapping("/save")
-    public ResponseEntity<OrdersIdDto> postSaveOrder(@AuthenticationPrincipal UserPrincipal userPrincipal,
-                                                     @RequestBody SaveOrdersDto saveOrdersDto) {
-        OrdersIdDto ordersIdDto = orderService.saveOrders(userPrincipal.getId(), saveOrdersDto.getSaveOrderProductDtoList());
+    public ResponseEntity<OrderIdDto> postSaveOrder(@AuthenticationPrincipal UserPrincipal userPrincipal,
+                                                    @RequestBody SaveOrderDto saveOrderDto) {
+        OrderIdDto orderIdDto = orderService.saveOrder(userPrincipal.getId(), saveOrderDto.getSaveOrderProductDtoList());
 
-        return ResponseEntity.ok(ordersIdDto);
+        return ResponseEntity.ok(orderIdDto);
     }
 
     @GetMapping

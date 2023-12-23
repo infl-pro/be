@@ -75,7 +75,7 @@ public class Init {
 
             addOrderProductDto(saveOrderProductDtoList, productId, quantity);
 
-            return orderService.saveOrders(userId, saveOrderProductDtoList).getOrderId();
+            return orderService.saveOrder(userId, saveOrderProductDtoList).getOrderId();
         }
 
         private void addOrderProductDto(List<SaveOrderProductDto> saveOrderProductDtoList, Long productId, Integer quantity) {
