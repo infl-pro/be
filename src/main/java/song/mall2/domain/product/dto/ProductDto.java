@@ -12,9 +12,9 @@ public class ProductDto {
     private Integer stockQuantity;
 
     private Long userId;
-    private String userName;
+    private String username;
 
-    public ProductDto(Long id, String name, Integer price, String description, Integer stockQuantity, Long userId, String userName) {
+    public ProductDto(Long id, String name, Integer price, String description, Integer stockQuantity, Long userId, String username) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -22,6 +22,6 @@ public class ProductDto {
         this.stockQuantity = stockQuantity;
 
         this.userId = userId;
-        this.userName = userName;
+        this.username = username;
     }
 }
