@@ -74,14 +74,15 @@ public class PaymentController {
      */
     @GetMapping("/{orderId}/cancel")
     public ResponseEntity<Object> getCancelPayment(@PathVariable("orderId") Long orderId) {
-        paymentService.cancelPayment(orderId);
+        paymentService.cancelPayment(1L, orderId);
 
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/{orderId}/cancel")
-    public ResponseEntity<Object> postCancelPayment(@PathVariable("orderId") Long orderId) {
-        paymentService.cancelPayment(orderId);
+    public ResponseEntity<Object> postCancelPayment(@PathVariable("orderId") Long orderId,
+                                                    @AuthenticationPrincipal UserPrincipal userPrincipal) {
+        paymentService.cancelPayment(userPrincipal.getId(), orderId);
 
         return ResponseEntity.ok().build();
     }

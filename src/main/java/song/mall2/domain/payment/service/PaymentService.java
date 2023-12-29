@@ -76,9 +76,11 @@ public class PaymentService {
 
 
     @Transactional
-    public void cancelPayment(Long orderId) {
+    public void cancelPayment(Long userId, Long orderId) {
         Payment payment = paymentRepository.findByOrdersId(orderId)
                 .orElseThrow(PaymentNotFoundException::new);
+
+        payment.isBuyer(userId);
 
         if (cancel(payment)) {
             return;
