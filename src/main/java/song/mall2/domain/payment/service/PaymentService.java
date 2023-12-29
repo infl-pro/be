@@ -50,7 +50,7 @@ public class PaymentService {
         if ("Ready".equals(webhook.getStatus())) {
             createPayment(portonePayment, orders);
         }
-        if ("PAID".equals(webhook.getStatus())) {
+        if ("Paid".equals(webhook.getStatus())) {
             paidPayment(portonePayment);
         }
     }
