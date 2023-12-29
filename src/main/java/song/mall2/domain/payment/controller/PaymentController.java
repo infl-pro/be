@@ -12,6 +12,7 @@ import song.mall2.domain.order.dto.SaveOrderDto;
 import song.mall2.domain.order.dto.SaveOrderProductDto;
 import song.mall2.domain.order.service.OrderService;
 import song.mall2.domain.payment.dto.Callback;
+import song.mall2.domain.payment.dto.PaymentDto;
 import song.mall2.domain.payment.dto.Webhook;
 import song.mall2.domain.payment.portone.dto.PortonePaymentRequest;
 import song.mall2.domain.payment.service.PaymentService;
@@ -27,6 +28,13 @@ import java.util.List;
 public class PaymentController {
     private final PaymentService paymentService;
     private final OrderService orderService;
+
+    @GetMapping("/{paymentId}")
+    public ResponseEntity<PaymentDto> getPayment(@PathVariable("paymentId") String paymentId) {
+        PaymentDto paymentDto = paymentService.getPaymentByPaymentId(1L, paymentId);
+
+        return ResponseEntity.ok(paymentDto);
+    }
 
     @GetMapping("/{orderId}/portone")
     public ResponseEntity<PortonePaymentRequest> getPortone(@PathVariable("orderId") Long orderId,

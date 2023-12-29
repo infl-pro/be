@@ -9,6 +9,7 @@ import song.mall2.domain.order.entity.OrderProduct;
 import song.mall2.domain.order.entity.Orders;
 import song.mall2.domain.order.repository.OrderProductJpaRepository;
 import song.mall2.domain.order.repository.OrdersJpaRepository;
+import song.mall2.domain.payment.dto.PaymentDto;
 import song.mall2.domain.payment.entity.Payment;
 import song.mall2.domain.payment.dto.Webhook;
 import song.mall2.domain.payment.portone.dto.PortonePaymentRequest;
@@ -29,6 +30,16 @@ public class PaymentService {
     private final PaymentJpaRepository paymentRepository;
     private final OrdersJpaRepository ordersRepository;
     private final OrderProductJpaRepository orderProductRepository;
+
+    @Transactional
+    public PaymentDto getPaymentByPaymentId(Long userId, String paymentId) {
+        Payment payment = paymentRepository.findByPaymentId(paymentId)
+                .orElseThrow(PaymentNotFoundException::new);
+
+        payment.isBuyer(userId);
+
+        return new PaymentDto(payment.getPaymentId(), payment.getTotalAmount(), payment.getStatus(), payment.getOrders().getId());
+    }
 
     @Transactional
     public void paymentWebhook(Webhook webhook) {
@@ -121,6 +132,7 @@ public class PaymentService {
 
         return savePayment.getId();
     }
+
     private Payment getPayment(String paymentId) {
         return paymentRepository.findByPaymentId(paymentId)
                 .orElseThrow(PaymentNotFoundException::new);
