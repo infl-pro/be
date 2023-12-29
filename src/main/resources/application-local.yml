@@ -42,3 +42,12 @@ logging:
     org:
       springframework:
         security: DEBUG
+
+portone:
+  imp-key: ENC(VRhFgoeDw8uh5RrElc7ZVsfRptSvDq2qt8sO00XjZJg=)
+  imp-secret: ENC(Z6ylug0kRPSCp2NBU7WKNdHVHwNZeHLvWrdn8FLmrSoXHG3blxkH8hnF7T+RTPmab8oR9ev+VvLSJtN5/NblMXDm09FBB+w0xJvMg0Dx8j6WQVJI9lTimqVEJHfkajVB)
+  api-secret: ENC(xNCW/plZ9qwTwWiVdg0NGhpEUCS01f1dEpK0j0rjAAuOrBsRZybSUgDR7bQ7UsNK43yp1qmWt4QSAqRMwOBt1EhDqCBVXyFV8Wg+mfYnpN4N5dg6eTsYQf8GV+56mWZq)
+  store-id: ENC(coxjsHw114v8HQrD9a/HzyRJv3SPi8aTf32+5TEoSqbQ2rmAWs5JbQIR6W0dA6zvLm+rT+Zgp6o=)
+  channel-key: ENC(ALmcZgwayxm9Ii9j1LzEtppRcf5Ka8aA7CucQfSUDYqerSR/pOgbUqbu3ZKZpQRsnqzl16uqb7IiayO4UqJ54A==)
+
+

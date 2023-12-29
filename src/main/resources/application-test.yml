@@ -35,3 +35,12 @@ spring:
 
 upload:
   path: ENC(To+PRIHF3T1ZQzlAhsb/ZkWeVQzWMRd/x1snJB04SqAvV/UnrmhEXN1gaHcYMlQgiQF2e9AZtjM=)
+
+portone:
+  imp-key: ENC(pfdHvMxW93GuXPLyQ3VkYxTW8b8o9605hsB3yv6t3E4=)
+  imp-secret: ENC(zOpN5weawYBUfdIP6YNSZFumXKP4GVeLkm2g598YMYj+CwDGWuXNuAiGhSNTcGbxyH/XTZnx7UWDiW50o7Wwpr6aET+x2bbv+2BieWvRulEp2ETooi+m4SV6yhIiUX5i)
+  api_secret: ENC(NCKsFMe56TaOzHUtG3zdDD4UQIXXVnMbsY8fKtQNihE4i4aOqAiPl4sWqsk0xTQoktVgmvEqzfg9X9h0ei9j02VXK4M4JFKUtz7yBVMZ7BTJO6aEj41JMQMUjMwBjFUx)
+  store-id: ENC(kwBIM9RaGji7bFZcE2gp2sjXpBS6Y5OxFktR+dy+m8bSnGhYHjp7r7Wv+DJqyygjJIKTtIZYha4=)
+  channel-key: ENC(nDIuK/b1Z8kPFUjfKi/wNaNgGOYIprd4gWL+PlbQeEze/dio9ROvor5BiG1vmcMEmq9Zk1UCaTxScLq1Jesqsg==)
+
+

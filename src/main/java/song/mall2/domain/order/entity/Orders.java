@@ -23,8 +23,12 @@ public class Orders {
     @OneToMany(mappedBy = "orders", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<OrderProduct> orderProductList = new ArrayList<>();
 
+    private Integer amount;
+    private Status status;
+
     private Orders(User user) {
         this.user = user;
+        this.status = Status.READY;
     }
 
     public static Orders create(User user) {
@@ -33,5 +37,22 @@ public class Orders {
 
     public void addOrderProduct(OrderProduct orderProduct) {
         orderProductList.add(orderProduct);
+
+//        amount = orderProduct.getProduct().getPrice() * orderProduct.getQuantity();
+        amount = 100;
+    }
+
+    public Integer getAmount() {
+        return 100;
+    }
+
+    public void decreaseStockQuantity() {
+        for (OrderProduct orderProduct : orderProductList) {
+            orderProduct.decreaseStockQuantity();
+        }
+    }
+
+    public enum Status {
+        READY, CANCELLED, PAID, SHIPPING, COMPLETE,
     }
 }

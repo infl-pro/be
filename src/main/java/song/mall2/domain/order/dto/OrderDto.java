@@ -6,8 +6,10 @@ import lombok.Setter;
 @Getter @Setter
 public class OrderDto {
     private Long id;
+    private Long totalAmount;
 
-    public OrderDto(Long id) {
+    public OrderDto(Long id, Long amount) {
         this.id = id;
+        this.totalAmount = amount;
     }
 }

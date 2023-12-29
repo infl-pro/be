@@ -34,7 +34,7 @@ public class OrderService {
     private final ProductJpaRepository productRepository;
 
     @Transactional
-    public OrderIdDto saveOrder(Long userId, List<SaveOrderProductDto> saveOrderProductDtoList) {
+    public OrderDto saveOrder(Long userId, List<SaveOrderProductDto> saveOrderProductDtoList) {
         User user = getUserById(userId);
         Orders orders = Orders.create(user);
 
@@ -49,21 +49,20 @@ public class OrderService {
             OrderProduct orderProduct = OrderProduct.create(orders, product, user, quantity);
             orders.addOrderProduct(orderProduct);
 
-            product.decreaseStockQuantity(quantity);
+//            product.decreaseStockQuantity(quantity);
         }
 
         Orders saveOrders = ordersRepository.save(orders);
 
-        OrderIdDto orderIdDto = new OrderIdDto();
-        orderIdDto.setOrderId(saveOrders.getId());
+        OrderDto orderDto = new OrderDto(saveOrders.getId(), Long.valueOf(saveOrders.getAmount()));
 
-        return orderIdDto;
+        return orderDto;
     }
 
     public List<OrderDto> getOrderList(Long userId) {
         return ordersRepository.findAllByUserId(userId)
                 .stream()
-                .map(orders -> new OrderDto(orders.getId()))
+                .map(orders -> new OrderDto(orders.getId(), Long.valueOf(orders.getAmount())))
                 .toList();
     }
 

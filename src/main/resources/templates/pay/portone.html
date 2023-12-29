@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.0.min.js"></script>
+    <!-- iamport.payment.js -->
+    <script src="https://cdn.portone.io/v2/browser-sdk.js"></script>
+    <script>
+        function paymentRequest() {
+            PortOne.requestPayment({
+              storeId: '[[${portonePaymentRequest.storeId}]]',
+              channelKey: '[[${portonePaymentRequest.channelKey}]]',
+              paymentId: `[[${portonePaymentRequest.paymentId}]]`,
+              orderName: '[[${portonePaymentRequest.orderName}]]',
+              totalAmount: [[${portonePaymentRequest.totalAmount}]],
+              currency: '[[${portonePaymentRequest.currency}]]',
+              payMethod: '[[${portonePaymentRequest.payMethod}]]',
+              customData: [[${portonePaymentRequest.customData}]],
+              customer: {
+                customerId: '[[${portonePaymentRequest.customer.userId}]]',
+                address: {
+                    country: '[[${portonePaymentRequest.customer.address.country}]]',
+                    addressLine1: '[[${portonePaymentRequest.customer.address.addressLine1}]]',
+                    addressLine2: '[[${portonePaymentRequest.customer.address.addressLine2}]]'
+                }
+              }
+            }).then(function (response) {
+                console.log(response);
+
+                setTimeout(function() {
+                    jQuery.ajax({
+                        url: "/payment/callback",
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        data: JSON.stringify(response)
+                    }).done(function (data) {
+                        console.log(data.status);
+                    });
+                }, 3000);
+            });;
+        }
+    </script>
+    <meta charset="UTF-8"/>
+    <title>Sample Payment</title>
+</head>
+<body>
+<button onclick="paymentRequest()">결제하기</button>
+<!-- 결제하기 버튼 생성 -->
+</body>
+</html>

@@ -6,10 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import song.mall2.domain.order.dto.OrderDto;
-import song.mall2.domain.order.dto.OrderProductDto;
-import song.mall2.domain.order.dto.OrderIdDto;
-import song.mall2.domain.order.dto.SaveOrderDto;
+import song.mall2.domain.order.dto.*;
 import song.mall2.domain.order.service.OrderService;
 import song.mall2.security.authentication.principal.UserPrincipal;
 
@@ -26,9 +23,9 @@ public class OrderController {
     @PostMapping("/save")
     public ResponseEntity<OrderIdDto> postSaveOrder(@AuthenticationPrincipal UserPrincipal userPrincipal,
                                                     @RequestBody SaveOrderDto saveOrderDto) {
-        OrderIdDto orderIdDto = orderService.saveOrder(userPrincipal.getId(), saveOrderDto.getSaveOrderProductDtoList());
+        OrderDto orderDto = orderService.saveOrder(userPrincipal.getId(), saveOrderDto.getSaveOrderProductDtoList());
 
-        return ResponseEntity.ok(orderIdDto);
+        return ResponseEntity.ok(new OrderIdDto(orderDto.getId()));
     }
 
     @GetMapping

@@ -50,6 +50,10 @@ public class OrderProduct {
         this.status = Status.of(statusName);
     }
 
+    public void decreaseStockQuantity() {
+        this.product.decreaseStockQuantity(quantity);
+    }
+
     public enum Status {
         PREPARING, SHIPPING, COMPLETED, CANCELLED;
 
