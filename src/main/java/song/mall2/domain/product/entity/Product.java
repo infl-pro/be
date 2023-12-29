@@ -44,6 +44,10 @@ public class Product {
         stockQuantity -= quantity;
     }
 
+    public void increaseStockQuantity(Integer quantity) {
+        this.stockQuantity += quantity;
+    }
+
     public void isSeller(Long userId) {
         if (!userId.equals(user.getId())) {
             throw new InvalidUserException();

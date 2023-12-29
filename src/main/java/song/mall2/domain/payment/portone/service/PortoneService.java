@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import song.mall2.domain.payment.portone.dto.PortonePaymentRequest;
+import song.mall2.exception.already.exceptions.AlreadyCancelledException;
 import song.mall2.exception.invalid.exceptions.InvalidPortonePaymentException;
 
 import java.io.IOException;
@@ -53,11 +54,14 @@ public class PortoneService {
     public void cancelPayment(String paymentId) {
         try {
             CancelRequest cancelRequest = new CancelRequest();
-            cancelRequest.setReason("test cancel");
+            cancelRequest.setReason("cancel");
             CancellationResponse cancellationResponse = client.cancelPaymentByPaymentId(paymentId, cancelRequest);
 
             logging(cancellationResponse);
         } catch (IamportResponseException | IOException ex) {
+            if ("payment already cancelled".equals(ex.getMessage())) {
+                throw new AlreadyCancelledException("이미 취소된 주문입니다.");
+            }
             throw new InvalidPortonePaymentException();
         }
     }

@@ -54,6 +54,10 @@ public class OrderProduct {
         this.product.decreaseStockQuantity(quantity);
     }
 
+    public void increaseStockQuantity() {
+        this.product.increaseStockQuantity(quantity);
+    }
+
     public enum Status {
         PREPARING, SHIPPING, COMPLETED, CANCELLED;
 

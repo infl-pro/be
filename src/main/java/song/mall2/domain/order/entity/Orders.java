@@ -24,6 +24,8 @@ public class Orders {
     private List<OrderProduct> orderProductList = new ArrayList<>();
 
     private Integer amount;
+
+    @Enumerated(EnumType.STRING)
     private Status status;
 
     private Orders(User user) {
@@ -46,13 +48,15 @@ public class Orders {
         return 100;
     }
 
-    public void decreaseStockQuantity() {
-        for (OrderProduct orderProduct : orderProductList) {
-            orderProduct.decreaseStockQuantity();
-        }
+    public void paid() {
+        this.status = Status.PAID;
+    }
+
+    public void cancel() {
+        this.status = Status.CANCELLED;
     }
 
     public enum Status {
-        READY, CANCELLED, PAID, SHIPPING, COMPLETE,
+        READY, CANCELLED, PAID, COMPLETE,
     }
 }

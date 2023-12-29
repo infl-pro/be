@@ -41,13 +41,30 @@ public class PaymentController {
      * test payment
      */
     @GetMapping("/portone")
-    private String portone(Model model) {
+    public String portone(Model model) {
         OrderDto orderDto = createOrderEx();
 
         PortonePaymentRequest portonePaymentRequest = paymentService.getPortonePaymentRequest(1L, orderDto.getId());
         model.addAttribute("portonePaymentRequest", portonePaymentRequest);
 
         return "pay/portone";
+    }
+
+    /**
+     * test payment
+     */
+    @GetMapping("/{orderId}/cancel")
+    public ResponseEntity<Object> getCancelPayment(@PathVariable("orderId") Long orderId) {
+        paymentService.cancelPayment(orderId);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{orderId}/cancel")
+    public ResponseEntity<Object> postCancelPayment(@PathVariable("orderId") Long orderId) {
+        paymentService.cancelPayment(orderId);
+
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/webhook")

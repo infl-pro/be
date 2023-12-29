@@ -14,6 +14,7 @@ import song.mall2.domain.payment.dto.Webhook;
 import song.mall2.domain.payment.portone.dto.PortonePaymentRequest;
 import song.mall2.domain.payment.portone.service.PortoneService;
 import song.mall2.domain.payment.repository.PaymentJpaRepository;
+import song.mall2.exception.already.exceptions.AlreadyCancelledException;
 import song.mall2.exception.invalid.exceptions.InvalidRequestException;
 import song.mall2.exception.notfound.exceptions.OrdersNotFoundException;
 import song.mall2.exception.notfound.exceptions.PaymentNotFoundException;
@@ -39,10 +40,7 @@ public class PaymentService {
             createPayment(portonePayment, orders);
         }
         if ("PAID".equals(webhook.getStatus())) {
-            updatePayment(portonePayment);
-        }
-        if ("CANCELLED".equals(webhook.getStatus())) {
-//            cancelPayment(portonePayment.getId());
+            paidPayment(portonePayment);
         }
     }
 
@@ -53,6 +51,23 @@ public class PaymentService {
         validateOrder(userId, orders);
 
         return portoneService.getPortonePaymentRequest(orders.getId(), orders.getAmount(), orders.getUser().getId());
+    }
+
+
+    @Transactional
+    public void cancelPayment(Long orderId) {
+        Payment payment = paymentRepository.findByOrdersId(orderId)
+                .orElseThrow(PaymentNotFoundException::new);
+
+        if (cancel(payment)) {
+            return;
+        }
+
+        Orders orders = payment.getOrders();
+        orders.cancel();
+
+        List<OrderProduct> orderProductList = orderProductRepository.findByOrdersId(orders.getId());
+        orderProductList.forEach(OrderProduct::increaseStockQuantity);
     }
 
     private void validateOrder(Long userId, Orders orders) {
@@ -93,10 +108,11 @@ public class PaymentService {
         return savePayment.getId();
     }
 
-    private Long updatePayment(PortonePaymentsResponse portonePayment) {
-        Payment payment = getPayment(portonePayment);
+    private Long paidPayment(PortonePaymentsResponse portonePayment) {
+        Payment payment = getPayment(portonePayment.getId());
 
         Orders orders = payment.getOrders();
+        orders.paid();
         decreaseStockQuantity(orders);
 
         payment.update(portonePayment.getStatus(), portonePayment.getPaidAt(), portonePayment.getCancelledAt(), portonePayment.getFailedAt());
@@ -105,13 +121,23 @@ public class PaymentService {
 
         return savePayment.getId();
     }
-    private Payment getPayment(PortonePaymentsResponse portonePayment) {
-        return paymentRepository.findByPaymentId(portonePayment.getId())
+    private Payment getPayment(String paymentId) {
+        return paymentRepository.findByPaymentId(paymentId)
                 .orElseThrow(PaymentNotFoundException::new);
     }
 
     private void decreaseStockQuantity(Orders orders) {
         List<OrderProduct> orderProductList = orderProductRepository.findByOrdersId(orders.getId());
         orderProductList.forEach(OrderProduct::decreaseStockQuantity);
+    }
+
+    private boolean cancel(Payment payment) {
+        try {
+            portoneService.cancelPayment(payment.getPaymentId());
+        } catch (AlreadyCancelledException ex) {
+            log.info(ex.getMessage());
+            return true;
+        }
+        return false;
     }
 }
