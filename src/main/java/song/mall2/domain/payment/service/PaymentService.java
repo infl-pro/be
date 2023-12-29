@@ -66,8 +66,8 @@ public class PaymentService {
     }
 
     @Transactional
-    public PortonePaymentRequest getPortonePaymentRequest(Long userId, Long orderId) {
-        Orders orders = getOrders(orderId);
+    public PortonePaymentRequest getPortonePaymentRequest(Long userId, Long ordersId) {
+        Orders orders = getOrders(ordersId);
 
         validateOrder(userId, orders);
 
@@ -76,8 +76,8 @@ public class PaymentService {
 
 
     @Transactional
-    public void cancelPayment(Long userId, Long orderId) {
-        Payment payment = paymentRepository.findByOrdersId(orderId)
+    public void cancelPayment(Long userId, Long ordersId) {
+        Payment payment = paymentRepository.findByOrdersId(ordersId)
                 .orElseThrow(PaymentNotFoundException::new);
 
         payment.isBuyer(userId);
@@ -116,8 +116,8 @@ public class PaymentService {
         return orders;
     }
 
-    private Orders getOrders(Long orderId) {
-        return ordersRepository.findById(orderId)
+    private Orders getOrders(Long ordersId) {
+        return ordersRepository.findById(ordersId)
                 .orElseThrow(OrdersNotFoundException::new);
     }
 

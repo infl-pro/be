@@ -42,16 +42,16 @@ public class PaymentController {
     public ResponseEntity<PaymentDto> getOrdersPayment(@PathVariable("ordersId") Long ordersId,
                                                        @AuthenticationPrincipal UserPrincipal userPrincipal) {
         PaymentDto paymentDto = paymentService.getPaymentByOrdersId(userPrincipal.getId(), ordersId);
-//        PaymentDto paymentDto = paymentService.getPaymentByPaymentId(1L, paymentId);
+//        PaymentDto paymentDto = paymentService.getPaymentByPaymentId(1L, ordersId);
 
         return ResponseEntity.ok(paymentDto);
     }
 
-    @GetMapping("/{orderId}/portone")
-    public ResponseEntity<PortonePaymentRequest> getPortone(@PathVariable("orderId") Long orderId,
+    @GetMapping("/{ordersId}/portone")
+    public ResponseEntity<PortonePaymentRequest> getPortone(@PathVariable("orderId") Long ordersId,
                                                             @AuthenticationPrincipal UserPrincipal userPrincipal) {
-        PortonePaymentRequest portonePaymentRequest = paymentService.getPortonePaymentRequest(userPrincipal.getId(), orderId);
-//        PortonePaymentRequest portonePaymentRequest = paymentService.getPortonePaymentRequest(1L, orderId);
+        PortonePaymentRequest portonePaymentRequest = paymentService.getPortonePaymentRequest(userPrincipal.getId(), ordersId);
+//        PortonePaymentRequest portonePaymentRequest = paymentService.getPortonePaymentRequest(1L, ordersId);
 
         return ResponseEntity.ok(portonePaymentRequest);
     }
@@ -72,17 +72,17 @@ public class PaymentController {
     /**
      * test payment
      */
-    @GetMapping("/{orderId}/cancel")
-    public ResponseEntity<Object> getCancelPayment(@PathVariable("orderId") Long orderId) {
-        paymentService.cancelPayment(1L, orderId);
+    @GetMapping("/{ordersId}/cancel")
+    public ResponseEntity<Object> getCancelPayment(@PathVariable("ordersId") Long ordersId) {
+        paymentService.cancelPayment(1L, ordersId);
 
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/{orderId}/cancel")
-    public ResponseEntity<Object> postCancelPayment(@PathVariable("orderId") Long orderId,
+    @PostMapping("/{ordersId}/cancel")
+    public ResponseEntity<Object> postCancelPayment(@PathVariable("ordersId") Long ordersId,
                                                     @AuthenticationPrincipal UserPrincipal userPrincipal) {
-        paymentService.cancelPayment(userPrincipal.getId(), orderId);
+        paymentService.cancelPayment(userPrincipal.getId(), ordersId);
 
         return ResponseEntity.ok().build();
     }
