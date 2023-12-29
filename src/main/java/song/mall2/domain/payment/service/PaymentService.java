@@ -42,6 +42,16 @@ public class PaymentService {
     }
 
     @Transactional
+    public PaymentDto getPaymentByOrdersId(Long userId, Long ordersId) {
+        Payment payment = paymentRepository.findByOrdersId(ordersId)
+                .orElseThrow(PaymentNotFoundException::new);
+
+        payment.isBuyer(userId);
+
+        return new PaymentDto(payment.getPaymentId(), payment.getTotalAmount(), payment.getStatus(), payment.getOrders().getId());
+    }
+
+    @Transactional
     public void paymentWebhook(Webhook webhook) {
         PortonePaymentsResponse portonePayment = getPortonePayment(webhook.getPayment_id());
 
@@ -90,8 +100,8 @@ public class PaymentService {
         }
     }
 
-    private PortonePaymentsResponse getPortonePayment(String webhook) {
-        return portoneService.getPortonePayment(webhook);
+    private PortonePaymentsResponse getPortonePayment(String paymentId) {
+        return portoneService.getPortonePayment(paymentId);
     }
 
     private Orders validateAmount(PortonePaymentsResponse portonePayment) {

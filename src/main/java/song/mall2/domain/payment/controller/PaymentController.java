@@ -30,8 +30,19 @@ public class PaymentController {
     private final OrderService orderService;
 
     @GetMapping("/{paymentId}")
-    public ResponseEntity<PaymentDto> getPayment(@PathVariable("paymentId") String paymentId) {
-        PaymentDto paymentDto = paymentService.getPaymentByPaymentId(1L, paymentId);
+    public ResponseEntity<PaymentDto> getPayment(@PathVariable("paymentId") String paymentId,
+                                                 @AuthenticationPrincipal UserPrincipal userPrincipal) {
+        PaymentDto paymentDto = paymentService.getPaymentByPaymentId(userPrincipal.getId(), paymentId);
+//        PaymentDto paymentDto = paymentService.getPaymentByPaymentId(1L, paymentId);
+
+        return ResponseEntity.ok(paymentDto);
+    }
+
+    @GetMapping("/{ordersId}")
+    public ResponseEntity<PaymentDto> getOrdersPayment(@PathVariable("ordersId") Long ordersId,
+                                                       @AuthenticationPrincipal UserPrincipal userPrincipal) {
+        PaymentDto paymentDto = paymentService.getPaymentByOrdersId(userPrincipal.getId(), ordersId);
+//        PaymentDto paymentDto = paymentService.getPaymentByPaymentId(1L, paymentId);
 
         return ResponseEntity.ok(paymentDto);
     }
@@ -84,10 +95,13 @@ public class PaymentController {
     }
 
     @PostMapping("/callback")
-    public ResponseEntity<Object> postCallback(@RequestBody Callback callback) {
+    public ResponseEntity<PaymentDto> postCallback(@RequestBody Callback callback,
+                                                   @AuthenticationPrincipal UserPrincipal userPrincipal) {
         log.info("callback: {}", callback);
+        PaymentDto paymentDto = paymentService.getPaymentByPaymentId(userPrincipal.getId(), callback.getPaymentId());
+//        PaymentDto paymentDto = paymentService.getPaymentByPaymentId(1L, callback.getPaymentId());
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(paymentDto);
     }
 
     private OrderDto createOrderEx() {
