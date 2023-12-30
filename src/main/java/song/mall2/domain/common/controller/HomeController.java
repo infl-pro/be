@@ -1,4 +1,4 @@
-package song.mall2.domain.common;
+package song.mall2.domain.common.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
