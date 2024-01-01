@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import song.mall2.domain.product.dto.ProductDto;
 import song.mall2.domain.product.dto.ProductIdDto;
 import song.mall2.domain.product.dto.SaveProductDto;
 import song.mall2.domain.product.service.ProductService;
@@ -23,10 +24,10 @@ public class ProductController {
     private final ProductService productService;
 
     @PostMapping("/save")
-    public ResponseEntity<ProductIdDto> postSaveProduct(@AuthenticationPrincipal UserPrincipal userPrincipal,
-                                                        @RequestBody SaveProductDto saveProductDto) {
-        ProductIdDto productId = productService.saveProduct(userPrincipal.getId(), saveProductDto);
+    public ResponseEntity<ProductDto> postSaveProduct(@AuthenticationPrincipal UserPrincipal userPrincipal,
+                                                      @RequestBody SaveProductDto saveProductDto) {
+        ProductDto productDto = productService.saveProduct(userPrincipal.getId(), saveProductDto);
 
-        return ResponseEntity.ok(productId);
+        return ResponseEntity.ok(productDto);
     }
 }

@@ -22,18 +22,22 @@ public class Product {
     private String name;
     private Integer price;
     private String description;
+    private String thumbnailUrl;
+    private String imgUrl;
     private Integer stockQuantity;
 
-    private Product(User user, String name, Integer price, String description, Integer stockQuantity) {
+    private Product(User user, String name, Integer price, String description, String thumbnailUrl, String imgUrl, Integer stockQuantity) {
         this.user = user;
         this.name = name;
         this.price = price;
         this.description = description;
+        this.thumbnailUrl = thumbnailUrl;
+        this.imgUrl = imgUrl;
         this.stockQuantity = stockQuantity;
     }
 
-    public static Product create(User user, String name, Integer price, String description, Integer stockQuantity) {
-        return new Product(user, name, price, description, stockQuantity);
+    public static Product create(User user, String name, Integer price, String description, String thumbnailUrl, String imgUrl, Integer stockQuantity) {
+        return new Product(user, name, price, description, thumbnailUrl, imgUrl, stockQuantity);
     }
 
     public void decreaseStockQuantity(Integer quantity) {

@@ -22,21 +22,26 @@ public class ProductService {
     private final UserJpaRepository userRepository;
 
     @Transactional
-    public ProductIdDto saveProduct(Long userId, SaveProductDto saveProductDto) {
+    public ProductDto saveProduct(Long userId, SaveProductDto saveProductDto) {
         User user = getUserById(userId);
-        Product product = Product.create(user, saveProductDto.getName(), saveProductDto.getPrice(), saveProductDto.getDescription(), saveProductDto.getStockQuantity());
+        Product product = Product.create(user, saveProductDto.getName(), saveProductDto.getPrice(), saveProductDto.getDescription(),
+                saveProductDto.getThumbnailUrl(), saveProductDto.getProductImgUrl(), saveProductDto.getStockQuantity());
 
         Product saveProduct = productJpaRepository.save(product);
 
-        return new ProductIdDto(saveProduct.getId());
+        return new ProductDto(saveProduct.getId(), product.getName(), product.getPrice(), product.getDescription(),
+                product.getThumbnailUrl(), product.getImgUrl(), product.getStockQuantity(),
+                product.getUser().getUsername());
     }
 
+    @Transactional
     public ProductDto getProduct(Long productId) {
         Product product = productJpaRepository.findById(productId)
                 .orElseThrow(ProductNotFoundException::new);
 
-        return new ProductDto(product.getId(), product.getName(), product.getPrice(), product.getDescription(), product.getStockQuantity(),
-                product.getUser().getId(), product.getUser().getUsername());
+        return new ProductDto(product.getId(), product.getName(), product.getPrice(), product.getDescription(),
+                product.getThumbnailUrl(), product.getImgUrl(), product.getStockQuantity(),
+                product.getUser().getUsername());
     }
 
     private User getUserById(Long userId) {

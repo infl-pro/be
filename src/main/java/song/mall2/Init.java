@@ -56,8 +56,8 @@ public class Init {
 
             userService.grantRole(userA, ROLE_SELLER.name());
 
-            Long productA = saveProduct(userA, "productA", 10, "This is productA", 100);
-            Long productB = saveProduct(userA, "productB", 5, "This is productB", 30);
+            Long productA = saveProduct(userA, "productA", 10, "This is productA", "/file/downloadFile/spring.png", 100);
+            Long productB = saveProduct(userA, "productB", 5, "This is productB", "/file/downloadFile/security.png", 30);
 
             cartService.addCart(userA, productA, 10);
             cartService.addCart(userA, productB, 10);
@@ -74,11 +74,12 @@ public class Init {
             return userService.saveUser(signupDto);
         }
 
-        private Long saveProduct(Long userId, String name, Integer price, String description, Integer stockQuantity) {
+        private Long saveProduct(Long userId, String name, Integer price, String description, String thumbnailUrl, Integer stockQuantity) {
             SaveProductDto saveProductDto = new SaveProductDto();
             saveProductDto.setName(name);
             saveProductDto.setPrice(price);
             saveProductDto.setDescription(description);
+            saveProductDto.setThumbnailUrl(thumbnailUrl);
             saveProductDto.setStockQuantity(stockQuantity);
 
             return productService.saveProduct(userId, saveProductDto).getProductId();
