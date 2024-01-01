@@ -7,7 +7,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import song.mall2.domain.cart.dto.CartIdDto;
-import song.mall2.domain.order.dto.OrderFormtDto;
+import song.mall2.domain.order.dto.OrderFormDto;
 import song.mall2.domain.order.dto.OrderProductListDto;
 import song.mall2.domain.order.dto.OrdersDto;
 import song.mall2.domain.order.service.OrderService;
@@ -23,9 +23,9 @@ import java.util.List;
 public class OrderController {
     private final OrderService orderService;
     @PostMapping("/form")
-    public ResponseEntity<OrderFormtDto> getOrderForm(@AuthenticationPrincipal UserPrincipal userPrincipal,
-                                                      @RequestBody List<CartIdDto> cartIdList) {
-        OrderFormtDto orderRequest = orderService.getOrderForm(userPrincipal.getId(), cartIdList);
+    public ResponseEntity<OrderFormDto> getOrderForm(@AuthenticationPrincipal UserPrincipal userPrincipal,
+                                                     @RequestBody List<CartIdDto> cartIdList) {
+        OrderFormDto orderRequest = orderService.getOrderForm(userPrincipal.getId(), cartIdList);
 
         return ResponseEntity.ok(orderRequest);
     }
@@ -48,11 +48,11 @@ public class OrderController {
     }
 
     @GetMapping("/carttest")
-    public ResponseEntity<OrderFormtDto> getCarttestOrder() {
+    public ResponseEntity<OrderFormDto> getCarttestOrder() {
         List<CartIdDto> cartIdList = new ArrayList<>();
         cartIdList.add(new CartIdDto(1L));
         cartIdList.add(new CartIdDto(2L));
-        OrderFormtDto orderRequest = orderService.getOrderForm(1L, cartIdList);
+        OrderFormDto orderRequest = orderService.getOrderForm(1L, cartIdList);
 
         return ResponseEntity.ok(orderRequest);
     }

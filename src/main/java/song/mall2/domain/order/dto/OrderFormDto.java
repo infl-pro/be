@@ -14,7 +14,7 @@ import java.util.UUID;
 @Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class OrderFormtDto {
+public class OrderFormDto {
     private String storeId;
     private String paymentId;
     private String payMethod;
@@ -30,7 +30,7 @@ public class OrderFormtDto {
     private String orderName;
     private CustomData customData;
 
-    public OrderFormtDto(String storeId, String channelKey, Integer totalAmount, Long userId, List<Products> productsList, List<Long> cartList) {
+    public OrderFormDto(String storeId, String channelKey, Integer totalAmount, Long userId, List<Products> productsList, List<Long> cartList) {
         this.storeId = storeId;
         this.paymentId = "pid-" + UUID.randomUUID().toString().substring(0, 8);
         this.payMethod = "CARD";

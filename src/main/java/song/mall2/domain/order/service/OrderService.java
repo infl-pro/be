@@ -9,7 +9,7 @@ import song.mall2.domain.cart.dto.CartIdDto;
 import song.mall2.domain.cart.entity.Cart;
 import song.mall2.domain.cart.repository.CartJpaRepository;
 import song.mall2.domain.order.dto.OrderProductDto;
-import song.mall2.domain.order.dto.OrderFormtDto;
+import song.mall2.domain.order.dto.OrderFormDto;
 import song.mall2.domain.order.dto.OrderProductListDto;
 import song.mall2.domain.order.dto.OrdersDto;
 import song.mall2.domain.order.entity.Orders;
@@ -39,13 +39,13 @@ public class OrderService {
     private String channelKey;
 
     @Transactional
-    public OrderFormtDto getOrderForm(Long userId, List<CartIdDto> cartDtoList) {
+    public OrderFormDto getOrderForm(Long userId, List<CartIdDto> cartDtoList) {
         List<Long> cartIdList = cartDtoList.stream().map(CartIdDto::getCartId).toList();
         List<Cart> cartList = getCartList(userId, cartIdList);
 
-        List<OrderFormtDto.Products> productsList = getProductsList(cartList);
+        List<OrderFormDto.Products> productsList = getProductsList(cartList);
 
-        return new OrderFormtDto(storeId, channelKey, getTotalAmount(cartList), userId, productsList, cartIdList);
+        return new OrderFormDto(storeId, channelKey, getTotalAmount(cartList), userId, productsList, cartIdList);
     }
 
     @Transactional
@@ -73,11 +73,11 @@ public class OrderService {
         return cartJpaRepository.findAllByIdAndUserId(cartIdList, userId);
     }
 
-    private List<OrderFormtDto.Products> getProductsList(List<Cart> cartList) {
-        List<OrderFormtDto.Products> productsList = new ArrayList<>();
+    private List<OrderFormDto.Products> getProductsList(List<Cart> cartList) {
+        List<OrderFormDto.Products> productsList = new ArrayList<>();
         for (Cart cart : cartList) {
             Product product = cart.getProduct();
-            productsList.add(new OrderFormtDto.Products(product.getId().toString(), product.getName(), product.getPrice(), cart.getQuantity()));
+            productsList.add(new OrderFormDto.Products(product.getId().toString(), product.getName(), product.getPrice(), cart.getQuantity()));
         }
         return productsList;
     }
