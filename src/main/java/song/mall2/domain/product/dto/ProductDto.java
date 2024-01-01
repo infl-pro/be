@@ -8,7 +8,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class ProductDto {
     private Long productId;
-    private String name;
+    private String productName;
     private Integer price;
     private String description;
     private String thumbnailUrl;
@@ -17,9 +17,9 @@ public class ProductDto {
 
     private String username;
 
-    public ProductDto(Long productId, String name, Integer price, String description, String thumbnailUrl, String imgUrl, Integer stockQuantity, String username) {
+    public ProductDto(Long productId, String productName, Integer price, String description, String thumbnailUrl, String imgUrl, Integer stockQuantity, String username) {
         this.productId = productId;
-        this.name = name;
+        this.productName = productName;
         this.price = price;
         this.description = description;
         this.thumbnailUrl = thumbnailUrl;
