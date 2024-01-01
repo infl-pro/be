@@ -5,12 +5,23 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import song.mall2.domain.cart.service.CartService;
-import song.mall2.domain.order.service.OrderService;
+import song.mall2.domain.order.entity.OrderProduct;
+import song.mall2.domain.order.entity.Orders;
+import song.mall2.domain.order.repository.OrderProductJpaRepository;
+import song.mall2.domain.order.repository.OrdersJpaRepository;
+import song.mall2.domain.payment.entity.Payment;
+import song.mall2.domain.payment.repository.PaymentJpaRepository;
 import song.mall2.domain.product.dto.SaveProductDto;
+import song.mall2.domain.product.entity.Product;
+import song.mall2.domain.product.repository.ProductJpaRepository;
 import song.mall2.domain.product.service.ProductService;
 import song.mall2.domain.user.dto.SignupDto;
+import song.mall2.domain.user.entity.User;
+import song.mall2.domain.user.repository.UserJpaRepository;
 import song.mall2.domain.user.service.UserService;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,7 +44,11 @@ public class Init {
         private final UserService userService;
         private final ProductService productService;
         private final CartService cartService;
-        private final OrderService orderService;
+        private final OrdersJpaRepository ordersRepository;
+        private final UserJpaRepository userRepository;
+        private final ProductJpaRepository productRepository;
+        private final OrderProductJpaRepository orderProductRepository;
+        private final PaymentJpaRepository paymentRepository;
 
         public void setData() {
             Long userA = saveUser("a", "a", "address A");
@@ -47,7 +62,7 @@ public class Init {
             cartService.addCart(userA, productA, 10);
             cartService.addCart(userA, productB, 10);
 
-//            Long order1Id = saveOrder(userA, productA, 10);
+            Long ordersId = saveOrder(userA, productA, 10);
         }
 
         private Long saveUser(String username, String password, String address) {
@@ -70,20 +85,21 @@ public class Init {
         }
 
 
-//        private Long saveOrder(Long userId, Long productId, Integer quantity) {
-//            List<SaveOrderProductDto> saveOrderProductDtoList = new ArrayList<>();
-//
-//            addOrderProductDto(saveOrderProductDtoList, productId, quantity);
-//
-//            return orderService.saveOrder(userId, saveOrderProductDtoList).getOrderId();
-//        }
-//
-//        private void addOrderProductDto(List<SaveOrderProductDto> saveOrderProductDtoList, Long productId, Integer quantity) {
-//            SaveOrderProductDto saveOrderProductDto = new SaveOrderProductDto();
-//            saveOrderProductDto.setProductId(productId);
-//            saveOrderProductDto.setQuantity(quantity);
-//
-//            saveOrderProductDtoList.add(saveOrderProductDto);
-//        }
+        private Long saveOrder(Long userId, Long productId, Integer quantity) {
+            User userA = userRepository.findById(userId).get();
+            Orders orders = Orders.create(userA);
+
+            List<OrderProduct> orderProductList = new ArrayList<>();
+            Product product = productRepository.findById(productId).get();
+            OrderProduct orderProduct = OrderProduct.create(orders, product, userA, quantity);
+            orderProductList.add(orderProduct);
+
+            Orders saveOrders = ordersRepository.save(orders);
+
+            Payment payment = Payment.of(userA, orders, "testPayment", "PAID", orderProduct.getAmount(), DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm").format(LocalDateTime.now()), null, null);
+            Payment savePayment = paymentRepository.save(payment);
+
+            return saveOrders.getId();
+        }
     }
 }
