@@ -1,10 +1,14 @@
 package song.mall2.domain.order.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter @Setter
-public class SaveOrderProductDto {
+@NoArgsConstructor
+@AllArgsConstructor
+public class ProductOrderRequestDto {
     private Long productId;
     private Integer quantity;
 }

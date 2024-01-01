@@ -29,11 +29,11 @@ public class CartController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Object> postAddCart(@AuthenticationPrincipal UserPrincipal userPrincipal,
+    public ResponseEntity<CartDto> postAddCart(@AuthenticationPrincipal UserPrincipal userPrincipal,
                                               @RequestBody SaveCartDto saveCartDto) {
-        cartService.addCart(userPrincipal.getId(), saveCartDto.getProductId(), saveCartDto.getQuantity());
+        CartDto cartDto = cartService.addCart(userPrincipal.getId(), saveCartDto.getProductId(), saveCartDto.getQuantity());
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(cartDto);
     }
 
     @PostMapping("/delete/{cartId}")

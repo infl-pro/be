@@ -4,16 +4,15 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import song.mall2.domain.order.entity.Orders;
 import song.mall2.domain.user.entity.User;
 import song.mall2.exception.invalid.exceptions.InvalidUserException;
 
 @Entity
-@Getter @Setter
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Payment {
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @JoinColumn(name = "user_id")
@@ -46,16 +45,16 @@ public class Payment {
         return new Payment(user, orders, paymentId, status, totalAmount, paidAt, cancelledAt, failedAt);
     }
 
+    public void isBuyer(Long userId) {
+        if (!userId.equals(user.getId())) {
+            throw new InvalidUserException("권한이 없습니다.");
+        }
+    }
+
     public void update(String status, String paidAt, String cancelledAt, String failedAt) {
         this.status = status;
         this.paidAt = paidAt;
         this.cancelledAt = cancelledAt;
         this.failedAt = failedAt;
-    }
-
-    public void isBuyer(Long userId) {
-        if (!userId.equals(user.getId())) {
-            throw new InvalidUserException("권한이 없습니다.");
-        }
     }
 }

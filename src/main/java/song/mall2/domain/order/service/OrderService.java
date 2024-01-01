@@ -3,26 +3,26 @@ package song.mall2.domain.order.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import song.mall2.domain.order.dto.OrderDto;
+import song.mall2.domain.cart.dto.CartIdDto;
+import song.mall2.domain.cart.entity.Cart;
+import song.mall2.domain.cart.repository.CartJpaRepository;
 import song.mall2.domain.order.dto.OrderProductDto;
-import song.mall2.domain.order.dto.OrderIdDto;
-import song.mall2.domain.order.dto.SaveOrderProductDto;
+import song.mall2.domain.order.dto.OrderFormtDto;
+import song.mall2.domain.order.dto.OrderProductListDto;
+import song.mall2.domain.order.dto.OrdersDto;
 import song.mall2.domain.order.entity.Orders;
-import song.mall2.domain.order.entity.OrderProduct;
 import song.mall2.domain.order.repository.OrderProductJpaRepository;
 import song.mall2.domain.order.repository.OrdersJpaRepository;
+import song.mall2.domain.payment.entity.Payment;
+import song.mall2.domain.payment.repository.PaymentJpaRepository;
 import song.mall2.domain.product.entity.Product;
-import song.mall2.domain.product.repository.ProductJpaRepository;
-import song.mall2.domain.user.entity.User;
-import song.mall2.domain.user.repository.UserJpaRepository;
-import song.mall2.exception.notfound.exceptions.OrderProductNotFoundException;
-import song.mall2.exception.notfound.exceptions.ProductNotFoundException;
-import song.mall2.exception.notfound.exceptions.UserNotFoundException;
+import song.mall2.exception.notfound.exceptions.OrdersNotFoundException;
+import song.mall2.exception.notfound.exceptions.PaymentNotFoundException;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -30,74 +30,69 @@ import java.util.stream.Collectors;
 public class OrderService {
     private final OrdersJpaRepository ordersRepository;
     private final OrderProductJpaRepository orderProductRepository;
-    private final UserJpaRepository userRepository;
-    private final ProductJpaRepository productRepository;
+    private final PaymentJpaRepository paymentRepository;
+    private final CartJpaRepository cartJpaRepository;
+
+    @Value("${portone.store-id}")
+    private String storeId;
+    @Value("${portone.channel-key}")
+    private String channelKey;
 
     @Transactional
-    public OrderDto saveOrder(Long userId, List<SaveOrderProductDto> saveOrderProductDtoList) {
-        User user = getUserById(userId);
-        Orders orders = Orders.create(user);
+    public OrderFormtDto getOrderForm(Long userId, List<CartIdDto> cartDtoList) {
+        List<Long> cartIdList = cartDtoList.stream().map(CartIdDto::getCartId).toList();
+        List<Cart> cartList = getCartList(userId, cartIdList);
 
-        Map<Long, Product> products = getProducts(getProductIdList(saveOrderProductDtoList));
-        for (SaveOrderProductDto saveOrderProductDto : saveOrderProductDtoList) {
-            Product product = products.get(saveOrderProductDto.getProductId());
-            if (product == null) {
-                throw new ProductNotFoundException();
-            }
+        List<OrderFormtDto.Products> productsList = getProductsList(cartList);
 
-            Integer quantity = saveOrderProductDto.getQuantity();
-            OrderProduct orderProduct = OrderProduct.create(orders, product, user, quantity);
-            orders.addOrderProduct(orderProduct);
+        return new OrderFormtDto(storeId, channelKey, getTotalAmount(cartList), userId, productsList, cartIdList);
+    }
 
-//            product.decreaseStockQuantity(quantity);
+    @Transactional
+    public List<OrderProductListDto> getOrderList(Long userId) {
+        return orderProductRepository.findAllByUserId(userId).stream()
+                .map(orderProduct -> new OrderProductListDto(orderProduct.getProduct().getId(), orderProduct.getProduct().getName(),
+                        orderProduct.getOrders().getCreateAt(), orderProduct.getOrders().getId(),
+                        orderProduct.getQuantity(), orderProduct.getAmount(), orderProduct.getStatus().name()))
+                .toList();
+    }
+
+    @Transactional
+    public OrdersDto getOrders(Long userId, Long ordersId) {
+        Orders orders = ordersRepository.findByIdAndUserId(ordersId, userId)
+                .orElseThrow(OrdersNotFoundException::new);
+
+        List<OrderProductDto> orderProductDtoList = getOrderProductDtoList(orders);
+        Payment payment = paymentRepository.findByOrdersId(orders.getId())
+                .orElseThrow(PaymentNotFoundException::new);
+
+        return new OrdersDto(orders.getId(), orders.getCreateAt(), orderProductDtoList, payment.getTotalAmount(), payment.getStatus());
+    }
+
+    private List<Cart> getCartList(Long userId, List<Long> cartIdList) {
+        return cartJpaRepository.findAllByIdAndUserId(cartIdList, userId);
+    }
+
+    private List<OrderFormtDto.Products> getProductsList(List<Cart> cartList) {
+        List<OrderFormtDto.Products> productsList = new ArrayList<>();
+        for (Cart cart : cartList) {
+            Product product = cart.getProduct();
+            productsList.add(new OrderFormtDto.Products(product.getId().toString(), product.getName(), product.getPrice(), cart.getQuantity()));
         }
-
-        Orders saveOrders = ordersRepository.save(orders);
-
-        OrderDto orderDto = new OrderDto(saveOrders.getId(), Long.valueOf(saveOrders.getAmount()));
-
-        return orderDto;
+        return productsList;
     }
 
-    public List<OrderDto> getOrderList(Long userId) {
-        return ordersRepository.findAllByUserId(userId)
+    private Integer getTotalAmount(List<Cart> cartList) {
+        return cartList.stream()
+                .mapToInt(Cart::getAmount)
+                .sum();
+    }
+
+    private List<OrderProductDto> getOrderProductDtoList(Orders orders) {
+        return orderProductRepository.findAllByOrdersId(orders.getId())
                 .stream()
-                .map(orders -> new OrderDto(orders.getId(), Long.valueOf(orders.getAmount())))
+                .map(orderProduct -> new OrderProductDto(orderProduct.getId(), orderProduct.getProduct().getName(),
+                        orderProduct.getStatus().name(), orderProduct.getAmount(), orderProduct.getQuantity()))
                 .toList();
-    }
-
-    public List<OrderProductDto> getOrderProductList(Long userId, Long ordersId) {
-        return orderProductRepository.findByOrdersId(ordersId)
-                .stream()
-                .map(orderProduct -> new OrderProductDto(orderProduct.getId(), orderProduct.getQuantity(), orderProduct.getStatus().name(),
-                        orderProduct.getProduct().getId(), orderProduct.getProduct().getName(),
-                        orderProduct.getUser().getId(), orderProduct.getUser().getUsername()))
-                .toList();
-    }
-
-    public OrderProductDto getOrderProduct(Long userId, Long orderProductId) {
-        OrderProduct orderProduct = orderProductRepository.findById(orderProductId)
-                .orElseThrow(OrderProductNotFoundException::new);
-
-        return new OrderProductDto(orderProduct.getId(), orderProduct.getQuantity(), orderProduct.getStatus().name(),
-                orderProduct.getProduct().getId(), orderProduct.getProduct().getName(),
-                orderProduct.getUser().getId(), orderProduct.getUser().getUsername());
-    }
-
-    private User getUserById(Long userId) {
-        return userRepository.findById(userId)
-                .orElseThrow(UserNotFoundException::new);
-    }
-
-    private List<Long> getProductIdList(List<SaveOrderProductDto> saveOrderDto) {
-        return saveOrderDto.stream()
-                .map(SaveOrderProductDto::getProductId)
-                .toList();
-    }
-
-    private Map<Long, Product> getProducts(List<Long> productIdList) {
-        return productRepository.findAllById(productIdList)
-                .stream()
-                .collect(Collectors.toMap(Product::getId, product -> product));
     }
 }

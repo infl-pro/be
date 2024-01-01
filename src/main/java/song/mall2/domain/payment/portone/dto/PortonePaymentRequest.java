@@ -24,7 +24,7 @@ public class PortonePaymentRequest {
     public PortonePaymentRequest(String storeId, Long orderId, Integer totalAmount, String channelKey, Long userId) {
         this.storeId = storeId;
         this.paymentId = "pid-" + UUID.randomUUID().toString().substring(0, 8);
-        this.orderName = "order-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yy-MM-dd-HH:mm"));
+        this.orderName = "order-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH:mm"));
         this.totalAmount = Long.valueOf(totalAmount);
         this.currency = "KRW";
         this.payMethod = "CARD";
@@ -49,7 +49,6 @@ public class PortonePaymentRequest {
         @NoArgsConstructor
         @AllArgsConstructor
         public static class Address {
-            private String country = "KR";
             private String addressLine1 = "서울시";
             private String addressLine2 = "집";
         }
