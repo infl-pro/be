@@ -1,19 +1,15 @@
 package song.mall2.domain.file.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class UploadFileDto {
-    private String savedFileName;
-    private String url;
+    private String fileUrl;
 
     public UploadFileDto(String savedFileName) {
-        this.savedFileName = savedFileName;
-        this.url = "/file/downloadFile/" + savedFileName;
+        this.fileUrl = "/file/downloadFile/" + savedFileName;
     }
 }
