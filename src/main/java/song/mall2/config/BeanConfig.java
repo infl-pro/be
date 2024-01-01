@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.client.RestTemplate;
 
 @Slf4j
 @Configuration
@@ -19,5 +20,10 @@ public class BeanConfig {
     @Bean
     public IamportClient iamportClient() {
         return new IamportClient(impKey, impSecret, apiSecret, 1L);
+    }
+
+    @Bean
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
     }
 }

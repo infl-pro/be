@@ -31,35 +31,31 @@ public class OrderProduct {
     private Status status;
 
     private Integer quantity;
+    private Integer amount;
 
-    private OrderProduct(Orders orders, Product product, User user, Integer quantity) {
+    private OrderProduct(Orders orders, Product product, User user, Integer quantity, Integer amount) {
         this.orders = orders;
         this.product = product;
         this.user = user;
-        this.status = Status.PREPARING;
+        this.status = Status.PAID;
         this.quantity = quantity;
+        this.amount = amount;
     }
 
     public static OrderProduct create(Orders orders, Product product, User user, Integer quantity) {
-        return new OrderProduct(orders, product, user, quantity);
+        Integer amount = product.getPrice() * quantity;
+        product.decreaseStockQuantity(quantity);
+        return new OrderProduct(orders, product, user, quantity, amount);
     }
 
-    public void updateStatus(Long userId, String statusName) {
-        product.isSeller(userId);
+    public void cancel() {
+        this.status = Status.CANCELLED;
 
-        this.status = Status.of(statusName);
-    }
-
-    public void decreaseStockQuantity() {
-        this.product.decreaseStockQuantity(quantity);
-    }
-
-    public void increaseStockQuantity() {
         this.product.increaseStockQuantity(quantity);
     }
 
     public enum Status {
-        PREPARING, SHIPPING, COMPLETED, CANCELLED;
+        PREPARING, PAID, SHIPPING, COMPLETED, CANCELLED;
 
         public static Status of(String statusName) {
             for (Status status : values()) {

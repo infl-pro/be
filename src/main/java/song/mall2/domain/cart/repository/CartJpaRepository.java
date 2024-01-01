@@ -16,8 +16,18 @@ public interface CartJpaRepository extends JpaRepository<Cart, Long> {
     @Query("select c from Cart c where c.user.id = :userId")
     List<Cart> findAllByUserId(@Param("userId") Long userId);
 
+    @EntityGraph(attributePaths = {"product", "user"})
+    @Query("select c from Cart c where c.id in :idList and c.user.id = :userId")
+    List<Cart> findAllByIdAndUserId(@Param("idList") List<Long> idList, @Param("userId") Long userId);
+
     @Modifying(clearAutomatically = true)
+    @Query("delete from Cart c where c.id in :idList and c.user.id = :userId")
+    Integer deleteAllByIdAndUserId(@Param("idList") List<Long> idList,
+                                   @Param("userId") Long userId);
+
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query("delete from Cart c where c.user.id = :userId and c.id = :cartId")
     void deleteCart(@Param("userId") Long userId,
                     @Param("cartId") Long cartId);
+
 }

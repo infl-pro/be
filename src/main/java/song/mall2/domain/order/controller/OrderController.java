@@ -6,48 +6,54 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import song.mall2.domain.order.dto.*;
+import song.mall2.domain.cart.dto.CartIdDto;
+import song.mall2.domain.order.dto.OrderFormtDto;
+import song.mall2.domain.order.dto.OrderProductListDto;
+import song.mall2.domain.order.dto.OrdersDto;
 import song.mall2.domain.order.service.OrderService;
 import song.mall2.security.authentication.principal.UserPrincipal;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
 @Controller
-@ResponseBody
 @RequestMapping("/orders")
 @RequiredArgsConstructor
 public class OrderController {
     private final OrderService orderService;
+    @PostMapping("/form")
+    public ResponseEntity<OrderFormtDto> getOrderForm(@AuthenticationPrincipal UserPrincipal userPrincipal,
+                                                      @RequestBody List<CartIdDto> cartIdList) {
+        OrderFormtDto orderRequest = orderService.getOrderForm(userPrincipal.getId(), cartIdList);
 
-    @PostMapping("/save")
-    public ResponseEntity<OrderIdDto> postSaveOrder(@AuthenticationPrincipal UserPrincipal userPrincipal,
-                                                    @RequestBody SaveOrderDto saveOrderDto) {
-        OrderDto orderDto = orderService.saveOrder(userPrincipal.getId(), saveOrderDto.getSaveOrderProductDtoList());
-
-        return ResponseEntity.ok(new OrderIdDto(orderDto.getId()));
+        return ResponseEntity.ok(orderRequest);
     }
 
     @GetMapping
-    public ResponseEntity<List<OrderDto>> getOrders(@AuthenticationPrincipal UserPrincipal userPrincipal) {
-        List<OrderDto> orderList = orderService.getOrderList(userPrincipal.getId());
-
-        return ResponseEntity.ok(orderList);
-    }
-
-    @GetMapping("/{ordersId}")
-    public ResponseEntity<List<OrderProductDto>> getOrderProductList(@AuthenticationPrincipal UserPrincipal userPrincipal,
-                                                                     @PathVariable("ordersId") Long ordersId) {
-        List<OrderProductDto> orderProductList = orderService.getOrderProductList(userPrincipal.getId(), ordersId);
+    public ResponseEntity<List<OrderProductListDto>> getOrderList(@AuthenticationPrincipal UserPrincipal userPrincipal) {
+//        List<OrderProductListDto> orderProductList = orderService.getOrderList(userPrincipal.getId());
+        List<OrderProductListDto> orderProductList = orderService.getOrderList(1L);
 
         return ResponseEntity.ok(orderProductList);
     }
 
-    @GetMapping("/orderProduct/{orderProductId}")
-    public ResponseEntity<OrderProductDto> getOrderProduct(@AuthenticationPrincipal UserPrincipal userPrincipal,
-                                                           @PathVariable("orderProductId") Long orderProductId) {
-        OrderProductDto orderProduct = orderService.getOrderProduct(userPrincipal.getId(), orderProductId);
+    @GetMapping("/{ordersId}")
+    public ResponseEntity<OrdersDto> getOrders(@PathVariable("ordersId") Long ordersId,
+                                               @AuthenticationPrincipal UserPrincipal userPrincipal) {
+//        OrdersDto orders = orderService.getOrders(userPrincipal.getId(), ordersId);
+        OrdersDto orders = orderService.getOrders(1L, ordersId);
 
-        return ResponseEntity.ok(orderProduct);
+        return ResponseEntity.ok(orders);
+    }
+
+    @GetMapping("/carttest")
+    public ResponseEntity<OrderFormtDto> getCarttestOrder() {
+        List<CartIdDto> cartIdList = new ArrayList<>();
+        cartIdList.add(new CartIdDto(1L));
+        cartIdList.add(new CartIdDto(2L));
+        OrderFormtDto orderRequest = orderService.getOrderForm(1L, cartIdList);
+
+        return ResponseEntity.ok(orderRequest);
     }
 }

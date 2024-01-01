@@ -8,20 +8,14 @@ import org.springframework.stereotype.Repository;
 import song.mall2.domain.order.entity.OrderProduct;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface OrderProductJpaRepository extends JpaRepository<OrderProduct, Long> {
-    @EntityGraph(attributePaths = {"product", "user", "product.user"})
-    @Query("select op from OrderProduct op where op.id = :orderProductId")
-    Optional<OrderProduct> findById(@Param("orderProductId") Long orderProductId);
-
-    @EntityGraph(attributePaths = {"product", "user"})
+    @EntityGraph(attributePaths = {"orders", "product"})
     @Query("select op from OrderProduct op where op.orders.id = :ordersId")
-    List<OrderProduct> findByOrdersId(@Param("ordersId") Long ordersId);
+    List<OrderProduct> findAllByOrdersId(@Param("ordersId") Long ordersId);
 
-    @EntityGraph(attributePaths = {"product", "user"})
-    @Query("select op from OrderProduct op where op.product.id = :productId and op.product.user.id = :userId")
-    List<OrderProduct> findByProductId(@Param("productId") Long productId,
-                                       @Param("userId") Long userId);
+    @EntityGraph(attributePaths = {"orders", "product"})
+    @Query("select op from OrderProduct op where op.user.id = :userId")
+    List<OrderProduct> findAllByUserId(@Param("userId") Long userId);
 }

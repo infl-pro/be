@@ -25,12 +25,14 @@ public class CartService {
     private final CartJpaRepository cartRepository;
 
     @Transactional
-    public void addCart(Long userId, Long productId, Integer quantity) {
+    public CartDto addCart(Long userId, Long productId, Integer quantity) {
         User user = getUserById(userId);
         Product product = getProductById(productId);
 
         Cart cart = Cart.create(user, product, quantity);
-        cartRepository.save(cart);
+        Cart saveCart = cartRepository.save(cart);
+
+        return new CartDto(saveCart.getId(), saveCart.getQuantity(), saveCart.getProduct().getId(), saveCart.getProduct().getName(), saveCart.getProduct().getPrice());
     }
 
     public List<CartDto> getCartList(Long userId) {

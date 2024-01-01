@@ -33,4 +33,8 @@ public class Cart {
     public static Cart create(User user, Product product, Integer quantity) {
         return new Cart(user, product, quantity);
     }
+
+    public Integer getAmount() {
+        return quantity * product.getPrice();
+    }
 }
