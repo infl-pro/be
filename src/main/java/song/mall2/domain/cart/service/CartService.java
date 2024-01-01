@@ -32,15 +32,17 @@ public class CartService {
         Cart cart = Cart.create(user, product, quantity);
         Cart saveCart = cartRepository.save(cart);
 
-        return new CartDto(saveCart.getId(), saveCart.getQuantity(), saveCart.getProduct().getId(), saveCart.getProduct().getName(), saveCart.getProduct().getPrice());
+        return new CartDto(saveCart.getId(), saveCart.getQuantity(), saveCart.getProduct().getId(), saveCart.getProduct().getName(),
+                saveCart.getProduct().getPrice(), saveCart.getProduct().getThumbnailUrl());
     }
 
+    @Transactional
     public List<CartDto> getCartList(Long userId) {
         List<Cart> cartList = cartRepository.findAllByUserId(userId);
 
         return cartList.stream()
-                .map(cart -> new CartDto(cart.getId(), cart.getQuantity(),
-                        cart.getProduct().getId(), cart.getProduct().getName(), cart.getProduct().getPrice()))
+                .map(cart -> new CartDto(cart.getId(), cart.getQuantity(), cart.getProduct().getId(),
+                        cart.getProduct().getName(), cart.getProduct().getPrice(), cart.getProduct().getThumbnailUrl()))
                 .toList();
     }
 
