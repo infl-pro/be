@@ -52,7 +52,7 @@ public class OrderService {
     public List<OrderProductListDto> getOrderList(Long userId) {
         return orderProductRepository.findAllByUserId(userId).stream()
                 .map(orderProduct -> new OrderProductListDto(orderProduct.getProduct().getId(), orderProduct.getProduct().getName(),
-                        orderProduct.getOrders().getCreateAt(), orderProduct.getOrders().getId(),
+                        orderProduct.getProduct().getThumbnailUrl(), orderProduct.getOrders().getCreateAt(), orderProduct.getOrders().getId(),
                         orderProduct.getQuantity(), orderProduct.getAmount(), orderProduct.getStatus().name()))
                 .toList();
     }

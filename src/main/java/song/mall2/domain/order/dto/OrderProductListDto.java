@@ -14,6 +14,7 @@ import java.time.format.DateTimeFormatter;
 public class OrderProductListDto {
     private Long productId;
     private String productName;
+    private String productThumbnailUrl;
 
     private String createAt;
     private Long ordersId;
@@ -22,9 +23,10 @@ public class OrderProductListDto {
     private Integer amount;
     private String status;
 
-    public OrderProductListDto(Long productId, String productName, LocalDateTime createAt, Long ordersId, Integer quantity, Integer amount, String status) {
+    public OrderProductListDto(Long productId, String productName, String productThumbnailUrl, LocalDateTime createAt, Long ordersId, Integer quantity, Integer amount, String status) {
         this.productId = productId;
         this.productName = productName;
+        this.productThumbnailUrl = productThumbnailUrl;
         this.createAt = DateTimeFormatter.ofPattern("yyyy.MM.dd").format(createAt);
         this.ordersId = ordersId;
         this.quantity = quantity;
