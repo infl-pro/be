@@ -3,6 +3,7 @@ package song.mall2.domain.file.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import song.mall2.domain.file.dto.UploadFileDto;
@@ -10,6 +11,7 @@ import song.mall2.exception.notfound.exceptions.FileNotFoundException;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.UUID;
 
 @Slf4j
@@ -39,7 +41,19 @@ public class FileService {
         }
     }
 
-    public String getFullPath(String saveFileName) {
+    public UrlResource get(String savedFileName) {
+        try {
+            UrlResource urlResource = new UrlResource("file:" + getFullPath(savedFileName));
+            if (!urlResource.exists()) {
+                throw new FileNotFoundException("파일이 존재하지 않습니다");
+            }
+            return urlResource;
+        } catch (MalformedURLException | FileNotFoundException exception) {
+            throw new FileNotFoundException("파일이 존재하지 않습니다.");
+        }
+    }
+
+    private String getFullPath(String saveFileName) {
         return uploadPath + saveFileName;
     }
 

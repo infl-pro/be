@@ -33,8 +33,8 @@ public class FileController {
     }
 
     @GetMapping("/downloadFile/{savedFileName}")
-    public ResponseEntity<Resource> getDownload(@PathVariable(value = "savedFileName") String savedFileName) throws MalformedURLException {
-        UrlResource resource = new UrlResource("file:" + fileService.getFullPath(savedFileName));
+    public ResponseEntity<Resource> getDownload(@PathVariable(value = "savedFileName") String savedFileName) {
+        UrlResource resource = fileService.get(savedFileName);
         String contentType = getContentType(savedFileName);
 
         return ResponseEntity.ok()
