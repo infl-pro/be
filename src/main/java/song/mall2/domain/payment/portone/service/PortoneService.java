@@ -9,7 +9,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import song.mall2.exception.invalid.exceptions.InvalidPortonePaymentException;
+import song.mall2.exception.portone.exceptions.PortoneAuthenticateException;
+import song.mall2.exception.portone.exceptions.PortoneCancellationException;
+import song.mall2.exception.portone.exceptions.PortonePaymentException;
 
 import java.io.IOException;
 
@@ -34,7 +36,7 @@ public class PortoneService {
 
             return accessToken;
         } catch (IamportResponseException | IOException ex) {
-            throw new InvalidPortonePaymentException();
+            throw new PortoneAuthenticateException("인증 과정에서 예외가 발생했습니다.");
         }
     }
 
@@ -45,7 +47,7 @@ public class PortoneService {
             logging(payment);
             return payment;
         } catch (IamportResponseException | IOException ex) {
-            throw new InvalidPortonePaymentException();
+            throw new PortonePaymentException("결제정보를 가져오는 과정에서 예외가 발생했습니다.");
         }
     }
 
@@ -58,7 +60,7 @@ public class PortoneService {
             logging(cancellationResponse);
             return cancellationResponse;
         } catch (IamportResponseException | IOException ex) {
-            throw new InvalidPortonePaymentException("취소 예외");
+            throw new PortoneCancellationException("취소과정에서 예외가 발생했습니다.");
         }
     }
 
