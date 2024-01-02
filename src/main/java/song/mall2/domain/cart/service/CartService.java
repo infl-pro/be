@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import song.mall2.domain.cart.dto.CartDto;
+import song.mall2.domain.cart.dto.CartIdDto;
 import song.mall2.domain.cart.entity.Cart;
 import song.mall2.domain.cart.repository.CartJpaRepository;
 import song.mall2.domain.product.entity.Product;
@@ -47,8 +48,11 @@ public class CartService {
     }
 
     @Transactional
-    public void deleteCart(Long userId, Long cartId) {
-        cartRepository.deleteCart(userId, cartId);
+    public void deleteCart(Long userId, List<CartIdDto> cartIdDtoList) {
+        List<Long> cartIdList = cartIdDtoList.stream()
+                .map(CartIdDto::getCartId)
+                .toList();
+        cartRepository.deleteAllByIdAndUserId(cartIdList, userId);
     }
 
     private Product getProductById(Long productId) {

@@ -7,6 +7,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import song.mall2.domain.cart.dto.CartDto;
+import song.mall2.domain.cart.dto.CartIdDto;
 import song.mall2.domain.cart.dto.SaveCartDto;
 import song.mall2.domain.cart.service.CartService;
 import song.mall2.security.authentication.principal.UserPrincipal;
@@ -36,10 +37,10 @@ public class CartController {
         return ResponseEntity.ok(cartDto);
     }
 
-    @PostMapping("/delete/{cartId}")
+    @PostMapping("/delete")
     public ResponseEntity<Object> postDeleteCart(@AuthenticationPrincipal UserPrincipal userPrincipal,
-                               @PathVariable("cartId") Long cartId) {
-        cartService.deleteCart(userPrincipal.getId(), cartId);
+                                                 @RequestBody List<CartIdDto> cartIdDtoList) {
+        cartService.deleteCart(userPrincipal.getId(), cartIdDtoList);
 
         return ResponseEntity.ok().build();
     }
