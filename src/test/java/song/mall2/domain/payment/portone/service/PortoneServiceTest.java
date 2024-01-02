@@ -25,4 +25,9 @@ class PortoneServiceTest {
     void getPayment() {
         portoneService.getPortonePayment("pid8");
     }
+
+    @Test
+    void cancelPayment() {
+        portoneService.cancel("pid-a4d82a34");
+    }
 }
