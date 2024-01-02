@@ -47,6 +47,15 @@ public class OrderController {
         return ResponseEntity.ok(orders);
     }
 
+    @PostMapping("/{ordersId}/cancel")
+    public ResponseEntity<OrdersDto> postCancelOrders(@PathVariable("ordersId") Long ordersId,
+                                 @AuthenticationPrincipal UserPrincipal userPrincipal) {
+//        orderService.cancelOrders(ordersId, userPrincipal.getId());
+        OrdersDto ordersDto = orderService.cancelOrders(ordersId, 1L);
+
+        return ResponseEntity.ok(ordersDto);
+    }
+
     @GetMapping("/carttest")
     public ResponseEntity<OrderFormDto> getCarttestOrder() {
         List<CartIdDto> cartIdList = new ArrayList<>();

@@ -3,6 +3,7 @@ package song.mall2.domain.payment.portone.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.siot.IamportRestClient.IamportClient;
 import com.siot.IamportRestClient.exception.IamportResponseException;
+import com.siot.IamportRestClient.request.CancelRequest;
 import com.siot.IamportRestClient.response.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -45,6 +46,19 @@ public class PortoneService {
             return payment;
         } catch (IamportResponseException | IOException ex) {
             throw new InvalidPortonePaymentException();
+        }
+    }
+
+    public CancellationResponse cancel(String paymentId) {
+        CancelRequest cancelRequest = new CancelRequest();
+        cancelRequest.setReason("cancel");
+        try {
+            CancellationResponse cancellationResponse = client.cancelPaymentByPaymentId(paymentId, cancelRequest);
+
+            logging(cancellationResponse);
+            return cancellationResponse;
+        } catch (IamportResponseException | IOException ex) {
+            throw new InvalidPortonePaymentException("취소 예외");
         }
     }
 

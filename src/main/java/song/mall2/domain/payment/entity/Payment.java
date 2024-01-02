@@ -57,4 +57,9 @@ public class Payment {
         this.cancelledAt = cancelledAt;
         this.failedAt = failedAt;
     }
+
+    public void cancel(String cancelledAt) {
+        this.status = "Cancelled";
+        this.cancelledAt = cancelledAt;
+    }
 }
