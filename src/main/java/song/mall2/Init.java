@@ -56,11 +56,11 @@ public class Init {
 
             userService.grantRole(userA, ROLE_SELLER.name());
 
-            Long productA = saveProduct(userA, "productA", 10, "This is productA", "/file/downloadFile/spring.png", 100);
-            Long productB = saveProduct(userA, "productB", 5, "This is productB", "/file/downloadFile/security.png", 30);
+            Long productA = saveProduct(userA, "productA", 10, "This is productA", "/file/downloadFile/spring.png", 1000);
+            Long productB = saveProduct(userA, "productB", 5, "This is productB", "/file/downloadFile/security.png", 300);
 
-            cartService.addCart(userA, productA, 10);
-            cartService.addCart(userA, productB, 10);
+            cartService.addCart(userA, productA, 20);
+            cartService.addCart(userA, productB, 40);
 
             Long ordersId = saveOrder(userA, productA, 10);
         }
