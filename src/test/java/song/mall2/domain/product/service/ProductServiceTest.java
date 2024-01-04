@@ -9,6 +9,7 @@ import org.springframework.test.context.TestPropertySource;
 import song.mall2.domain.product.dto.EditProductDto;
 import song.mall2.domain.product.dto.ProductDto;
 import song.mall2.domain.product.dto.SaveProductDto;
+import song.mall2.domain.product.entity.Product;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -34,6 +35,7 @@ class ProductServiceTest {
         saveProductDto.setPrice(10000);
         saveProductDto.setDescription("test description");
         saveProductDto.setStockQuantity(100);
+        saveProductDto.setCategoryName(Product.Category.A.name());
 
         assertDoesNotThrow(() -> productService.saveProduct(userAId, saveProductDto));
     }

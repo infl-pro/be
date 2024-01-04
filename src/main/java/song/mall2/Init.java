@@ -81,6 +81,7 @@ public class Init {
             saveProductDto.setDescription(description);
             saveProductDto.setThumbnailUrl(thumbnailUrl);
             saveProductDto.setStockQuantity(stockQuantity);
+            saveProductDto.setCategoryName(Product.Category.A.name());
 
             return productService.saveProduct(userId, saveProductDto).getProductId();
         }

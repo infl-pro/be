@@ -15,4 +15,5 @@ public class EditProductDto {
     private String thumbnailUrl;
     private String imgUrl;
     private Integer stockQuantity;
+    private String category;
 }

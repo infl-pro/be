@@ -15,4 +15,5 @@ public class SaveProductDto {
     private Integer stockQuantity;
     private String thumbnailUrl;
     private String productImgUrl;
+    private String categoryName;
 }

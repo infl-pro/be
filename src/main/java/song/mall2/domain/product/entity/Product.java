@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import song.mall2.domain.user.entity.User;
+import song.mall2.exception.invalid.exceptions.InvalidRequestException;
 import song.mall2.exception.invalid.exceptions.InvalidStockQuantityException;
 
 @Entity
@@ -24,8 +25,10 @@ public class Product {
     private String thumbnailUrl;
     private String imgUrl;
     private Integer stockQuantity;
+    @Enumerated(EnumType.STRING)
+    private Category category;
 
-    private Product(User user, String name, Integer price, String description, String thumbnailUrl, String imgUrl, Integer stockQuantity) {
+    private Product(User user, String name, Integer price, String description, String thumbnailUrl, String imgUrl, Integer stockQuantity, String categoryName) {
         this.user = user;
         this.name = name;
         this.price = price;
@@ -33,10 +36,11 @@ public class Product {
         this.thumbnailUrl = thumbnailUrl;
         this.imgUrl = imgUrl;
         this.stockQuantity = stockQuantity;
+        this.category = Category.of(categoryName);
     }
 
-    public static Product create(User user, String name, Integer price, String description, String thumbnailUrl, String imgUrl, Integer stockQuantity) {
-        return new Product(user, name, price, description, thumbnailUrl, imgUrl, stockQuantity);
+    public static Product create(User user, String name, Integer price, String description, String thumbnailUrl, String imgUrl, Integer stockQuantity, String categoryName) {
+        return new Product(user, name, price, description, thumbnailUrl, imgUrl, stockQuantity, categoryName);
     }
 
     public void decreaseStockQuantity(Integer quantity) {
@@ -51,12 +55,26 @@ public class Product {
         this.stockQuantity += quantity;
     }
 
-    public void update(String name, Integer price, String description, String thumbnailUrl, String imgUrl, Integer stockQuantity) {
+    public void update(String name, Integer price, String description, String thumbnailUrl, String imgUrl, Integer stockQuantity, String categoryName) {
         this.name = name;
         this.price = price;
         this.description = description;
         this.thumbnailUrl = thumbnailUrl;
         this.imgUrl = imgUrl;
         this.stockQuantity = stockQuantity;
+        this.category = Category.of(categoryName);
+    }
+
+    public enum Category {
+        A, B, C, D;
+
+        public static Category of(String categoryName) {
+            for (Category category : values()) {
+                if (categoryName.equals(category.name())) {
+                    return category;
+                }
+            }
+            throw new InvalidRequestException("카테고리를 찾을 수 없습니다.");
+        }
     }
 }
