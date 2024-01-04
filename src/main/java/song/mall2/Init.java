@@ -96,6 +96,7 @@ public class Init {
             orderProductList.add(orderProduct);
 
             Orders saveOrders = ordersRepository.save(orders);
+            List<OrderProduct> saveOrderProductList = orderProductRepository.saveAll(orderProductList);
 
             Payment payment = Payment.of(userA, orders, "testPayment", "PAID", orderProduct.getAmount(), DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm").format(LocalDateTime.now()), null, null);
             Payment savePayment = paymentRepository.save(payment);
