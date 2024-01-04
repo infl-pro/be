@@ -18,4 +18,8 @@ public interface OrderProductJpaRepository extends JpaRepository<OrderProduct, L
     @EntityGraph(attributePaths = {"orders", "product"})
     @Query("select op from OrderProduct op where op.user.id = :userId")
     List<OrderProduct> findAllByUserId(@Param("userId") Long userId);
+
+    @Query("select op from OrderProduct op where op.product.id = :productId and op.user.id = :userId")
+    List<OrderProduct> findAllByProductIdAndUserId(@Param("productId") Long productId,
+                                                   @Param("userId") Long userId);
 }

@@ -17,6 +17,8 @@ public class ProductDto {
 
     private String username;
 
+    private boolean isPurchased = false;
+
     public ProductDto(Long productId, String productName, Integer price, String description, String thumbnailUrl, String imgUrl, Integer stockQuantity, String username) {
         this.productId = productId;
         this.productName = productName;

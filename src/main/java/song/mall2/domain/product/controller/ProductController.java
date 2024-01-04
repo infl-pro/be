@@ -28,9 +28,12 @@ public class ProductController {
     }
 
     @GetMapping("/{productId}")
-    public ResponseEntity<ProductDto> getProduct(@PathVariable("productId") Long productId) {
-        ProductDto product = productService.getProduct(productId);
+    public ResponseEntity<ProductDto> getProduct(@PathVariable("productId") Long productId,
+                                                 @AuthenticationPrincipal UserPrincipal userPrincipal) {
+        if (userPrincipal == null) {
+            return ResponseEntity.ok(productService.getProduct(productId));
+        }
 
-        return ResponseEntity.ok(product);
+        return ResponseEntity.ok(productService.getProduct(productId, userPrincipal.getId()));
     }
 }
