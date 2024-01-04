@@ -1,4 +1,4 @@
-package song.mall2.security.authentication.principal;
+package song.mall2.security.authentication.userprincipal;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

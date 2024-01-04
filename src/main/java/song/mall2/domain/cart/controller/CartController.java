@@ -10,7 +10,7 @@ import song.mall2.domain.cart.dto.CartDto;
 import song.mall2.domain.cart.dto.CartIdDto;
 import song.mall2.domain.cart.dto.SaveCartDto;
 import song.mall2.domain.cart.service.CartService;
-import song.mall2.security.authentication.principal.UserPrincipal;
+import song.mall2.security.authentication.userprincipal.UserPrincipal;
 
 import java.util.List;
 

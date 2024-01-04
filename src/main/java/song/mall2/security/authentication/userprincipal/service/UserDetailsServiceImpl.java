@@ -1,4 +1,4 @@
-package song.mall2.security.authentication.service;
+package song.mall2.security.authentication.userprincipal.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import song.mall2.domain.user.entity.User;
 import song.mall2.domain.user.repository.UserJpaRepository;
 import song.mall2.exception.notfound.exceptions.UserNotFoundException;
-import song.mall2.security.authentication.principal.UserPrincipal;
+import song.mall2.security.authentication.userprincipal.UserPrincipal;
 
 @Slf4j
 @Service

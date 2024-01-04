@@ -11,7 +11,7 @@ import song.mall2.domain.order.dto.OrderFormDto;
 import song.mall2.domain.order.dto.OrderProductListDto;
 import song.mall2.domain.order.dto.OrdersDto;
 import song.mall2.domain.order.service.OrderService;
-import song.mall2.security.authentication.principal.UserPrincipal;
+import song.mall2.security.authentication.userprincipal.UserPrincipal;
 
 import java.util.ArrayList;
 import java.util.List;

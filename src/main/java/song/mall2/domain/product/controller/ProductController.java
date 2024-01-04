@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import song.mall2.domain.product.dto.ProductDto;
 import song.mall2.domain.product.dto.SaveProductDto;
 import song.mall2.domain.product.service.ProductService;
-import song.mall2.security.authentication.principal.UserPrincipal;
+import song.mall2.security.authentication.userprincipal.UserPrincipal;
 
 @Slf4j
 @Controller

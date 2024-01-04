@@ -10,7 +10,7 @@ import song.mall2.domain.order.dto.OrdersIdDto;
 import song.mall2.domain.payment.dto.Callback;
 import song.mall2.domain.payment.dto.Webhook;
 import song.mall2.domain.payment.service.PaymentService;
-import song.mall2.security.authentication.principal.UserPrincipal;
+import song.mall2.security.authentication.userprincipal.UserPrincipal;
 
 @Slf4j
 @Controller
