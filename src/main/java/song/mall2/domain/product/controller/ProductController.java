@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import song.mall2.domain.product.dto.EditProductDto;
 import song.mall2.domain.product.dto.ProductDto;
 import song.mall2.domain.product.dto.SaveProductDto;
 import song.mall2.domain.product.service.ProductService;
@@ -35,5 +36,22 @@ public class ProductController {
         }
 
         return ResponseEntity.ok(productService.getProduct(productId, userPrincipal.getId()));
+    }
+
+    @PostMapping("/{productId}/editForm")
+    public ResponseEntity<EditProductDto> postEditProductForm(@PathVariable("productId") Long productId,
+                                                              @AuthenticationPrincipal UserPrincipal userPrincipal) {
+        EditProductDto editForm = productService.getEditForm(productId, userPrincipal.getId());
+
+        return ResponseEntity.ok(editForm);
+    }
+
+    @PostMapping("/{productId}/edit")
+    public ResponseEntity<ProductDto> postEditProduct(@PathVariable("productId") Long productId,
+                                                      @AuthenticationPrincipal UserPrincipal userPrincipal,
+                                                      @RequestBody EditProductDto editProductDto) {
+        ProductDto productDto = productService.editProduct(productId, userPrincipal.getId(), editProductDto);
+
+        return ResponseEntity.ok(productDto);
     }
 }

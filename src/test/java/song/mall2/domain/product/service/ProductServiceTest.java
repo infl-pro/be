@@ -6,8 +6,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
+import song.mall2.domain.product.dto.EditProductDto;
+import song.mall2.domain.product.dto.ProductDto;
 import song.mall2.domain.product.dto.SaveProductDto;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
@@ -39,6 +42,25 @@ class ProductServiceTest {
     @Test
     void getProduct() {
         assertDoesNotThrow(() -> productService.getProduct(productAId));
+    }
+
+    @Test
+    void getEditForm() {
+        EditProductDto editForm = productService.getEditForm(productAId, userAId);
+        assertThat(editForm.getName())
+                .isEqualTo(productService.getProduct(productAId).getProductName());
+    }
+
+    @Test
+    void editProduct() {
+        EditProductDto editForm = productService.getEditForm(productAId, userAId);
+        editForm.setName("edit name");
+        editForm.setPrice(1);
+
+        ProductDto productDto = productService.editProduct(productAId, userAId, editForm);
+
+        assertThat(productDto.getProductName())
+                .isEqualTo(editForm.getName());
     }
 
 }

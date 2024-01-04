@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import song.mall2.domain.user.entity.User;
 import song.mall2.exception.invalid.exceptions.InvalidStockQuantityException;
-import song.mall2.exception.invalid.exceptions.InvalidUserException;
 
 @Entity
 @Getter
@@ -52,9 +51,12 @@ public class Product {
         this.stockQuantity += quantity;
     }
 
-    public void isSeller(Long userId) {
-        if (!userId.equals(user.getId())) {
-            throw new InvalidUserException();
-        }
+    public void update(String name, Integer price, String description, String thumbnailUrl, String imgUrl, Integer stockQuantity) {
+        this.name = name;
+        this.price = price;
+        this.description = description;
+        this.thumbnailUrl = thumbnailUrl;
+        this.imgUrl = imgUrl;
+        this.stockQuantity = stockQuantity;
     }
 }

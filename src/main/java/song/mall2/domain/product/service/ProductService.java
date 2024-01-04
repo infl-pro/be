@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import song.mall2.domain.order.entity.OrderProduct;
 import song.mall2.domain.order.repository.OrderProductJpaRepository;
+import song.mall2.domain.product.dto.EditProductDto;
 import song.mall2.domain.product.dto.ProductDto;
 import song.mall2.domain.product.dto.SaveProductDto;
 import song.mall2.domain.product.entity.Product;
@@ -21,7 +22,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class ProductService {
-    private final ProductJpaRepository productJpaRepository;
+    private final ProductJpaRepository productRepository;
     private final UserJpaRepository userRepository;
     private final OrderProductJpaRepository orderProductRepository;
 
@@ -31,7 +32,7 @@ public class ProductService {
         Product product = Product.create(user, saveProductDto.getName(), saveProductDto.getPrice(), saveProductDto.getDescription(),
                 saveProductDto.getThumbnailUrl(), saveProductDto.getProductImgUrl(), saveProductDto.getStockQuantity());
 
-        Product saveProduct = productJpaRepository.save(product);
+        Product saveProduct = productRepository.save(product);
 
         return new ProductDto(saveProduct.getId(), product.getName(), product.getPrice(), product.getDescription(),
                 product.getThumbnailUrl(), product.getImgUrl(), product.getStockQuantity(),
@@ -40,7 +41,7 @@ public class ProductService {
 
     @Transactional
     public ProductDto getProduct(Long productId) {
-        Product product = productJpaRepository.findById(productId)
+        Product product = productRepository.findById(productId)
                 .orElseThrow(ProductNotFoundException::new);
 
         return new ProductDto(product.getId(), product.getName(), product.getPrice(), product.getDescription(),
@@ -50,7 +51,7 @@ public class ProductService {
 
     @Transactional
     public ProductDto getProduct(Long productId, Long userId) {
-        Product product = productJpaRepository.findById(productId)
+        Product product = productRepository.findById(productId)
                 .orElseThrow(ProductNotFoundException::new);
 
         ProductDto productDto = new ProductDto(product.getId(), product.getName(), product.getPrice(), product.getDescription(),
@@ -63,6 +64,30 @@ public class ProductService {
         }
 
         return productDto;
+    }
+
+    @Transactional
+    public EditProductDto getEditForm(Long productId, Long userId) {
+        Product product = productRepository.findByIdAndUserId(productId, userId)
+                .orElseThrow(ProductNotFoundException::new);
+
+        return new EditProductDto(product.getName(), product.getPrice(), product.getDescription(),
+                product.getThumbnailUrl(), product.getImgUrl(), product.getStockQuantity());
+    }
+
+    @Transactional
+    public ProductDto editProduct(Long productId, Long userId, EditProductDto editProductDto) {
+        Product product = productRepository.findByIdAndUserId(productId, userId)
+                .orElseThrow(ProductNotFoundException::new);
+
+        product.update(editProductDto.getName(), editProductDto.getPrice(), editProductDto.getDescription(),
+                editProductDto.getThumbnailUrl(), editProductDto.getImgUrl(), editProductDto.getStockQuantity());
+
+        Product saveProduct = productRepository.save(product);
+
+        return new ProductDto(saveProduct.getId(), saveProduct.getName(), saveProduct.getPrice(), saveProduct.getDescription(),
+                saveProduct.getThumbnailUrl(), saveProduct.getImgUrl(), saveProduct.getStockQuantity(),
+                saveProduct.getUser().getUsername());
     }
 
     private User getUserById(Long userId) {
