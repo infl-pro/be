@@ -1,5 +1,7 @@
 package song.mall2.domain.product.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -18,4 +20,12 @@ public interface ProductJpaRepository extends JpaRepository<Product, Long> {
     @Query("select p from Product p where p.id = :productId and p.user.id = :userId")
     Optional<Product> findByIdAndUserId(@Param("productId") Long productId,
                                         @Param("userId") Long userId);
+
+    @Query("select p from Product p")
+    Page<Product> findAll(Pageable pageable);
+
+    @Query("select p from Product p where p.category = :category and p.name like %:searchValue%")
+    Page<Product> findAllBySearch(Pageable pageable,
+                                  @Param("category") Product.Category category,
+                                  @Param("searchValue") String searchValue);
 }

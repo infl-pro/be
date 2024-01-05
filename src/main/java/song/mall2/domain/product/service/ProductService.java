@@ -3,7 +3,10 @@ package song.mall2.domain.product.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import song.mall2.domain.common.dto.ProductPageDto;
 import song.mall2.domain.order.entity.OrderProduct;
 import song.mall2.domain.order.repository.OrderProductJpaRepository;
 import song.mall2.domain.product.dto.EditProductDto;
@@ -88,6 +91,24 @@ public class ProductService {
         return new ProductDto(saveProduct.getId(), saveProduct.getName(), saveProduct.getPrice(), saveProduct.getDescription(),
                 saveProduct.getThumbnailUrl(), saveProduct.getImgUrl(), saveProduct.getStockQuantity(),
                 saveProduct.getUser().getUsername());
+    }
+
+    @Transactional
+    public Page<ProductPageDto> findProductList(Pageable pageable) {
+        return productRepository.findAll(pageable)
+                .map(product -> new ProductPageDto(
+                        product.getId(), product.getName(), product.getPrice(), product.getThumbnailUrl()
+                ));
+    }
+
+    @Transactional
+    public Page<ProductPageDto> findProductListBySearch(Pageable pageable, String searchCategory, String searchValue) {
+        Product.Category category = Product.Category.of(searchCategory);
+
+        return productRepository.findAllBySearch(pageable, category, searchValue)
+                .map(product -> new ProductPageDto(
+                        product.getId(), product.getName(), product.getPrice(), product.getThumbnailUrl()
+                ));
     }
 
     private User getUserById(Long userId) {
