@@ -35,7 +35,7 @@ spring:
             user_name_attribute: response
 
 upload:
-  path: ENC(PfniHfb6Jw7R5mVc39LewFfhH15gd6GQJhGbUorPoko=)
+  path: ENC(PI9r1YvEV4jkG3UrJk0sNJriOpwvlOmkIzO7TSe2Lq8=)
 
 logging:
   level:
