@@ -15,7 +15,7 @@ import song.mall2.domain.product.dto.SaveProductDto;
 import song.mall2.domain.product.entity.Product;
 import song.mall2.domain.product.repository.ProductJpaRepository;
 import song.mall2.domain.product.service.ProductService;
-import song.mall2.domain.user.dto.SignupDto;
+import song.mall2.domain.user.dto.UserSignupDto;
 import song.mall2.domain.user.entity.User;
 import song.mall2.domain.user.repository.UserJpaRepository;
 import song.mall2.domain.user.service.UserService;
@@ -51,8 +51,8 @@ public class Init {
         private final PaymentJpaRepository paymentRepository;
 
         public void setData() {
-            Long userA = saveUser("a", "a", "address A");
-            Long userB = saveUser("b", "b", "address B");
+            Long userA = saveUser("a", "a", "nameA", "test1@email.com");
+            Long userB = saveUser("b", "b", "nameB", "test1@email.com");
 
             userService.grantRole(userA, ROLE_SELLER.name());
 
@@ -65,13 +65,14 @@ public class Init {
             Long ordersId = saveOrder(userA, productA, 10);
         }
 
-        private Long saveUser(String username, String password, String address) {
-            SignupDto signupDto = new SignupDto();
-            signupDto.setUsername(username);
-            signupDto.setPassword(password);
-            signupDto.setAddress(address);
+        private Long saveUser(String username, String password, String name, String email) {
+            UserSignupDto userSignupDto = new UserSignupDto();
+            userSignupDto.setUsername(username);
+            userSignupDto.setPassword(password);
+            userSignupDto.setName(name);
+            userSignupDto.setEmail(email);
 
-            return userService.saveUser(signupDto);
+            return userService.saveCommonUser(userSignupDto);
         }
 
         private Long saveProduct(Long userId, String name, Integer price, String description, String thumbnailUrl, Integer stockQuantity) {

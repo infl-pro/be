@@ -20,16 +20,28 @@ public class User {
 
     private String username;
     private String password;
-    private String address;
+    private String name;
+    private String email;
 
-    private User(String username, String password, String address) {
+    private User(String username, String password, String name, String email) {
         this.username = username;
         this.password = password;
-        this.address = address;
+        this.name = name;
+        this.email = email;
     }
 
-    public static User create(String username, String password, String address) {
-        return new User(username, password, address);
+    private User(String username, String password, String name) {
+        this.username = username;
+        this.password = password;
+        this.name = name;
+    }
+
+    public static User create(String username, String password, String name, String email) {
+        return new User(username, password, name, email);
+    }
+
+    public static User create(String username, String password, String name) {
+        return new User(username, password, name);
     }
 
     public void addRole(UserRole userRole) {

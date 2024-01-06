@@ -5,7 +5,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import song.mall2.domain.user.dto.SignupDto;
+import song.mall2.domain.user.dto.SellerSignupDto;
+import song.mall2.domain.user.dto.UserSignupDto;
 import song.mall2.domain.user.entity.User;
 import song.mall2.domain.user.repository.UserJpaRepository;
 import song.mall2.domain.user.entity.UserRole;
@@ -24,11 +25,21 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public Long saveUser(SignupDto signupDto) {
-        User user = User.create(signupDto.getUsername(), passwordEncoder.encode(signupDto.getPassword()), signupDto.getAddress());
+    public Long saveCommonUser(UserSignupDto userSignupDto) {
+        User user = User.create(userSignupDto.getUsername(), passwordEncoder.encode(userSignupDto.getPassword()), userSignupDto.getName(), userSignupDto.getEmail());
         User saveUser = userRepository.save(user);
 
         grantRole(saveUser.getId(), Role.ROLE_USER.name());
+
+        return saveUser.getId();
+    }
+
+    @Transactional
+    public Long saveSellerUser(SellerSignupDto sellerSignupDto) {
+        User user = User.create(sellerSignupDto.getUsername(), sellerSignupDto.getPassword(), sellerSignupDto.getName());
+        User saveUser = userRepository.save(user);
+
+        grantRole(saveUser.getId(), Role.ROLE_SELLER.name());
 
         return saveUser.getId();
     }

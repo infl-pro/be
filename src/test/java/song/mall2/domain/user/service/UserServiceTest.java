@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
-import song.mall2.domain.user.dto.SignupDto;
+import song.mall2.domain.user.dto.UserSignupDto;
 
 @Slf4j
 @SpringBootTest
@@ -20,12 +20,11 @@ class UserServiceTest {
 
     @Test
     void saveUser() {
-        SignupDto signupDto = new SignupDto();
-        signupDto.setUsername("testUsername");
-        signupDto.setPassword("testPassword");
-        signupDto.setAddress("testAddress");
+        UserSignupDto userSignupDto = new UserSignupDto();
+        userSignupDto.setUsername("testUsername");
+        userSignupDto.setPassword("testPassword");
 
-        Assertions.assertDoesNotThrow(() -> userService.saveUser(signupDto));
+        Assertions.assertDoesNotThrow(() -> userService.saveCommonUser(userSignupDto));
     }
 
 }

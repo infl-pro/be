@@ -9,7 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
-import song.mall2.domain.user.dto.SignupDto;
+import song.mall2.domain.user.dto.UserSignupDto;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -29,11 +29,10 @@ class UserControllerTest {
 
     @Test
     void postSaveUser() throws Exception {
-        SignupDto signupDto = new SignupDto();
-        signupDto.setUsername("testUsername");
-        signupDto.setPassword("testPassword");
-        signupDto.setAddress("testAddress");
-        String content = objectMapper.writeValueAsString(signupDto);
+        UserSignupDto userSignupDto = new UserSignupDto();
+        userSignupDto.setUsername("testUsername");
+        userSignupDto.setPassword("testPassword");
+        String content = objectMapper.writeValueAsString(userSignupDto);
 
         mockMvc.perform(post("/user/save")
                         .contentType(MediaType.APPLICATION_JSON)
