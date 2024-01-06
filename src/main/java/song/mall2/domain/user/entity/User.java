@@ -47,4 +47,8 @@ public class User {
     public void addRole(UserRole userRole) {
         roleList.add(userRole);
     }
+
+    public void updatePassword(String password) {
+        this.password = password;
+    }
 }

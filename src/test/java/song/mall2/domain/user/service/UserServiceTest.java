@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
-import song.mall2.domain.user.dto.UserSignupDto;
+import song.mall2.domain.account.dto.UserSignupDto;
 
 @Slf4j
 @SpringBootTest

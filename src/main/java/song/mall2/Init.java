@@ -15,7 +15,7 @@ import song.mall2.domain.product.dto.SaveProductDto;
 import song.mall2.domain.product.entity.Product;
 import song.mall2.domain.product.repository.ProductJpaRepository;
 import song.mall2.domain.product.service.ProductService;
-import song.mall2.domain.user.dto.UserSignupDto;
+import song.mall2.domain.account.dto.UserSignupDto;
 import song.mall2.domain.user.entity.User;
 import song.mall2.domain.user.repository.UserJpaRepository;
 import song.mall2.domain.user.service.UserService;

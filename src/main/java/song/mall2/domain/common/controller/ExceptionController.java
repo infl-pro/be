@@ -28,16 +28,6 @@ public class ExceptionController {
                 .body(exceptionMap);
     }
 
-    @ExceptionHandler({PortoneException.class})
-    public ResponseEntity<Map<String, String>> portoneExceptionHandler(PortoneException exception) {
-        Map<String, String> exceptionMap = new HashMap<>();
-        exceptionMap.put("message", exception.getMessage());
-
-        return ResponseEntity
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(exceptionMap);
-    }
-
     @ExceptionHandler({InvalidException.class})
     public ResponseEntity<Map<String, String>> invalidExceptionHandler(InvalidException exception) {
         Map<String, String> exceptionMap = new HashMap<>();
@@ -45,6 +35,16 @@ public class ExceptionController {
 
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
+                .body(exceptionMap);
+    }
+
+    @ExceptionHandler({PortoneException.class})
+    public ResponseEntity<Map<String, String>> portoneExceptionHandler(PortoneException exception) {
+        Map<String, String> exceptionMap = new HashMap<>();
+        exceptionMap.put("message", exception.getMessage());
+
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(exceptionMap);
     }
 }
