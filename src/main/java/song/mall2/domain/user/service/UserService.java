@@ -12,6 +12,7 @@ import song.mall2.domain.user.repository.UserJpaRepository;
 import song.mall2.domain.user.entity.UserRole;
 import song.mall2.domain.user.entity.UserRole.Role;
 import song.mall2.domain.user.repository.UserRoleJpaRepository;
+import song.mall2.exception.invalid.exceptions.InvalidRequestException;
 import song.mall2.exception.notfound.exceptions.UserNotFoundException;
 
 import java.util.Optional;
@@ -26,6 +27,7 @@ public class UserService {
 
     @Transactional
     public Long saveCommonUser(UserSignupDto userSignupDto) {
+        validateUsername(userSignupDto.getUsername());
         User user = User.create(userSignupDto.getUsername(), passwordEncoder.encode(userSignupDto.getPassword()), userSignupDto.getName(), userSignupDto.getEmail());
         User saveUser = userRepository.save(user);
 
@@ -36,6 +38,7 @@ public class UserService {
 
     @Transactional
     public Long saveSellerUser(SellerSignupDto sellerSignupDto) {
+        validateUsername(sellerSignupDto.getUsername());
         User user = User.create(sellerSignupDto.getUsername(), passwordEncoder.encode(sellerSignupDto.getPassword()), sellerSignupDto.getName());
         User saveUser = userRepository.save(user);
 
@@ -55,6 +58,13 @@ public class UserService {
 
         UserRole userRole = UserRole.create(user, roleName);
         userRoleRepository.save(userRole);
+    }
+
+    private void validateUsername(String sellerSignupDto) {
+        userRepository.findByUsername(sellerSignupDto)
+                .ifPresent(user -> {
+                    throw new InvalidRequestException("이미 가입된 아이디입니다.");
+                });
     }
 
     private User getUserById(Long userId) {
