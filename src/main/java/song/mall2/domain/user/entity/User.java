@@ -22,18 +22,21 @@ public class User {
     private String password;
     private String name;
     private String email;
+    private String profileUrl;
 
     private User(String username, String password, String name, String email) {
         this.username = username;
         this.password = password;
         this.name = name;
         this.email = email;
+        this.profileUrl = "/file/downloadFile/user.png";
     }
 
     private User(String username, String password, String name) {
         this.username = username;
         this.password = password;
         this.name = name;
+        this.profileUrl = "/file/downloadFile/user.png";
     }
 
     public static User create(String username, String password, String name, String email) {
@@ -50,5 +53,9 @@ public class User {
 
     public void updatePassword(String password) {
         this.password = password;
+    }
+
+    public void updateProfile(String profileUrl) {
+        this.profileUrl = profileUrl;
     }
 }
