@@ -18,12 +18,11 @@ import static org.springframework.data.domain.Sort.Direction.DESC;
 
 @Slf4j
 @Controller
-@RequestMapping("/api")
 @RequiredArgsConstructor
 public class HomeController {
     private final ProductService productService;
 
-    @GetMapping("/")
+    @GetMapping("/home")
     public ResponseEntity<Page<ProductPageDto>> getHome(@PageableDefault(size = 10, page = 0, sort = "id", direction = DESC) Pageable pageable,
                                                         @RequestParam(value = "searchCategory", required = false) String searchCategory,
                                                         @RequestParam(value = "searchValue", required = false) String searchValue) {
@@ -34,11 +33,11 @@ public class HomeController {
         return ResponseEntity.ok(productService.findProductListBySearch(pageable, searchCategory, searchValue));
     }
 
-    @PostMapping("/")
-    public String postHome() {
-
-        return "home";
-    }
+//    @PostMapping("/")
+//    public String postHome() {
+//
+//        return "home";
+//    }
 
     @PostMapping("/refreshToken")
     public ResponseEntity<AccessTokenResponseDto> postRefreshToken(@RequestBody RefreshRequestDto refreshRequestDto) {
