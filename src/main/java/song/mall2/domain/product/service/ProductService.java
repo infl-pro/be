@@ -38,7 +38,7 @@ public class ProductService {
         Product saveProduct = productRepository.save(product);
 
         return new ProductDto(saveProduct.getId(), product.getName(), product.getPrice(), product.getDescription(),
-                product.getThumbnailUrl(), product.getImgUrl(), product.getStockQuantity(),
+                product.getThumbnailUrl(), product.getImgUrl(), product.getStockQuantity(), product.getCategory().name(),
                 product.getUser().getUsername());
     }
 
@@ -48,7 +48,7 @@ public class ProductService {
                 .orElseThrow(ProductNotFoundException::new);
 
         return new ProductDto(product.getId(), product.getName(), product.getPrice(), product.getDescription(),
-                product.getThumbnailUrl(), product.getImgUrl(), product.getStockQuantity(),
+                product.getThumbnailUrl(), product.getImgUrl(), product.getStockQuantity(), product.getCategory().name(),
                 product.getUser().getUsername());
     }
 
@@ -58,7 +58,7 @@ public class ProductService {
                 .orElseThrow(ProductNotFoundException::new);
 
         ProductDto productDto = new ProductDto(product.getId(), product.getName(), product.getPrice(), product.getDescription(),
-                product.getThumbnailUrl(), product.getImgUrl(), product.getStockQuantity(),
+                product.getThumbnailUrl(), product.getImgUrl(), product.getStockQuantity(), product.getCategory().name(),
                 product.getUser().getUsername());
 
         List<OrderProduct> orderProductList = orderProductRepository.findAllByProductIdAndUserId(product.getId(), userId);
@@ -75,7 +75,7 @@ public class ProductService {
                 .orElseThrow(ProductNotFoundException::new);
 
         return new EditProductDto(product.getName(), product.getPrice(), product.getDescription(),
-                product.getThumbnailUrl(), product.getImgUrl(), product.getStockQuantity(), product.getCategory().name());
+                product.getThumbnailUrl(), product.getImgUrl(), product.getCategory().name());
     }
 
     @Transactional
@@ -83,13 +83,13 @@ public class ProductService {
         Product product = productRepository.findByIdAndUserId(productId, userId)
                 .orElseThrow(ProductNotFoundException::new);
 
-        product.update(editProductDto.getName(), editProductDto.getPrice(), editProductDto.getDescription(),
-                editProductDto.getThumbnailUrl(), editProductDto.getImgUrl(), editProductDto.getStockQuantity(), product.getCategory().name());
+        product.update(editProductDto.getProductName(), editProductDto.getProductPrice(), editProductDto.getProductDescription(),
+                editProductDto.getThumbnailUrl(), editProductDto.getImgUrl(), product.getCategory().name());
 
         Product saveProduct = productRepository.save(product);
 
         return new ProductDto(saveProduct.getId(), saveProduct.getName(), saveProduct.getPrice(), saveProduct.getDescription(),
-                saveProduct.getThumbnailUrl(), saveProduct.getImgUrl(), saveProduct.getStockQuantity(),
+                saveProduct.getThumbnailUrl(), saveProduct.getImgUrl(), saveProduct.getStockQuantity(), saveProduct.getCategory().name(),
                 saveProduct.getUser().getUsername());
     }
 

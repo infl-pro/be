@@ -55,13 +55,12 @@ public class Product {
         this.stockQuantity += quantity;
     }
 
-    public void update(String name, Integer price, String description, String thumbnailUrl, String imgUrl, Integer stockQuantity, String categoryName) {
+    public void update(String name, Integer price, String description, String thumbnailUrl, String imgUrl, String categoryName) {
         this.name = name;
         this.price = price;
         this.description = description;
         this.thumbnailUrl = thumbnailUrl;
         this.imgUrl = imgUrl;
-        this.stockQuantity = stockQuantity;
         this.category = Category.of(categoryName);
     }
 

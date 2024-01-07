@@ -9,11 +9,10 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class EditProductDto {
-    private String name;
-    private Integer price;
-    private String description;
+    private String productName;
+    private Integer productPrice;
+    private String productDescription;
     private String thumbnailUrl;
     private String imgUrl;
-    private Integer stockQuantity;
     private String category;
 }
