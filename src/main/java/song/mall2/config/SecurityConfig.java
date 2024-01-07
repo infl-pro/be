@@ -17,6 +17,7 @@ import song.mall2.security.authentication.handler.LoginFailureHandler;
 import song.mall2.security.authentication.handler.LoginSuccessHandler;
 import song.mall2.security.authentication.userprincipal.service.UserDetailsServiceImpl;
 import song.mall2.security.filter.JwtFilter;
+import song.mall2.security.filter.LogFilter;
 
 @Slf4j
 @Configuration
@@ -29,7 +30,7 @@ public class SecurityConfig {
         return http
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.disable())
-                .sessionManagement(sessionManagement-> sessionManagement
+                .sessionManagement(sessionManagement -> sessionManagement
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/product/save").hasRole("SELLER")
@@ -39,6 +40,7 @@ public class SecurityConfig {
                         .failureHandler(authenticationFailureHandler()))
                 .logout(logout -> logout.disable())
                 .addFilterBefore(new JwtFilter(userDetailsService), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new LogFilter(), JwtFilter.class)
                 .build();
     }
 
