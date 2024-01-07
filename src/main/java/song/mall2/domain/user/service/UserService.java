@@ -36,7 +36,7 @@ public class UserService {
 
     @Transactional
     public Long saveSellerUser(SellerSignupDto sellerSignupDto) {
-        User user = User.create(sellerSignupDto.getUsername(), sellerSignupDto.getPassword(), sellerSignupDto.getName());
+        User user = User.create(sellerSignupDto.getUsername(), passwordEncoder.encode(sellerSignupDto.getPassword()), sellerSignupDto.getName());
         User saveUser = userRepository.save(user);
 
         grantRole(saveUser.getId(), Role.ROLE_SELLER.name());
