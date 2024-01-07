@@ -7,7 +7,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import song.mall2.domain.account.dto.*;
 import song.mall2.domain.account.service.AccountService;
-import song.mall2.domain.user.service.UserService;
 
 @Slf4j
 @Controller
@@ -16,18 +15,17 @@ import song.mall2.domain.user.service.UserService;
 @RequiredArgsConstructor
 public class AccountController {
     private final AccountService accountService;
-    private final UserService userService;
 
     @PostMapping("/signupUser")
     public ResponseEntity<Object> postSaveUser(@RequestBody UserSignupDto userSignupDto) {
-        userService.saveCommonUser(userSignupDto);
+        accountService.saveCommonUser(userSignupDto);
 
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/signupSeller")
     public ResponseEntity<Object> postSaveSeller(@RequestBody SellerSignupDto sellerSignupDto) {
-        userService.saveSellerUser(sellerSignupDto);
+        accountService.saveSellerUser(sellerSignupDto);
 
         return ResponseEntity.ok().build();
     }

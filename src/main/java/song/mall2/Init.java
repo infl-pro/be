@@ -4,6 +4,7 @@ import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import song.mall2.domain.account.service.AccountService;
 import song.mall2.domain.cart.service.CartService;
 import song.mall2.domain.order.entity.OrderProduct;
 import song.mall2.domain.order.entity.Orders;
@@ -41,6 +42,7 @@ public class Init {
     @Component
     @RequiredArgsConstructor
     private static class InitService {
+        private final AccountService accountService;
         private final UserService userService;
         private final ProductService productService;
         private final CartService cartService;
@@ -54,7 +56,7 @@ public class Init {
             Long userA = saveUser("a", "a", "nameA", "test1@email.com");
             Long userB = saveUser("b", "b", "nameB", "test1@email.com");
 
-            userService.grantRole(userA, ROLE_SELLER.name());
+            accountService.grantRole(userA, ROLE_SELLER.name());
 
             Long productA = saveProduct(userA, "productA", 10, "This is productA", "/file/downloadFile/spring.png", 1000);
             Long productB = saveProduct(userA, "productB", 5, "This is productB", "/file/downloadFile/security.png", 300);
@@ -72,7 +74,7 @@ public class Init {
             userSignupDto.setName(name);
             userSignupDto.setEmail(email);
 
-            return userService.saveCommonUser(userSignupDto);
+            return accountService.saveCommonUser(userSignupDto);
         }
 
         private Long saveProduct(Long userId, String name, Integer price, String description, String thumbnailUrl, Integer stockQuantity) {

@@ -6,12 +6,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import song.mall2.domain.account.dto.ResponseFindUsername;
+import song.mall2.domain.account.dto.SellerSignupDto;
+import song.mall2.domain.account.dto.UserSignupDto;
 import song.mall2.domain.account.entity.EmailVerificationToken;
 import song.mall2.domain.account.entity.ResetPasswordToken;
 import song.mall2.domain.account.repository.EmailTokenJpaRepository;
 import song.mall2.domain.account.repository.ResetPasswordTokenJpaRepository;
 import song.mall2.domain.user.entity.User;
+import song.mall2.domain.user.entity.UserRole;
 import song.mall2.domain.user.repository.UserJpaRepository;
+import song.mall2.domain.user.repository.UserRoleJpaRepository;
 import song.mall2.exception.invalid.exceptions.InvalidEmailTokenException;
 import song.mall2.exception.invalid.exceptions.InvalidRequestException;
 import song.mall2.exception.notfound.exceptions.TokenNotFoundException;
@@ -26,11 +30,48 @@ import java.util.UUID;
 public class AccountService {
     private final PasswordEncoder passwordEncoder;
     private final UserJpaRepository userRepository;
+    private final UserRoleJpaRepository userRoleRepository;
     private final ResetPasswordTokenJpaRepository resetPasswordTokenRepository;
     private final EmailTokenJpaRepository emailTokenRepository;
     private final EmailService emailService;
 
     public static final String LOCALHOST_URL = "localhost:8080/account/resetPassword/";
+    public static final String AWS_URL = "http://52.79.222.161:8080/account/resetPassword/";
+
+    @Transactional
+    public Long saveCommonUser(UserSignupDto userSignupDto) {
+        validateUsername(userSignupDto.getUsername());
+        User user = User.create(userSignupDto.getUsername(), passwordEncoder.encode(userSignupDto.getPassword()), userSignupDto.getName(), userSignupDto.getEmail());
+        User saveUser = userRepository.save(user);
+
+        grantRole(saveUser.getId(), UserRole.Role.ROLE_USER.name());
+
+        return saveUser.getId();
+    }
+
+    @Transactional
+    public Long saveSellerUser(SellerSignupDto sellerSignupDto) {
+        validateUsername(sellerSignupDto.getUsername());
+        User user = User.create(sellerSignupDto.getUsername(), passwordEncoder.encode(sellerSignupDto.getPassword()), sellerSignupDto.getName());
+        User saveUser = userRepository.save(user);
+
+        grantRole(saveUser.getId(), UserRole.Role.ROLE_SELLER.name());
+
+        return saveUser.getId();
+    }
+
+    @Transactional
+    public void grantRole(Long userId, String roleName) {
+        User user = getUserById(userId);
+        Optional<UserRole> optionalUserRole = userRoleRepository.findByUserIdAndRole(userId, UserRole.Role.valueOf(roleName));
+        if (optionalUserRole.isPresent()) {
+            log.info("이미 부여된 권한입니다. id = {}, role = {}", userId, roleName);
+            return;
+        }
+
+        UserRole userRole = UserRole.create(user, roleName);
+        userRoleRepository.save(userRole);
+    }
 
     @Transactional
     public void validateUsername(String username) {
@@ -57,7 +98,7 @@ public class AccountService {
         ResetPasswordToken passwordToken = createPasswordToken(email);
 
         emailService.sendMail(email, "비밀번호 초기화",
-                LOCALHOST_URL + passwordToken.getToken());
+                AWS_URL + passwordToken.getToken());
     }
 
     @Transactional
@@ -94,6 +135,11 @@ public class AccountService {
                 .orElseThrow(()-> new TokenNotFoundException("인증에 실패했습니다."));
 
         emailVerificationToken.verifyEmail();
+    }
+
+    private User getUserById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(UserNotFoundException::new);
     }
 
     private ResetPasswordToken createPasswordToken(String email) {
