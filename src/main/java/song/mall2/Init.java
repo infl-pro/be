@@ -54,10 +54,12 @@ public class Init {
         @Transactional
         public void setData() {
             User userA = saveUser("a", "a", "nameA", "test1@email.com");
-            User userB = saveUser("b", "b", "nameB", "test1@email.com");
+            grantRoleUser(userA);
+            User lmood = saveUser("b", "b", "엘무드", "lmood@email.com");
+            grantRoleSeller(lmood);
 
-            Product productA = saveProduct(userA, "productA", 10, "This is productA", "/file/downloadFile/spring.png", 1000);
-            Product productB = saveProduct(userA, "productB", 5, "This is productB", "/file/downloadFile/security.png", 300);
+            Product productA = saveProduct(lmood, "니트 블랙", 10, "This is productA", "/file/downloadFile/lmood1-1.jpg", "/file/downloadFile/lmood1-2.jpg", 1000, Product.Category.TOP);
+            Product productB = saveProduct(lmood, "후드 크림", 5, "This is productB", "/file/downloadFile/lmood2-1.jpg", "/file/downloadFile/lmood2-2.jpg", 300, Product.Category.TOP);
 
             addCart(userA, productA, 10);
             addCart(userA, productB, 10);
@@ -68,20 +70,21 @@ public class Init {
         private User saveUser(String username, String password, String name, String email) {
             User user = User.create(username, passwordEncoder.encode(password), name, email);
 
-            User saveUser = userRepository.save(user);
-
-            grantRole(user);
-
-            return saveUser;
+            return userRepository.save(user);
         }
 
-        private void grantRole(User user) {
+        private void grantRoleUser(User user) {
             UserRole userRole = UserRole.create(user, ROLE_USER.name());
             userRoleRepository.save(userRole);
         }
 
-        private Product saveProduct(User userId, String name, Integer price, String description, String thumbnailUrl, Integer stockQuantity) {
-            Product product = Product.create(userId, name, price, description, thumbnailUrl, null, stockQuantity, Product.Category.A.name());
+        private void grantRoleSeller(User user) {
+            UserRole userRole = UserRole.create(user, ROLE_SELLER.name());
+            userRoleRepository.save(userRole);
+        }
+
+        private Product saveProduct(User userId, String name, Integer price, String description, String thumbnailUrl, String imgurl, Integer stockQuantity, Product.Category category) {
+            Product product = Product.create(userId, name, price, description, thumbnailUrl, imgurl, stockQuantity, category.name());
 
             return productRepository.save(product);
         }

@@ -65,7 +65,7 @@ public class Product {
     }
 
     public enum Category {
-        A, B, C, D;
+        TOP, BOTTOM, OUTER, ACCESSORY;
 
         public static Category of(String categoryName) {
             for (Category category : values()) {
