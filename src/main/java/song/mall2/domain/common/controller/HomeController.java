@@ -26,18 +26,18 @@ public class HomeController {
     public ResponseEntity<Page<ProductPageDto>> getHome(@PageableDefault(size = 10, page = 0, sort = "id", direction = DESC) Pageable pageable,
                                                         @RequestParam(value = "searchCategory", required = false) String searchCategory,
                                                         @RequestParam(value = "searchValue", required = false) String searchValue) {
-        if (searchValue == null) {
+        if (searchValue == null && searchCategory == null) {
             return ResponseEntity.ok(productService.findProductList(pageable));
         }
+        if (searchCategory == null) {
+            return ResponseEntity.ok(productService.findProductListBySearch(pageable, searchValue));
+        }
+        if (searchValue == null) {
+            return ResponseEntity.ok(productService.findProductListByCategory(pageable, searchCategory));
+        }
 
-        return ResponseEntity.ok(productService.findProductListBySearch(pageable, searchCategory, searchValue));
+        return ResponseEntity.ok(productService.findProductListBySearchAndCategory(pageable, searchCategory, searchValue));
     }
-
-//    @PostMapping("/")
-//    public String postHome() {
-//
-//        return "home";
-//    }
 
     @PostMapping("/refreshToken")
     public ResponseEntity<AccessTokenResponseDto> postRefreshToken(@RequestBody RefreshRequestDto refreshRequestDto) {

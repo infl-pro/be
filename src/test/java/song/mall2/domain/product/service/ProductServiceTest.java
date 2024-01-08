@@ -35,7 +35,7 @@ class ProductServiceTest {
         saveProductDto.setPrice(10000);
         saveProductDto.setDescription("test description");
         saveProductDto.setStockQuantity(100);
-        saveProductDto.setCategoryName(Product.Category.A.name());
+        saveProductDto.setCategoryName(Product.Category.TOP.name());
 
         assertDoesNotThrow(() -> productService.saveProduct(userAId, saveProductDto));
     }

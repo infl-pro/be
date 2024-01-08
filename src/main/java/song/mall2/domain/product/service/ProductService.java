@@ -97,17 +97,38 @@ public class ProductService {
     public Page<ProductPageDto> findProductList(Pageable pageable) {
         return productRepository.findAll(pageable)
                 .map(product -> new ProductPageDto(
-                        product.getId(), product.getName(), product.getPrice(), product.getThumbnailUrl()
+                        product.getId(), product.getName(), product.getPrice(), product.getThumbnailUrl(),
+                        product.getUser().getName()
                 ));
     }
 
     @Transactional
-    public Page<ProductPageDto> findProductListBySearch(Pageable pageable, String searchCategory, String searchValue) {
-        Product.Category category = Product.Category.of(searchCategory);
-
-        return productRepository.findAllBySearch(pageable, category, searchValue)
+    public Page<ProductPageDto> findProductListBySearch(Pageable pageable, String searchValue) {
+        return productRepository.findAllBySearch(pageable, searchValue)
                 .map(product -> new ProductPageDto(
-                        product.getId(), product.getName(), product.getPrice(), product.getThumbnailUrl()
+                        product.getId(), product.getName(), product.getPrice(), product.getThumbnailUrl(),
+                        product.getUser().getName()
+                ));
+    }
+
+    @Transactional
+    public Page<ProductPageDto> findProductListByCategory(Pageable pageable, String categoryName) {
+        Product.Category category = Product.Category.of(categoryName);
+        return productRepository.findAllByCategory(pageable, category)
+                .map(product -> new ProductPageDto(
+                        product.getId(), product.getName(), product.getPrice(), product.getThumbnailUrl(),
+                        product.getUser().getName()
+                ));
+    }
+
+    @Transactional
+    public Page<ProductPageDto> findProductListBySearchAndCategory(Pageable pageable, String searchValue, String categoryName) {
+        Product.Category category = Product.Category.of(categoryName);
+
+        return productRepository.findAllBySearchAndCategory(pageable, searchValue, category)
+                .map(product -> new ProductPageDto(
+                        product.getId(), product.getName(), product.getPrice(), product.getThumbnailUrl(),
+                        product.getUser().getName()
                 ));
     }
 

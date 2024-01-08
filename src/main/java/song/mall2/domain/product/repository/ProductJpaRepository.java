@@ -21,11 +21,22 @@ public interface ProductJpaRepository extends JpaRepository<Product, Long> {
     Optional<Product> findByIdAndUserId(@Param("productId") Long productId,
                                         @Param("userId") Long userId);
 
+    @EntityGraph(attributePaths = {"user"})
     @Query("select p from Product p")
     Page<Product> findAll(Pageable pageable);
 
-    @Query("select p from Product p where p.category = :category and p.name like %:searchValue%")
+    @EntityGraph(attributePaths = {"user"})
+    @Query("select p from Product p where p.name like %:searchValue%")
     Page<Product> findAllBySearch(Pageable pageable,
-                                  @Param("category") Product.Category category,
                                   @Param("searchValue") String searchValue);
+
+    @EntityGraph(attributePaths = {"user"})
+    @Query("select p from Product p where p.category = :category")
+    Page<Product> findAllByCategory(Pageable pageable,
+                                    @Param("category") Product.Category category);
+
+    @Query("select p from Product p where p.name like %:searchValue% and p.category = :category")
+    Page<Product> findAllBySearchAndCategory(Pageable pageable,
+                                                    @Param("searchValue") String searchValue,
+                                                    @Param("category") Product.Category category);
 }
