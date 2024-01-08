@@ -21,7 +21,7 @@ public class LoginFailureHandler implements AuthenticationFailureHandler {
         response.setContentType("application/json");
 
         Map<String, String> messages = new HashMap<>();
-        messages.put("message", "Invalid Request");
+        messages.put("message", "unauthorized");
 
         response.getWriter().write(objectMapper.writeValueAsString(messages));
     }
