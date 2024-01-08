@@ -6,23 +6,23 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.AuthenticationEntryPoint;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
-public class LoginFailureHandler implements AuthenticationFailureHandler {
+public class AuthenticationEntryPointImpl implements AuthenticationEntryPoint {
     private ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
-    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
+    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType("application/json");
 
         Map<String, String> messages = new HashMap<>();
-        messages.put("message", "login failed");
+        messages.put("message", "unauthorized");
 
         response.getWriter().write(objectMapper.writeValueAsString(messages));
     }
