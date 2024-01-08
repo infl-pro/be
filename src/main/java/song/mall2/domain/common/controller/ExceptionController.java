@@ -7,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import song.mall2.exception.invalid.InvalidException;
-import song.mall2.exception.invalid.exceptions.InvalidRequestException;
 import song.mall2.exception.notfound.NotFoundException;
 import song.mall2.exception.portone.PortoneException;
 
@@ -21,6 +20,7 @@ public class ExceptionController {
     @ExceptionHandler({NotFoundException.class})
     public ResponseEntity<Map<String, String>> notFoundExceptionHandler(NotFoundException exception) {
         Map<String, String> exceptionMap = new HashMap<>();
+        exceptionMap.put("type", exception.getClass().getSimpleName());
         exceptionMap.put("message", exception.getMessage());
 
         return ResponseEntity
@@ -31,6 +31,7 @@ public class ExceptionController {
     @ExceptionHandler({InvalidException.class})
     public ResponseEntity<Map<String, String>> invalidExceptionHandler(InvalidException exception) {
         Map<String, String> exceptionMap = new HashMap<>();
+        exceptionMap.put("type", exception.getClass().getSimpleName());
         exceptionMap.put("message", exception.getMessage());
 
         return ResponseEntity
@@ -41,6 +42,7 @@ public class ExceptionController {
     @ExceptionHandler({PortoneException.class})
     public ResponseEntity<Map<String, String>> portoneExceptionHandler(PortoneException exception) {
         Map<String, String> exceptionMap = new HashMap<>();
+        exceptionMap.put("type", exception.getClass().getSimpleName());
         exceptionMap.put("message", exception.getMessage());
 
         return ResponseEntity
