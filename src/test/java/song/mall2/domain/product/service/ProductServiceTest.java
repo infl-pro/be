@@ -49,20 +49,20 @@ class ProductServiceTest {
     @Test
     void getEditForm() {
         EditProductDto editForm = productService.getEditForm(productAId, userAId);
-        assertThat(editForm.getName())
+        assertThat(editForm.getProductName())
                 .isEqualTo(productService.getProduct(productAId).getProductName());
     }
 
     @Test
     void editProduct() {
         EditProductDto editForm = productService.getEditForm(productAId, userAId);
-        editForm.setName("edit name");
-        editForm.setPrice(1);
+        editForm.setProductName("edit name");
+        editForm.setProductPrice(1);
 
         ProductDto productDto = productService.editProduct(productAId, userAId, editForm);
 
         assertThat(productDto.getProductName())
-                .isEqualTo(editForm.getName());
+                .isEqualTo(editForm.getProductName());
     }
 
 }

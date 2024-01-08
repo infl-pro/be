@@ -30,6 +30,7 @@ public class EmailVerificationToken {
 
     public void updateToken(String token) {
         this.token = token;
+        expiryTime = LocalDateTime.now().plusMinutes(5);
     }
 
     public void verifyEmail() {

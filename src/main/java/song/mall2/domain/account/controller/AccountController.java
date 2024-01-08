@@ -44,9 +44,9 @@ public class AccountController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/verifyEmail/{token}")
-    public ResponseEntity<Object> postVerifyEmailToken(@PathVariable("token") String token) {
-        accountService.verifyEmail(token);
+    @PostMapping("/verifyEmailToken")
+    public ResponseEntity<Object> postVerifyEmailToken(@RequestBody RequestVerifyEmailToken requestVerifyEmailToken) {
+        accountService.verifyEmail(requestVerifyEmailToken.getEmail(), requestVerifyEmailToken.getToken());
 
         return ResponseEntity.ok().build();
     }
@@ -74,7 +74,7 @@ public class AccountController {
 
     @PostMapping("/resetPassword/{token}")
     public ResponseEntity<Object> postResetPassword(@PathVariable("token") String token,
-                                  @RequestBody RequestResetPassword requestResetPassword) {
+                                                    @RequestBody RequestResetPassword requestResetPassword) {
         accountService.resetPassword(token, requestResetPassword.getNewPassword(), requestResetPassword.getConfirmPassword());
 
         return ResponseEntity.ok().build();

@@ -16,13 +16,14 @@ import song.mall2.domain.user.entity.User;
 import song.mall2.domain.user.entity.UserRole;
 import song.mall2.domain.user.repository.UserJpaRepository;
 import song.mall2.domain.user.repository.UserRoleJpaRepository;
-import song.mall2.exception.invalid.exceptions.InvalidEmailTokenException;
+import song.mall2.exception.illegal.exceptions.IllegalTokenException;
+import song.mall2.exception.invalid.exceptions.InvalidTokenException;
 import song.mall2.exception.invalid.exceptions.InvalidRequestException;
 import song.mall2.exception.invalid.exceptions.InvalidUsernameException;
-import song.mall2.exception.notfound.exceptions.EmailTokenNotFoundException;
 import song.mall2.exception.notfound.exceptions.TokenNotFoundException;
 import song.mall2.exception.notfound.exceptions.UserNotFoundException;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -87,6 +88,27 @@ public class AccountService {
     }
 
     @Transactional
+    public void createEmailVerificationToken(String email) {
+        userRepository.findByEmail(email)
+                .ifPresent(user -> {throw new InvalidTokenException("이미 가입된 이메일입니다.");});
+        String token = createEmailToken(email);
+
+        emailService.sendMail(email, "이메일 인증", "token: " + token);
+    }
+
+    @Transactional
+    public void verifyEmail(String email, String token) {
+        EmailVerificationToken emailVerificationToken = emailTokenRepository.findByEmailAndToken(email, token)
+                .orElseThrow(()-> new TokenNotFoundException("인증에 실패했습니다."));
+
+        if (emailVerificationToken.getExpiryTime().isBefore(LocalDateTime.now())) {
+            throw new IllegalTokenException("토큰이 만료되었습니다.");
+        }
+
+        emailVerificationToken.verifyEmail();
+    }
+
+    @Transactional
     public ResponseFindUsername findUsername(String name, String email) {
         User user = userRepository.findByNameAndEmail(name, email)
                 .orElseThrow(() -> new UserNotFoundException("사용자를 찾을 수 없습니다."));
@@ -107,7 +129,11 @@ public class AccountService {
 
     @Transactional
     public void validateRestPasswordToken(String token) {
-        getPasswordToken(token);
+        ResetPasswordToken passwordToken = getPasswordToken(token);
+
+        if (passwordToken.getExpiryTime().isBefore(LocalDateTime.now())) {
+            throw new IllegalTokenException("토큰이 만료되었습니다.");
+        }
     }
 
     @Transactional
@@ -124,28 +150,11 @@ public class AccountService {
         resetPasswordTokenRepository.delete(passwordToken);
     }
 
-    @Transactional
-    public void createEmailVerificationToken(String email) {
-        userRepository.findByEmail(email)
-                .ifPresent(user -> {throw new InvalidEmailTokenException("이미 가입된 이메일입니다.");});
-        String token = createEmailToken(email);
-
-        emailService.sendMail(email, "이메일 인증", "token: " + token);
-    }
-
-    @Transactional
-    public void verifyEmail(String token) {
-        EmailVerificationToken emailVerificationToken = emailTokenRepository.findByToken(token)
-                .orElseThrow(()-> new TokenNotFoundException("인증에 실패했습니다."));
-
-        emailVerificationToken.verifyEmail();
-    }
-
     private void validateEmail(UserSignupDto userSignupDto) {
         EmailVerificationToken emailToken = emailTokenRepository.findByEmail(userSignupDto.getEmail())
-                .orElseThrow(() -> new EmailTokenNotFoundException("이메일 인증을 먼저 시도해주세요."));
+                .orElseThrow(() -> new TokenNotFoundException("이메일 인증을 먼저 시도해주세요."));
         if (!emailToken.isVerified()) {
-            throw new InvalidEmailTokenException("인증되지 않은 이메일 입니다.");
+            throw new InvalidTokenException("인증되지 않은 이메일 입니다.");
         }
     }
 

@@ -29,5 +29,6 @@ public class ResetPasswordToken {
 
     public void updateToken(String token) {
         this.token = token;
+        expiryTime = LocalDateTime.now().plusHours(3);
     }
 }
