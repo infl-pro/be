@@ -74,7 +74,7 @@ public class Init {
             userSignupDto.setName(name);
             userSignupDto.setEmail(email);
 
-            return accountService.saveCommonUser(userSignupDto);
+            return accountService.saveUser(userSignupDto);
         }
 
         private Long saveProduct(Long userId, String name, Integer price, String description, String thumbnailUrl, Integer stockQuantity) {

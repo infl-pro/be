@@ -18,6 +18,8 @@ import song.mall2.domain.user.repository.UserJpaRepository;
 import song.mall2.domain.user.repository.UserRoleJpaRepository;
 import song.mall2.exception.invalid.exceptions.InvalidEmailTokenException;
 import song.mall2.exception.invalid.exceptions.InvalidRequestException;
+import song.mall2.exception.invalid.exceptions.InvalidUsernameException;
+import song.mall2.exception.notfound.exceptions.EmailTokenNotFoundException;
 import song.mall2.exception.notfound.exceptions.TokenNotFoundException;
 import song.mall2.exception.notfound.exceptions.UserNotFoundException;
 
@@ -39,8 +41,10 @@ public class AccountService {
     public static final String AWS_URL = "http://52.79.222.161:8080/account/resetPassword/";
 
     @Transactional
-    public Long saveCommonUser(UserSignupDto userSignupDto) {
+    public Long saveUser(UserSignupDto userSignupDto) {
         validateUsername(userSignupDto.getUsername());
+        validateEmail(userSignupDto);
+
         User user = User.create(userSignupDto.getUsername(), passwordEncoder.encode(userSignupDto.getPassword()), userSignupDto.getName(), userSignupDto.getEmail());
         User saveUser = userRepository.save(user);
 
@@ -50,7 +54,7 @@ public class AccountService {
     }
 
     @Transactional
-    public Long saveSellerUser(SellerSignupDto sellerSignupDto) {
+    public Long saveSeller(SellerSignupDto sellerSignupDto) {
         validateUsername(sellerSignupDto.getUsername());
         User user = User.create(sellerSignupDto.getUsername(), passwordEncoder.encode(sellerSignupDto.getPassword()), sellerSignupDto.getName());
         User saveUser = userRepository.save(user);
@@ -78,7 +82,7 @@ public class AccountService {
         Optional<User> optionalUser = userRepository.findByUsername(username);
 
         if (optionalUser.isPresent()) {
-            throw new InvalidRequestException("이미 가입된 아이디 입니다.");
+            throw new InvalidUsernameException("중복된 아이디입니다.");
         }
     }
 
@@ -135,6 +139,14 @@ public class AccountService {
                 .orElseThrow(()-> new TokenNotFoundException("인증에 실패했습니다."));
 
         emailVerificationToken.verifyEmail();
+    }
+
+    private void validateEmail(UserSignupDto userSignupDto) {
+        EmailVerificationToken emailToken = emailTokenRepository.findByEmail(userSignupDto.getEmail())
+                .orElseThrow(() -> new EmailTokenNotFoundException("이메일 인증을 먼저 시도해주세요."));
+        if (!emailToken.isVerified()) {
+            throw new InvalidEmailTokenException("인증되지 않은 이메일 입니다.");
+        }
     }
 
     private User getUserById(Long userId) {

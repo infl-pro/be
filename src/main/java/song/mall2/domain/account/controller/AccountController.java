@@ -18,14 +18,14 @@ public class AccountController {
 
     @PostMapping("/signupUser")
     public ResponseEntity<Object> postSaveUser(@RequestBody UserSignupDto userSignupDto) {
-        accountService.saveCommonUser(userSignupDto);
+        accountService.saveUser(userSignupDto);
 
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/signupSeller")
     public ResponseEntity<Object> postSaveSeller(@RequestBody SellerSignupDto sellerSignupDto) {
-        accountService.saveSellerUser(sellerSignupDto);
+        accountService.saveSeller(sellerSignupDto);
 
         return ResponseEntity.ok().build();
     }
