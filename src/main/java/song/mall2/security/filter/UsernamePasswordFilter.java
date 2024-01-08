@@ -25,7 +25,7 @@ public class UsernamePasswordFilter extends AbstractAuthenticationProcessingFilt
     private boolean postOnly = true;
 
     public UsernamePasswordFilter(AuthenticationManager authenticationManager, AuthenticationSuccessHandler authenticationSuccessHandler, AuthenticationFailureHandler authenticationFailureHandler) {
-        super("/api/login", authenticationManager);
+        super("/login", authenticationManager);
         setAuthenticationSuccessHandler(authenticationSuccessHandler);
         setAuthenticationFailureHandler(authenticationFailureHandler);
     }
