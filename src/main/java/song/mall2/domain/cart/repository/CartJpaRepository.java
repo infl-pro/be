@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import song.mall2.domain.cart.entity.Cart;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface CartJpaRepository extends JpaRepository<Cart, Long> {
@@ -29,4 +30,6 @@ public interface CartJpaRepository extends JpaRepository<Cart, Long> {
     @Query("delete from Cart c where c.user.id = :userId and c.id = :cartId")
     void deleteCart(@Param("userId") Long userId,
                     @Param("cartId") Long cartId);
+
+    Optional<Cart> findByIdAndUserId(Long cartId, Long userId);
 }

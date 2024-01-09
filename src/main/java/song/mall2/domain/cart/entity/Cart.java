@@ -37,4 +37,8 @@ public class Cart {
     public Integer getAmount() {
         return quantity * product.getPrice();
     }
+
+    public void updateQuantity(Integer quantity) {
+        this.quantity = quantity;
+    }
 }

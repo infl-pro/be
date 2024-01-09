@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import song.mall2.domain.cart.dto.CartDto;
 import song.mall2.domain.cart.dto.CartIdDto;
 import song.mall2.domain.cart.dto.SaveCartDto;
+import song.mall2.domain.cart.dto.UpdateCartQuantity;
 import song.mall2.domain.cart.service.CartService;
 import song.mall2.security.authentication.userprincipal.UserPrincipal;
 
@@ -41,6 +42,14 @@ public class CartController {
     public ResponseEntity<Object> postDeleteCart(@AuthenticationPrincipal UserPrincipal userPrincipal,
                                                  @RequestBody List<CartIdDto> cartIdDtoList) {
         cartService.deleteCart(userPrincipal.getId(), cartIdDtoList);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/updateQuantity")
+    public ResponseEntity<Object> postUpdateQuantity(@AuthenticationPrincipal UserPrincipal userPrincipal,
+                                                     @RequestBody UpdateCartQuantity cartQuantity) {
+        cartService.updateCartQuantity(userPrincipal.getId(), cartQuantity.getCartId(), cartQuantity.getQuantity());
 
         return ResponseEntity.ok().build();
     }

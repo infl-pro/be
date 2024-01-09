@@ -49,4 +49,9 @@ class CartServiceTest {
         assertDoesNotThrow(() -> cartService.deleteCart(userAId, cartIdDtoList));
     }
 
+    @Test
+    void updateCartQuantity() {
+        assertDoesNotThrow(() -> cartService.updateCartQuantity(userAId, cart1Id, 40));
+    }
+
 }

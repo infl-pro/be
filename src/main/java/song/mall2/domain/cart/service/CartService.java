@@ -6,12 +6,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import song.mall2.domain.cart.dto.CartDto;
 import song.mall2.domain.cart.dto.CartIdDto;
+import song.mall2.domain.cart.dto.UpdateCartQuantity;
 import song.mall2.domain.cart.entity.Cart;
 import song.mall2.domain.cart.repository.CartJpaRepository;
 import song.mall2.domain.product.entity.Product;
 import song.mall2.domain.product.repository.ProductJpaRepository;
 import song.mall2.domain.user.entity.User;
 import song.mall2.domain.user.repository.UserJpaRepository;
+import song.mall2.exception.notfound.exceptions.CartNotFoundException;
 import song.mall2.exception.notfound.exceptions.ProductNotFoundException;
 import song.mall2.exception.notfound.exceptions.UserNotFoundException;
 
@@ -53,6 +55,14 @@ public class CartService {
                 .map(CartIdDto::getCartId)
                 .toList();
         cartRepository.deleteAllByIdAndUserId(cartIdList, userId);
+    }
+
+    @Transactional
+    public void updateCartQuantity(Long userId, Long cartId, Integer quantity) {
+        Cart cart = cartRepository.findByIdAndUserId(cartId, userId)
+                .orElseThrow(() -> new CartNotFoundException("장바구니 상품을 찾을 수 없습니다."));
+
+        cart.updateQuantity(quantity);
     }
 
     private Product getProductById(Long productId) {
