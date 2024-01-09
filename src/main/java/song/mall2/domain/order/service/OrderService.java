@@ -65,11 +65,11 @@ public class OrderService {
     @Transactional
     public OrdersDto getOrders(Long userId, Long ordersId) {
         Orders orders = ordersRepository.findByIdAndUserId(ordersId, userId)
-                .orElseThrow(OrdersNotFoundException::new);
+                .orElseThrow(() -> new OrdersNotFoundException("주문을 찾을 수 없습니다."));
 
         List<OrderProductDto> orderProductDtoList = getOrderProductDtoList(orders);
         Payment payment = paymentRepository.findByOrdersId(orders.getId())
-                .orElseThrow(PaymentNotFoundException::new);
+                .orElseThrow(() -> new PaymentNotFoundException("결제 정보를 찾을 수 없습니다."));
 
         return new OrdersDto(orders.getId(), orders.getCreateAt(), orderProductDtoList, payment.getTotalAmount(), payment.getStatus());
     }
@@ -77,12 +77,12 @@ public class OrderService {
     @Transactional
     public OrdersDto cancelOrders(Long ordersId, Long userId) {
         Orders orders = ordersRepository.findByIdAndUserId(ordersId, userId)
-                .orElseThrow(OrdersNotFoundException::new);
+                .orElseThrow(() -> new OrdersNotFoundException("주문을 찾을 수 없습니다."));
 
         List<OrderProductDto> orderProductDtoList = cancelOrderProductList(orders);
 
         Payment payment = paymentRepository.findByOrdersId(orders.getId()).
-                orElseThrow(PaymentNotFoundException::new);
+                orElseThrow(() -> new PaymentNotFoundException("결제 정보를 찾을 수 없습니다."));
         CancellationResponse cancellationResponse = portoneService.cancel(payment.getPaymentId());
 
         payment.cancel(cancellationResponse.getCancellation().getCancelledAt());
@@ -123,7 +123,7 @@ public class OrderService {
         List<OrderProduct> orderProductList = orderProductRepository.findAllByOrdersId(orders.getId());
         orderProductList.forEach(orderProduct -> {
             if (!orderProduct.getStatus().equals(OrderProduct.Status.PAID)) {
-                throw new InvalidRequestException("결제를 취소할 수 없습니다");
+                throw new InvalidRequestException("결제를 취소할 수 없습니다.");
             }
             orderProduct.cancel();
         });

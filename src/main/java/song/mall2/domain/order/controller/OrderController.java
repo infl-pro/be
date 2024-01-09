@@ -33,7 +33,6 @@ public class OrderController {
     @GetMapping
     public ResponseEntity<List<OrderProductListDto>> getOrderList(@AuthenticationPrincipal UserPrincipal userPrincipal) {
         List<OrderProductListDto> orderProductList = orderService.getOrderList(userPrincipal.getId());
-//        List<OrderProductListDto> orderProductList = orderService.getOrderList(1L);
 
         return ResponseEntity.ok(orderProductList);
     }
@@ -42,16 +41,14 @@ public class OrderController {
     public ResponseEntity<OrdersDto> getOrders(@PathVariable("ordersId") Long ordersId,
                                                @AuthenticationPrincipal UserPrincipal userPrincipal) {
         OrdersDto orders = orderService.getOrders(userPrincipal.getId(), ordersId);
-//        OrdersDto orders = orderService.getOrders(1L, ordersId);
 
         return ResponseEntity.ok(orders);
     }
 
     @PostMapping("/{ordersId}/cancel")
     public ResponseEntity<OrdersDto> postCancelOrders(@PathVariable("ordersId") Long ordersId,
-                                 @AuthenticationPrincipal UserPrincipal userPrincipal) {
+                                                      @AuthenticationPrincipal UserPrincipal userPrincipal) {
         OrdersDto ordersDto = orderService.cancelOrders(ordersId, userPrincipal.getId());
-//        OrdersDto ordersDto = orderService.cancelOrders(ordersId, 1L);
 
         return ResponseEntity.ok(ordersDto);
     }
