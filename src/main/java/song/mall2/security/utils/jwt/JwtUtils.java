@@ -2,6 +2,7 @@ package song.mall2.security.utils.jwt;
 
 import io.jsonwebtoken.*;
 import org.springframework.security.core.GrantedAuthority;
+import song.mall2.exception.invalid.exceptions.InvalidJwtException;
 
 import javax.crypto.SecretKey;
 import java.sql.Timestamp;
@@ -50,14 +51,14 @@ public class JwtUtils {
                 .compact();
     }
 
-    public static String validateJwt(String jwt) throws JwtException {
+    public static String validateJwt(String jwt) {
         JwtParser parser = Jwts.parser().verifyWith(KEY).build();
 
-        Jws<Claims> jws = parser.parseSignedClaims(jwt);
-
-        Date expiration = jws.getPayload().getExpiration();
-        if (expiration.before(new Date())) {
-            throw new JwtException("시간 만료");
+        Jws<Claims> jws = null;
+        try {
+            jws = parser.parseSignedClaims(jwt);
+        } catch (ExpiredJwtException e) {
+            throw new InvalidJwtException("시간 만료");
         }
 
         return jws.getPayload().get("username").toString();
@@ -66,13 +67,14 @@ public class JwtUtils {
     public static String refreshJwt(String refreshToken) throws JwtException {
         JwtParser parser = Jwts.parser().verifyWith(REFRESH_KEY).build();
 
-        Jws<Claims> jws = parser.parseSignedClaims(refreshToken);
+        Jws<Claims> jws = null;
+        try {
+            jws = parser.parseSignedClaims(refreshToken);
+        } catch (ExpiredJwtException e) {
+            throw new InvalidJwtException("시간 만료");
+        }
 
         Claims payload = jws.getPayload();
-        Date expiration = payload.getExpiration();
-        if (expiration.before(new Date())) {
-            throw new JwtException("시간 만료");
-        }
 
         Long userId = Long.valueOf(payload.getSubject());
         String username = payload.get("username").toString();
