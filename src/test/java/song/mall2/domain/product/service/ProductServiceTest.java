@@ -1,11 +1,16 @@
 package song.mall2.domain.product.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.TestPropertySource;
+import song.mall2.domain.common.dto.ProductPageDto;
 import song.mall2.domain.product.dto.EditProductDto;
 import song.mall2.domain.product.dto.ProductDto;
 import song.mall2.domain.product.dto.SaveProductDto;
@@ -23,6 +28,8 @@ import static org.junit.jupiter.api.Assertions.*;
 class ProductServiceTest {
     @Autowired
     ProductService productService;
+
+    ObjectMapper objectMapper = new ObjectMapper();
 
     Long userAId = 1L;
     Long productAId = 1L;
@@ -65,4 +72,12 @@ class ProductServiceTest {
                 .isEqualTo(editForm.getProductName());
     }
 
+    @Test
+    void getProductList() throws JsonProcessingException {
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        Page<ProductPageDto> productList = productService.findProductList(pageRequest);
+
+        String page = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(productList);
+        log.info("{}", page);
+    }
 }

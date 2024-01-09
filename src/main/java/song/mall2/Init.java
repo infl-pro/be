@@ -55,6 +55,7 @@ public class Init {
         public void setData() {
             User userA = saveUser("a", "a", "nameA", "test1@email.com");
             grantRoleUser(userA);
+//            grantRoleSeller(userA);
             User lmood = saveUser("b", "b", "엘무드", "lmood@email.com");
             grantRoleSeller(lmood);
 
