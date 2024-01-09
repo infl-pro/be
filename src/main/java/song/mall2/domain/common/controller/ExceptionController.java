@@ -73,4 +73,15 @@ public class ExceptionController {
                 .status(HttpStatus.SERVICE_UNAVAILABLE)
                 .body(exceptionMap);
     }
+
+    @ExceptionHandler({Exception.class})
+    public ResponseEntity<Map<String, String>> exceptionHandler(Exception exception) {
+        Map<String, String> exceptionMap = new HashMap<>();
+        exceptionMap.put("type", exception.getClass().getSimpleName());
+        exceptionMap.put("message", "알수없는 오류가 발생했습니다.");
+
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(exceptionMap);
+    }
 }
