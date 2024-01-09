@@ -41,8 +41,7 @@ public class HomeController {
 
     @PostMapping("/refreshToken")
     public ResponseEntity<AccessTokenResponseDto> postRefreshToken(@RequestBody RefreshRequestDto refreshRequestDto) {
-        String username = JwtUtils.validateRefreshToken(refreshRequestDto.getRefreshToken());
-        String jwt = JwtUtils.createJwt(username);
+        String jwt = JwtUtils.refreshJwt(refreshRequestDto.getRefreshToken());
 
         return ResponseEntity.ok(new AccessTokenResponseDto(jwt));
     }
