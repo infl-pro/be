@@ -16,9 +16,10 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import song.mall2.security.authentication.handler.AuthenticationEntryPointImpl;
-import song.mall2.security.authentication.handler.LoginFailureHandler;
-import song.mall2.security.authentication.handler.LoginSuccessHandler;
+import song.mall2.security.handler.AccessDeniedHandlerImpl;
+import song.mall2.security.handler.AuthenticationEntryPointImpl;
+import song.mall2.security.handler.LoginFailureHandler;
+import song.mall2.security.handler.LoginSuccessHandler;
 import song.mall2.security.authentication.userprincipal.service.UserDetailsServiceImpl;
 import song.mall2.security.filter.JwtFilter;
 import song.mall2.security.filter.LogFilter;
@@ -43,7 +44,8 @@ public class SecurityConfig {
                         .anyRequest().permitAll())
                 .formLogin(login -> login.disable())
                 .exceptionHandling(exceptionHandling -> exceptionHandling
-                        .authenticationEntryPoint(new AuthenticationEntryPointImpl()))
+                        .authenticationEntryPoint(new AuthenticationEntryPointImpl())
+                        .accessDeniedHandler(new AccessDeniedHandlerImpl()))
                 .logout(logout -> logout.disable())
                 .addFilterBefore(new UsernamePasswordFilter(authenticationManager(configuration), authenticationSuccessHandler(), authenticationFailureHandler()), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(new JwtFilter(userDetailsService), UsernamePasswordAuthenticationFilter.class)

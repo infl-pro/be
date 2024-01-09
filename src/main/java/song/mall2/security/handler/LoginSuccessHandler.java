@@ -1,4 +1,4 @@
-package song.mall2.security.authentication.handler;
+package song.mall2.security.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
