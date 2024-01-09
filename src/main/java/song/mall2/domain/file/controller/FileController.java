@@ -16,7 +16,6 @@ import song.mall2.domain.file.dto.UploadFileDto;
 import song.mall2.domain.file.service.FileService;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 
 @Slf4j
 @Controller
