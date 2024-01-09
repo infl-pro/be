@@ -1,5 +1,6 @@
 package song.mall2.domain.account.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -17,14 +18,14 @@ public class AccountController {
     private final AccountService accountService;
 
     @PostMapping("/signupUser")
-    public ResponseEntity<Object> postSaveUser(@RequestBody UserSignupDto userSignupDto) {
+    public ResponseEntity<Object> postSaveUser(@Valid @RequestBody UserSignupDto userSignupDto) {
         accountService.saveUser(userSignupDto);
 
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/signupSeller")
-    public ResponseEntity<Object> postSaveSeller(@RequestBody SellerSignupDto sellerSignupDto) {
+    public ResponseEntity<Object> postSaveSeller(@Valid @RequestBody SellerSignupDto sellerSignupDto) {
         accountService.saveSeller(sellerSignupDto);
 
         return ResponseEntity.ok().build();

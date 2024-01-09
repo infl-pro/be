@@ -1,10 +1,13 @@
 package song.mall2.domain.common.controller;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailException;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import song.mall2.exception.illegal.IllegalException;
@@ -49,6 +52,21 @@ public class ExceptionController {
 
         return ResponseEntity
                 .status(HttpStatus.NOT_ACCEPTABLE)
+                .body(exceptionMap);
+    }
+
+    @ExceptionHandler({MethodArgumentNotValidException.class})
+    public ResponseEntity<Map<String, String>> argumentNotValidExceptionHandler(MethodArgumentNotValidException exception) {
+        Map<String, String> exceptionMap = new HashMap<>();
+        exceptionMap.put("type", exception.getClass().getSimpleName());
+        exception.getBindingResult().getAllErrors().forEach(error -> {
+            String fieldName = ((FieldError) error).getField();
+            String errorMessage = error.getDefaultMessage();
+            exceptionMap.put(fieldName, errorMessage);
+        });
+
+        return ResponseEntity
+                .status(HttpServletResponse.SC_BAD_REQUEST)
                 .body(exceptionMap);
     }
 
