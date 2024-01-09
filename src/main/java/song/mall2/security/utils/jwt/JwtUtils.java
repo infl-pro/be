@@ -58,7 +58,7 @@ public class JwtUtils {
         try {
             jws = parser.parseSignedClaims(jwt);
         } catch (ExpiredJwtException e) {
-            throw new InvalidJwtException("시간 만료");
+            throw new InvalidJwtException("토큰이 만료 되었습니다.");
         }
 
         return jws.getPayload().get("username").toString();
@@ -71,7 +71,7 @@ public class JwtUtils {
         try {
             jws = parser.parseSignedClaims(refreshToken);
         } catch (ExpiredJwtException e) {
-            throw new InvalidJwtException("시간 만료");
+            throw new InvalidJwtException("토큰이 만료 되었습니다.");
         }
 
         Claims payload = jws.getPayload();
