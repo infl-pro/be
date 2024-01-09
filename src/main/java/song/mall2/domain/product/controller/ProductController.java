@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import song.mall2.domain.product.dto.EditProductDto;
 import song.mall2.domain.product.dto.ProductDto;
 import song.mall2.domain.product.dto.SaveProductDto;
+import song.mall2.domain.product.dto.UpdateProductStockQuantityDto;
 import song.mall2.domain.product.service.ProductService;
 import song.mall2.security.authentication.userprincipal.UserPrincipal;
 
@@ -53,5 +54,15 @@ public class ProductController {
         ProductDto productDto = productService.editProduct(productId, userPrincipal.getId(), editProductDto);
 
         return ResponseEntity.ok(productDto);
+    }
+
+    @PostMapping("/{productId}/updateStockQuantity")
+    public ResponseEntity<Object> postUpdateStockQuantity(@PathVariable("productId") Long productId,
+                                                          @AuthenticationPrincipal UserPrincipal userPrincipal,
+                                                          @RequestBody UpdateProductStockQuantityDto stockQuantityDto) {
+        ProductDto productDto = productService.updateStockQuantity(productId, userPrincipal.getId(), stockQuantityDto.getStockQuantity());
+
+//        return ResponseEntity.ok(productDto);
+        return ResponseEntity.ok().build();
     }
 }

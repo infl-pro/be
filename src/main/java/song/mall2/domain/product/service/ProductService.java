@@ -44,8 +44,7 @@ public class ProductService {
 
     @Transactional
     public ProductDto getProduct(Long productId) {
-        Product product = productRepository.findById(productId)
-                .orElseThrow(ProductNotFoundException::new);
+        Product product = findById(productId);
 
         return new ProductDto(product.getId(), product.getName(), product.getPrice(), product.getDescription(),
                 product.getThumbnailUrl(), product.getImgUrl(), product.getStockQuantity(), product.getCategory().name(),
@@ -54,8 +53,7 @@ public class ProductService {
 
     @Transactional
     public ProductDto getProduct(Long productId, Long userId) {
-        Product product = productRepository.findById(productId)
-                .orElseThrow(ProductNotFoundException::new);
+        Product product = findById(productId);
 
         ProductDto productDto = new ProductDto(product.getId(), product.getName(), product.getPrice(), product.getDescription(),
                 product.getThumbnailUrl(), product.getImgUrl(), product.getStockQuantity(), product.getCategory().name(),
@@ -80,11 +78,23 @@ public class ProductService {
 
     @Transactional
     public ProductDto editProduct(Long productId, Long userId, EditProductDto editProductDto) {
-        Product product = productRepository.findByIdAndUserId(productId, userId)
-                .orElseThrow(ProductNotFoundException::new);
+        Product product = findByIdAndUserId(productId, userId);
 
         product.update(editProductDto.getProductName(), editProductDto.getProductPrice(), editProductDto.getProductDescription(),
                 editProductDto.getThumbnailUrl(), editProductDto.getImgUrl(), product.getCategory().name());
+
+        Product saveProduct = productRepository.save(product);
+
+        return new ProductDto(saveProduct.getId(), saveProduct.getName(), saveProduct.getPrice(), saveProduct.getDescription(),
+                saveProduct.getThumbnailUrl(), saveProduct.getImgUrl(), saveProduct.getStockQuantity(), saveProduct.getCategory().name(),
+                saveProduct.getUser().getUsername());
+    }
+
+    @Transactional
+    public ProductDto updateStockQuantity(Long productId, Long userId, Integer stockQuantity) {
+        Product product = findByIdAndUserId(productId, userId);
+
+        product.updateStockQuantity(stockQuantity);
 
         Product saveProduct = productRepository.save(product);
 
@@ -134,12 +144,22 @@ public class ProductService {
 
     private User getUserById(Long userId) {
         return userRepository.findById(userId)
-                .orElseThrow(UserNotFoundException::new);
+                .orElseThrow(() -> new UserNotFoundException("사용자를 찾을 수 없습니다."));
     }
 
     private boolean hasPurchased(List<OrderProduct> orderProductList) {
         return !orderProductList.isEmpty() &&
                 orderProductList.stream()
                         .noneMatch(orderProduct -> OrderProduct.Status.CANCELLED.equals(orderProduct.getStatus()));
+    }
+
+    private Product findById(Long productId) {
+        return productRepository.findById(productId)
+                .orElseThrow(() -> new ProductNotFoundException("상품을 찾을 수 없습니다."));
+    }
+
+    private Product findByIdAndUserId(Long productId, Long userId) {
+        return productRepository.findByIdAndUserId(productId, userId)
+                .orElseThrow(() -> new ProductNotFoundException("상품을 찾을 수 없습니다."));
     }
 }

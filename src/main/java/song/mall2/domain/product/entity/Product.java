@@ -64,6 +64,10 @@ public class Product {
         this.category = Category.of(categoryName);
     }
 
+    public void updateStockQuantity(Integer stockQuantity) {
+        this.stockQuantity = stockQuantity;
+    }
+
     public enum Category {
         TOP, BOTTOM, OUTER, ACCESSORY;
 
