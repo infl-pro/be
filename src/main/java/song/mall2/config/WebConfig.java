@@ -13,7 +13,6 @@ import song.mall2.interceptor.LogInterceptor;
 @Configuration
 @RequiredArgsConstructor
 public class WebConfig implements WebMvcConfigurer{
-    private final LogInterceptor logInterceptor;
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
@@ -26,7 +25,7 @@ public class WebConfig implements WebMvcConfigurer{
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(logInterceptor)
+        registry.addInterceptor(new LogInterceptor())
                 .order(1)
                 .addPathPatterns("/**")
                 .excludePathPatterns("/css/**", "/*.ico", "/error");
