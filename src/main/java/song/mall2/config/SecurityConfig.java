@@ -25,6 +25,8 @@ import song.mall2.security.filter.JwtFilter;
 import song.mall2.security.filter.LogFilter;
 import song.mall2.security.filter.UsernamePasswordFilter;
 
+import static org.springframework.security.web.util.matcher.RegexRequestMatcher.regexMatcher;
+
 @Slf4j
 @Configuration
 @EnableWebSecurity
@@ -40,7 +42,13 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/cart/**").authenticated()
-                        .requestMatchers("/product/save").hasRole("SELLER")
+                        .requestMatchers(regexMatcher("^/product/[0-9]+$")).permitAll()
+                        .requestMatchers("/product/**").authenticated()
+                        .requestMatchers("/product/**").hasRole("SELLER")
+                        .requestMatchers("/payment/callback").authenticated()
+                        .requestMatchers("/orders/carttest").permitAll()
+                        .requestMatchers("/orders/**").authenticated()
+                        .requestMatchers("/user/**").authenticated()
                         .anyRequest().permitAll())
                 .formLogin(login -> login.disable())
                 .exceptionHandling(exceptionHandling -> exceptionHandling
