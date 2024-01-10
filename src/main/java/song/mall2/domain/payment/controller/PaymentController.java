@@ -40,8 +40,7 @@ public class PaymentController {
     public ResponseEntity<OrdersIdDto> postCallback(@RequestBody Callback callback,
                                                     @AuthenticationPrincipal UserPrincipal userPrincipal) {
         log.info("callback: {}", callback);
-//        OrdersIdDto ordersId = paymentService.getOrdersId(userPrincipal.getId(), callback.getPaymentId());
-        OrdersIdDto ordersId = paymentService.getOrdersId(1L, callback.getPaymentId());
+        OrdersIdDto ordersId = paymentService.getOrdersId(userPrincipal.getId(), callback.getPaymentId());
 
         return ResponseEntity.ok(ordersId);
     }
