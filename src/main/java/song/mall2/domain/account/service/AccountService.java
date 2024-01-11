@@ -36,10 +36,6 @@ public class AccountService {
     private final UserRoleJpaRepository userRoleRepository;
     private final ResetPasswordTokenJpaRepository resetPasswordTokenRepository;
     private final EmailTokenJpaRepository emailTokenRepository;
-    private final EmailService emailService;
-
-    public static final String LOCALHOST_URL = "localhost:8080/account/resetPassword/";
-    public static final String AWS_URL = "http://52.79.222.161:8080/account/resetPassword/";
 
     @Transactional
     public Long saveUser(UserSignupDto userSignupDto) {
@@ -88,18 +84,16 @@ public class AccountService {
     }
 
     @Transactional
-    public void createEmailVerificationToken(String email) {
+    public String createEmailVerificationToken(String email) {
         userRepository.findByEmail(email)
                 .ifPresent(user -> {throw new InvalidTokenException("이미 가입된 이메일입니다.");});
-        String token = createEmailToken(email);
-
-        emailService.sendMail(email, "이메일 인증", "token: " + token);
+        return createEmailToken(email);
     }
 
     @Transactional
     public void verifyEmail(String email, String token) {
         EmailVerificationToken emailVerificationToken = emailTokenRepository.findByEmailAndToken(email, token)
-                .orElseThrow(()-> new TokenNotFoundException("인증에 실패했습니다."));
+                .orElseThrow(()-> new TokenNotFoundException("토큰을 찾을 수 없습니다."));
 
         if (emailVerificationToken.getExpiryTime().isBefore(LocalDateTime.now())) {
             throw new IllegalTokenException("토큰이 만료되었습니다.");
@@ -117,14 +111,11 @@ public class AccountService {
     }
 
     @Transactional
-    public void createResetPasswordToken(String username, String name, String email) {
+    public ResetPasswordToken createResetPasswordToken(String username, String name, String email) {
         userRepository.findByUsernameAndNameAndEmail(username, name, email)
                 .orElseThrow(() -> new UserNotFoundException("사용자를 찾을 수 없습니다."));
 
-        ResetPasswordToken passwordToken = createPasswordToken(email);
-
-        emailService.sendMail(email, "비밀번호 초기화",
-                AWS_URL + passwordToken.getToken());
+        return createPasswordToken(email);
     }
 
     @Transactional
