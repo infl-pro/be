@@ -70,7 +70,7 @@ public class ProductService {
     @Transactional
     public EditProductDto getEditForm(Long productId, Long userId) {
         Product product = productRepository.findByIdAndUserId(productId, userId)
-                .orElseThrow(ProductNotFoundException::new);
+                .orElseThrow(() -> new ProductNotFoundException("상품을 찾을 수 없습니다."));
 
         return new EditProductDto(product.getName(), product.getPrice(), product.getDescription(),
                 product.getThumbnailUrl(), product.getImgUrl(), product.getCategory().name());
