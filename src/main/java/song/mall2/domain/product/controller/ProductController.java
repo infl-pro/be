@@ -39,7 +39,7 @@ public class ProductController {
         return ResponseEntity.ok(productService.getProduct(productId, userPrincipal.getId()));
     }
 
-    @PostMapping("/{productId}/editForm")
+    @GetMapping("/{productId}/editForm")
     public ResponseEntity<EditProductDto> postEditProductForm(@PathVariable("productId") Long productId,
                                                               @AuthenticationPrincipal UserPrincipal userPrincipal) {
         EditProductDto editForm = productService.getEditForm(productId, userPrincipal.getId());
@@ -47,7 +47,7 @@ public class ProductController {
         return ResponseEntity.ok(editForm);
     }
 
-    @PostMapping("/{productId}/edit")
+    @PatchMapping("/{productId}/edit")
     public ResponseEntity<ProductDto> postEditProduct(@PathVariable("productId") Long productId,
                                                       @AuthenticationPrincipal UserPrincipal userPrincipal,
                                                       @RequestBody EditProductDto editProductDto) {
@@ -56,7 +56,7 @@ public class ProductController {
         return ResponseEntity.ok(productDto);
     }
 
-    @PostMapping("/{productId}/updateStockQuantity")
+    @PatchMapping("/{productId}/updateStockQuantity")
     public ResponseEntity<Object> postUpdateStockQuantity(@PathVariable("productId") Long productId,
                                                           @AuthenticationPrincipal UserPrincipal userPrincipal,
                                                           @RequestBody UpdateProductStockQuantityDto stockQuantityDto) {

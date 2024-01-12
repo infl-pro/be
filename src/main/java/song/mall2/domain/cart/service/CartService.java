@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import song.mall2.domain.cart.dto.CartDto;
 import song.mall2.domain.cart.dto.CartIdDto;
-import song.mall2.domain.cart.dto.UpdateCartQuantity;
 import song.mall2.domain.cart.entity.Cart;
 import song.mall2.domain.cart.repository.CartJpaRepository;
 import song.mall2.domain.product.entity.Product;

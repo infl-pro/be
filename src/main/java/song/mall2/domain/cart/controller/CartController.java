@@ -38,7 +38,7 @@ public class CartController {
         return ResponseEntity.ok(cartDto);
     }
 
-    @PostMapping("/delete")
+    @DeleteMapping("/delete")
     public ResponseEntity<Object> postDeleteCart(@AuthenticationPrincipal UserPrincipal userPrincipal,
                                                  @RequestBody List<CartIdDto> cartIdDtoList) {
         cartService.deleteCart(userPrincipal.getId(), cartIdDtoList);
@@ -46,7 +46,7 @@ public class CartController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/updateQuantity")
+    @PatchMapping("/updateQuantity")
     public ResponseEntity<Object> postUpdateQuantity(@AuthenticationPrincipal UserPrincipal userPrincipal,
                                                      @RequestBody UpdateCartQuantity cartQuantity) {
         cartService.updateCartQuantity(userPrincipal.getId(), cartQuantity.getCartId(), cartQuantity.getQuantity());

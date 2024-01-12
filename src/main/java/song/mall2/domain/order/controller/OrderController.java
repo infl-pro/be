@@ -22,7 +22,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OrderController {
     private final OrderService orderService;
-    @PostMapping("/form")
+    @GetMapping("/form")
     public ResponseEntity<OrderFormDto> getOrderForm(@AuthenticationPrincipal UserPrincipal userPrincipal,
                                                      @RequestBody List<CartIdDto> cartIdList) {
         OrderFormDto orderRequest = orderService.getOrderForm(userPrincipal.getId(), cartIdList);

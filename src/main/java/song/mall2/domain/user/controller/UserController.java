@@ -27,7 +27,7 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
-    @PostMapping("/updateProfile")
+    @PatchMapping("/updateProfile")
     public ResponseEntity<UserDto> postUpdateProfile(@AuthenticationPrincipal UserPrincipal userPrincipal,
                                                      @RequestBody RequestUpdateProfile requestUpdateProfile) {
         UserDto user = userService.updateProfile(userPrincipal.getId(), requestUpdateProfile.getProfileUrl());
@@ -35,7 +35,7 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
-    @PostMapping("/updatePassword")
+    @PatchMapping("/updatePassword")
     public ResponseEntity<UserDto> postUpdatePassword(@AuthenticationPrincipal UserPrincipal userPrincipal,
                                                       @RequestBody RequestUpdatePassword requestUpdatePassword) {
         UserDto user = userService.updatePassword(userPrincipal.getId(), requestUpdatePassword.getOriginalPassword(), requestUpdatePassword.getNewPassword(), requestUpdatePassword.getConfirmNewPassword());
