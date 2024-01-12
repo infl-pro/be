@@ -24,7 +24,7 @@ class ProductJpaRepositoryTest {
     ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
-    void findAll() throws JsonProcessingException {
+    void findAll() {
         PageRequest pageRequest = PageRequest.of(0, 10);
         Page<Product> productPage = productRepository.findAll(pageRequest);
 

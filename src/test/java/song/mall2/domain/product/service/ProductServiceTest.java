@@ -32,6 +32,7 @@ class ProductServiceTest {
     ObjectMapper objectMapper = new ObjectMapper();
 
     Long userAId = 1L;
+    Long lmoodId = 2L;
     Long productAId = 1L;
 
     @DisplayName("상품 등록")
@@ -55,18 +56,18 @@ class ProductServiceTest {
 
     @Test
     void getEditForm() {
-        EditProductDto editForm = productService.getEditForm(productAId, userAId);
+        EditProductDto editForm = productService.getEditForm(productAId, lmoodId);
         assertThat(editForm.getProductName())
                 .isEqualTo(productService.getProduct(productAId).getProductName());
     }
 
     @Test
     void editProduct() {
-        EditProductDto editForm = productService.getEditForm(productAId, userAId);
+        EditProductDto editForm = productService.getEditForm(productAId, lmoodId);
         editForm.setProductName("edit name");
         editForm.setProductPrice(1);
 
-        ProductDto productDto = productService.editProduct(productAId, userAId, editForm);
+        ProductDto productDto = productService.editProduct(productAId, lmoodId, editForm);
 
         assertThat(productDto.getProductName())
                 .isEqualTo(editForm.getProductName());
