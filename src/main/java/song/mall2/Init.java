@@ -56,16 +56,22 @@ public class Init {
             User userA = saveUser("a", "a", "nameA", "test1@email.com");
             grantRoleUser(userA);
 //            grantRoleSeller(userA);
-            User lmood = saveUser("b", "b", "엘무드", "lmood@email.com");
-            grantRoleSeller(lmood);
+            User lmood = saveSeller("lmood", "lmood", "엘무드", null);
+            User lkmost = saveSeller("lkmost", "lkmost", "라이크 더 모스트", null);
+            User matinkim = saveSeller("mtkim", "mtkim", "마뗑킴", null);
+            User eightseconds = saveSeller("eightseconds", "eightseconds", "8seconds", null);
 
-            Product productA = saveProduct(lmood, "니트 블랙", 10, "This is productA", "/file/downloadFile/lmood1-1.jpg", "/file/downloadFile/lmood1-2.jpg", 1000, Product.Category.TOP);
-            Product productB = saveProduct(lmood, "후드 크림", 5, "This is productB", "/file/downloadFile/lmood2-1.jpg", "/file/downloadFile/lmood2-2.jpg", 300, Product.Category.TOP);
+            Product lmoodP1 = saveProduct(lmood, "화란 니트 인디핑크", 100, "엘무드 니트 인디핑크", "/file/downloadFile/lmood1-1.jpg", "/file/downloadFile/lmood1-2.jpg", 100, Product.Category.TOP);
+            Product lmoodP2 = saveProduct(lmood, "후드 크림", 300, "엘무드 후드 크림", "/file/downloadFile/lmood2-1.jpg", "/file/downloadFile/lmood2-2.jpg", 200, Product.Category.TOP);
+            Product lmoodP3 = saveProduct(lmood, "맨투맨 드라이 라벤더", 200, "엘무드 맨투맨 드라이 라벤더", "/file/downloadFile/lmood3-1.jpg", "/file/downloadFile/lmood3-2.jpg", 100, Product.Category.TOP);
+            Product lmoodP4 = saveProduct(lmood, "화란 니트 칸초", 100, "엘무드 니트 칸초", "/file/downloadFile/lmood4-1.jpg", "/file/downloadFile/lmood4-2.jpg", 100, Product.Category.TOP);
+            Product lmoodP5 = saveProduct(lmood, "화란 가디건 블랙", 250, "엘무드 가디건 블랙", "/file/downloadFile/lmood5-1.jpg", "/file/downloadFile/lmood5-2.jpg", 150, Product.Category.OUTER);
 
-            addCart(userA, productA, 10);
-            addCart(userA, productB, 10);
 
-            saveOrder(userA, productA, 10);
+            addCart(userA, lmoodP1, 10);
+            addCart(userA, lmoodP2, 10);
+
+            saveOrder(userA, lmoodP1, 10);
         }
 
         private User saveUser(String username, String password, String name, String email) {
@@ -82,6 +88,14 @@ public class Init {
         private void grantRoleSeller(User user) {
             UserRole userRole = UserRole.create(user, ROLE_SELLER.name());
             userRoleRepository.save(userRole);
+        }
+
+        private User saveSeller(String username, String password, String name, String email) {
+            User user = saveUser(username, password, name, email);
+
+            grantRoleSeller(user);
+
+            return user;
         }
 
         private Product saveProduct(User userId, String name, Integer price, String description, String thumbnailUrl, String imgurl, Integer stockQuantity, Product.Category category) {
