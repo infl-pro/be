@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Multiple Files Upload</title>
+</head>
+<body>
+<h2>Multiple Files Upload</h2>
+<form method="POST" action="/file/uploadFile" enctype="multipart/form-data">
+    <input type="file" name="files" multiple required>
+    <br><br>
+    <button type="submit">Upload</button>
+</form>
+</body>
+</html>
