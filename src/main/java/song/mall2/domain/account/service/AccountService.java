@@ -6,8 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import song.mall2.domain.account.dto.ResponseFindUsername;
-import song.mall2.domain.account.dto.SellerSignupDto;
-import song.mall2.domain.account.dto.UserSignupDto;
+import song.mall2.domain.account.dto.SignupDto;
 import song.mall2.domain.account.entity.EmailVerificationToken;
 import song.mall2.domain.account.entity.ResetPasswordToken;
 import song.mall2.domain.account.repository.EmailTokenJpaRepository;
@@ -38,25 +37,14 @@ public class AccountService {
     private final EmailTokenJpaRepository emailTokenRepository;
 
     @Transactional
-    public Long saveUser(UserSignupDto userSignupDto) {
-        validateUsername(userSignupDto.getUsername());
-        validateEmail(userSignupDto);
+    public Long saveUser(SignupDto signupDto) {
+        validateUsername(signupDto.getUsername());
+        validateEmail(signupDto);
 
-        User user = User.create(userSignupDto.getUsername(), passwordEncoder.encode(userSignupDto.getPassword()), userSignupDto.getName(), userSignupDto.getEmail());
+        User user = User.create(signupDto.getUsername(), passwordEncoder.encode(signupDto.getPassword()), signupDto.getName(), signupDto.getEmail());
         User saveUser = userRepository.save(user);
 
         grantRole(saveUser.getId(), UserRole.Role.ROLE_USER.name());
-
-        return saveUser.getId();
-    }
-
-    @Transactional
-    public Long saveSeller(SellerSignupDto sellerSignupDto) {
-        validateUsername(sellerSignupDto.getUsername());
-        User user = User.create(sellerSignupDto.getUsername(), passwordEncoder.encode(sellerSignupDto.getPassword()), sellerSignupDto.getName());
-        User saveUser = userRepository.save(user);
-
-        grantRole(saveUser.getId(), UserRole.Role.ROLE_SELLER.name());
 
         return saveUser.getId();
     }
@@ -141,8 +129,8 @@ public class AccountService {
         resetPasswordTokenRepository.delete(passwordToken);
     }
 
-    private void validateEmail(UserSignupDto userSignupDto) {
-        EmailVerificationToken emailToken = emailTokenRepository.findByEmail(userSignupDto.getEmail())
+    private void validateEmail(SignupDto signupDto) {
+        EmailVerificationToken emailToken = emailTokenRepository.findByEmail(signupDto.getEmail())
                 .orElseThrow(() -> new TokenNotFoundException("이메일 인증을 먼저 시도해주세요."));
         if (!emailToken.isVerified()) {
             throw new InvalidTokenException("인증되지 않은 이메일 입니다.");

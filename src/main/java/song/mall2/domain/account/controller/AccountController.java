@@ -23,16 +23,9 @@ public class AccountController {
     public static final String LOCALHOST_URL = "localhost:8080/account/resetPassword/";
     public static final String AWS_URL = "http://52.79.222.161:8080/account/resetPassword/";
 
-    @PostMapping("/signupUser")
-    public ResponseEntity<Object> postSaveUser(@Valid @RequestBody UserSignupDto userSignupDto) {
-        accountService.saveUser(userSignupDto);
-
-        return ResponseEntity.ok().build();
-    }
-
-    @PostMapping("/signupSeller")
-    public ResponseEntity<Object> postSaveSeller(@Valid @RequestBody SellerSignupDto sellerSignupDto) {
-        accountService.saveSeller(sellerSignupDto);
+    @PostMapping("/signup")
+    public ResponseEntity<Object> postSaveUser(@Valid @RequestBody SignupDto signupDto) {
+        accountService.saveUser(signupDto);
 
         return ResponseEntity.ok().build();
     }

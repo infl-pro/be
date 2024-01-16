@@ -11,7 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import song.mall2.domain.account.dto.RequestValidateUsername;
-import song.mall2.domain.account.dto.UserSignupDto;
+import song.mall2.domain.account.dto.SignupDto;
 import song.mall2.domain.account.entity.EmailVerificationToken;
 import song.mall2.domain.account.repository.EmailTokenJpaRepository;
 
@@ -45,7 +45,7 @@ class AccountControllerTest {
 
     @Test
     void signupUser() throws Exception {
-        UserSignupDto signupDto = new UserSignupDto();
+        SignupDto signupDto = new SignupDto();
         signupDto.setUsername("testUsername");
         signupDto.setPassword("testPassword");
         signupDto.setName("testName");

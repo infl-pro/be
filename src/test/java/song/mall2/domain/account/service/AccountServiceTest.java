@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
-import song.mall2.domain.account.dto.UserSignupDto;
+import song.mall2.domain.account.dto.SignupDto;
 import song.mall2.domain.account.entity.EmailVerificationToken;
 import song.mall2.domain.account.repository.EmailTokenJpaRepository;
 import song.mall2.domain.user.entity.User;
@@ -39,7 +39,7 @@ class AccountServiceTest {
 
     @Test
     void saveUser() {
-        UserSignupDto signupDto = new UserSignupDto();
+        SignupDto signupDto = new SignupDto();
         signupDto.setUsername("testUser");
         signupDto.setPassword("testPwd");
         signupDto.setName("testName");

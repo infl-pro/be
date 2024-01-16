@@ -11,7 +11,7 @@ import lombok.Setter;
 @Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserSignupDto {
+public class SignupDto {
     @NotBlank
     @Size(min = 8, max = 16)
     private String username;
