@@ -46,7 +46,7 @@ public class JwtFilter extends OncePerRequestFilter {
             SecurityContext context = SecurityContextHolder.getContext();
             context.setAuthentication(authenticationToken);
         } catch (InvalidJwtException e) {
-            doResponse(response, HttpServletResponse.SC_BAD_REQUEST, "토큰이 만료되었습니다.");
+            doResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "토큰이 만료되었습니다.");
             return;
         } catch (JwtException e) {
             doResponse(response, HttpServletResponse.SC_BAD_REQUEST, "jwt exception");
