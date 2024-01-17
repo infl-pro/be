@@ -46,26 +46,27 @@ public class JwtFilter extends OncePerRequestFilter {
             SecurityContext context = SecurityContextHolder.getContext();
             context.setAuthentication(authenticationToken);
         } catch (InvalidJwtException e) {
-            doResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "토큰이 만료되었습니다.");
+            doResponse(response, HttpServletResponse.SC_UNAUTHORIZED, e, "토큰이 만료되었습니다.");
             return;
         } catch (JwtException e) {
-            doResponse(response, HttpServletResponse.SC_BAD_REQUEST, "jwt exception");
+            doResponse(response, HttpServletResponse.SC_BAD_REQUEST, e, "jwt exception");
             return;
         } catch (Exception e) {
-            doResponse(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "알 수 없는 에러가 발생했습니다.");
+            doResponse(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e, "알 수 없는 에러가 발생했습니다.");
             return;
         }
 
         filterChain.doFilter(request, response);
     }
 
-    private void doResponse(HttpServletResponse response, int status, String message) throws IOException {
+    private void doResponse(HttpServletResponse response, int status, Exception e, String message) throws IOException {
         SecurityContextHolder.clearContext();
 
         response.setStatus(status);
         response.setContentType("application/json");
 
         Map<String, String> messages = new HashMap<>();
+        messages.put("type", e.getClass().getSimpleName());
         messages.put("message", message);
 
         response.getWriter().write(objectMapper.writeValueAsString(messages));

@@ -22,6 +22,7 @@ public class AccessDeniedHandlerImpl implements AccessDeniedHandler {
         response.setContentType("application/json");
 
         Map<String, String> messages = new HashMap<>();
+        messages.put("type", accessDeniedException.getClass().getSimpleName());
         messages.put("message", "forbidden");
 
         response.getWriter().write(objectMapper.writeValueAsString(messages));

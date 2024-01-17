@@ -22,6 +22,7 @@ public class AuthenticationEntryPointImpl implements AuthenticationEntryPoint {
         response.setContentType("application/json");
 
         Map<String, String> messages = new HashMap<>();
+        messages.put("type", authException.getClass().getSimpleName());
         messages.put("message", "unauthorized");
 
         response.getWriter().write(objectMapper.writeValueAsString(messages));
