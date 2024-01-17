@@ -45,7 +45,7 @@ public class UsernamePasswordFilter extends AbstractAuthenticationProcessingFilt
             String username = usernamePassword.getUsername();
             String password = usernamePassword.getPassword();
 
-            if (username == null || password == null) {
+            if (username.isBlank() || password.isBlank()) {
                 throw new AuthenticationServiceException("usernamePassword is miss");
             }
 
