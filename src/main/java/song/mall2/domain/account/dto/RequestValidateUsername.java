@@ -1,5 +1,7 @@
 package song.mall2.domain.account.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,5 +11,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RequestValidateUsername {
+    @NotBlank(message = "아이디를 입력해주세요.")
+    @Size(min = 8, max = 16, message = "아이디의 길이는 8 ~ 16자 사이여야 합니다.")
     private String username;
 }

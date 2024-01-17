@@ -33,14 +33,14 @@ public class AccountController {
     }
 
     @PostMapping("/validateUsername")
-    public ResponseEntity<Object> validateUsername(@RequestBody RequestValidateUsername requestValidateUsername) {
+    public ResponseEntity<Object> validateUsername(@Valid @RequestBody RequestValidateUsername requestValidateUsername) {
         accountService.validateUsername(requestValidateUsername.getUsername());
 
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/verifyEmail")
-    public ResponseEntity<Object> postVerifyEmail(@RequestBody RequestVerifyEmail requestVerifyEmail) {
+    public ResponseEntity<Object> postVerifyEmail(@Valid @RequestBody RequestVerifyEmail requestVerifyEmail) {
         String token = accountService.createEmailVerificationToken(requestVerifyEmail.getEmail());
 
         emailService.sendMail(requestVerifyEmail.getEmail(), "이메일 인증", "token: " + token);
