@@ -11,6 +11,8 @@ import song.mall2.domain.account.entity.ResetPasswordToken;
 import song.mall2.domain.account.service.AccountService;
 import song.mall2.domain.account.service.EmailService;
 
+import java.net.URI;
+
 @Slf4j
 @Controller
 @ResponseBody
@@ -27,7 +29,7 @@ public class AccountController {
     public ResponseEntity<Object> postSaveUser(@Valid @RequestBody SignupDto signupDto) {
         accountService.saveUser(signupDto);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.created(URI.create("/login")).build();
     }
 
     @PostMapping("/validateUsername")

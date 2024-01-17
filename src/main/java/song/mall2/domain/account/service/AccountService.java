@@ -16,6 +16,7 @@ import song.mall2.domain.user.entity.UserRole;
 import song.mall2.domain.user.repository.UserJpaRepository;
 import song.mall2.domain.user.repository.UserRoleJpaRepository;
 import song.mall2.exception.illegal.exceptions.IllegalTokenException;
+import song.mall2.exception.invalid.exceptions.InvalidPasswordException;
 import song.mall2.exception.invalid.exceptions.InvalidTokenException;
 import song.mall2.exception.invalid.exceptions.InvalidRequestException;
 import song.mall2.exception.invalid.exceptions.InvalidUsernameException;
@@ -39,6 +40,7 @@ public class AccountService {
     @Transactional
     public Long saveUser(SignupDto signupDto) {
         validateUsername(signupDto.getUsername());
+        validatePassword(signupDto.getPassword(), signupDto.getConfirmPassword());
         validateEmail(signupDto);
 
         User user = User.create(signupDto.getUsername(), passwordEncoder.encode(signupDto.getPassword()), signupDto.getName(), signupDto.getEmail());
@@ -47,6 +49,12 @@ public class AccountService {
         grantRole(saveUser.getId(), UserRole.Role.ROLE_USER.name());
 
         return saveUser.getId();
+    }
+
+    private void validatePassword(String password, String confirmPassword) {
+        if (!password.equals(confirmPassword)) {
+            throw new InvalidPasswordException("비밀번호를 다시 입력해주세요.");
+        }
     }
 
     @Transactional
