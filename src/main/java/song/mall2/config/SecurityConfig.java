@@ -44,7 +44,6 @@ public class SecurityConfig {
                         .requestMatchers("/cart/**").authenticated()
                         .requestMatchers(regexMatcher("^/product/[0-9]+$")).permitAll()
                         .requestMatchers("/product/**").authenticated()
-                        .requestMatchers("/product/**").hasRole("SELLER")
                         .requestMatchers("/payment/callback").authenticated()
                         .requestMatchers("/orders/carttest").permitAll()
                         .requestMatchers("/orders/**").authenticated()

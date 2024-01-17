@@ -56,10 +56,10 @@ public class Init {
             User userA = saveUser("a", "a", "nameA", "test1@email.com");
             grantRoleUser(userA);
 //            grantRoleSeller(userA);
-            User lmood = saveSeller("lmood", "lmood", "엘무드", null);
-            User lkmost = saveSeller("lkmost", "lkmost", "라이크 더 모스트", null);
-            User matinkim = saveSeller("mtkim", "mtkim", "마뗑킴", null);
-            User eightseconds = saveSeller("eightseconds", "eightseconds", "8seconds", null);
+            User lmood = saveUser("lmood", "lmood", "엘무드", null);
+            User lkmost = saveUser("lkmost", "lkmost", "라이크 더 모스트", null);
+            User matinkim = saveUser("mtkim", "mtkim", "마뗑킴", null);
+            User eightseconds = saveUser("eightseconds", "eightseconds", "8seconds", null);
 
             Product lmoodP1 = saveProduct(lmood, "화란 니트 인디핑크", 100, "엘무드 니트 인디핑크", "/file/downloadFile/lmood1-1.jpg", "/file/downloadFile/lmood1-2.jpg", 100, Product.Category.TOP);
             Product lmoodP2 = saveProduct(lmood, "후드 크림", 300, "엘무드 후드 크림", "/file/downloadFile/lmood2-1.jpg", "/file/downloadFile/lmood2-2.jpg", 200, Product.Category.TOP);
@@ -83,19 +83,6 @@ public class Init {
         private void grantRoleUser(User user) {
             UserRole userRole = UserRole.create(user, ROLE_USER.name());
             userRoleRepository.save(userRole);
-        }
-
-        private void grantRoleSeller(User user) {
-            UserRole userRole = UserRole.create(user, ROLE_SELLER.name());
-            userRoleRepository.save(userRole);
-        }
-
-        private User saveSeller(String username, String password, String name, String email) {
-            User user = saveUser(username, password, name, email);
-
-            grantRoleSeller(user);
-
-            return user;
         }
 
         private Product saveProduct(User userId, String name, Integer price, String description, String thumbnailUrl, String imgurl, Integer stockQuantity, Product.Category category) {
