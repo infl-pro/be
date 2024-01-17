@@ -56,14 +56,17 @@ public class ExceptionController {
     }
 
     @ExceptionHandler({MethodArgumentNotValidException.class})
-    public ResponseEntity<Map<String, String>> argumentNotValidExceptionHandler(MethodArgumentNotValidException exception) {
-        Map<String, String> exceptionMap = new HashMap<>();
-        exceptionMap.put("type", exception.getClass().getSimpleName());
+    public ResponseEntity<Map<String, Object>> argumentNotValidExceptionHandler(MethodArgumentNotValidException exception) {
+        Map<String, String> fieldExceptionMap = new HashMap<>();
         exception.getBindingResult().getAllErrors().forEach(error -> {
             String fieldName = ((FieldError) error).getField();
             String errorMessage = error.getDefaultMessage();
-            exceptionMap.put(fieldName, errorMessage);
+            fieldExceptionMap.put(fieldName, errorMessage);
         });
+
+        Map<String, Object> exceptionMap = new HashMap<>();
+        exceptionMap.put("type", exception.getClass().getSimpleName());
+        exceptionMap.put("message", fieldExceptionMap);
 
         return ResponseEntity
                 .status(HttpServletResponse.SC_BAD_REQUEST)
