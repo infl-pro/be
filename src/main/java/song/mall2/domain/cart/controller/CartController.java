@@ -47,10 +47,10 @@ public class CartController {
     }
 
     @PatchMapping("/updateQuantity")
-    public ResponseEntity<Object> postUpdateQuantity(@AuthenticationPrincipal UserPrincipal userPrincipal,
+    public ResponseEntity<CartDto> postUpdateQuantity(@AuthenticationPrincipal UserPrincipal userPrincipal,
                                                      @RequestBody UpdateCartQuantity cartQuantity) {
-        cartService.updateCartQuantity(userPrincipal.getId(), cartQuantity.getCartId(), cartQuantity.getQuantity());
+        CartDto cartDto = cartService.updateCartQuantity(userPrincipal.getId(), cartQuantity.getCartId(), cartQuantity.getQuantity());
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(cartDto);
     }
 }

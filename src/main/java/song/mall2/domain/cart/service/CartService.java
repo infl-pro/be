@@ -57,11 +57,15 @@ public class CartService {
     }
 
     @Transactional
-    public void updateCartQuantity(Long userId, Long cartId, Integer quantity) {
+    public CartDto updateCartQuantity(Long userId, Long cartId, Integer quantity) {
         Cart cart = cartRepository.findByIdAndUserId(cartId, userId)
                 .orElseThrow(() -> new CartNotFoundException("장바구니 상품을 찾을 수 없습니다."));
 
         cart.updateQuantity(quantity);
+        Cart saveCart = cartRepository.save(cart);
+
+        return new CartDto(saveCart.getId(), saveCart.getQuantity(), saveCart.getProduct().getId(), saveCart.getProduct().getName(),
+                saveCart.getProduct().getPrice(), saveCart.getProduct().getThumbnailUrl());
     }
 
     private Product getProductById(Long productId) {
