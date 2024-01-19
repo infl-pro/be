@@ -12,24 +12,37 @@ public class ProductDto {
     private Integer price;
     private String description;
     private String thumbnailUrl;
-    private String imgUrl;
     private Integer stockQuantity;
     private String category;
+    private String sellerName;
 
-    private String brandName;
+    private boolean hasPurchased = false;
+    private boolean isSeller = false;
 
-    private boolean isPurchased = false;
-
-    public ProductDto(Long productId, String productName, Integer price, String description, String thumbnailUrl, String imgUrl, Integer stockQuantity,
-                      String category, String brandName) {
+    public ProductDto(Long productId, String productName, Integer price, String description, String thumbnailUrl, Integer stockQuantity,
+                      String category, String sellerName) {
         this.productId = productId;
         this.productName = productName;
         this.price = price;
         this.description = description;
         this.thumbnailUrl = thumbnailUrl;
-        this.imgUrl = imgUrl;
         this.stockQuantity = stockQuantity;
+        this.category = category;
+        this.sellerName = sellerName;
+    }
 
-        this.brandName = brandName;
+    public ProductDto(Long productId, String productName, Integer price, String description, String thumbnailUrl, Integer stockQuantity,
+                      String category, String sellerName, boolean hasPurchased, boolean isSeller) {
+        this.productId = productId;
+        this.productName = productName;
+        this.price = price;
+        this.description = description;
+        this.thumbnailUrl = thumbnailUrl;
+        this.stockQuantity = stockQuantity;
+        this.category = category;
+        this.sellerName = sellerName;
+
+        this.hasPurchased = hasPurchased;
+        this.isSeller = isSeller;
     }
 }

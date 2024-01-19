@@ -21,26 +21,25 @@ public class Product {
 
     private String name;
     private Integer price;
+    @Column(columnDefinition = "TEXT")
     private String description;
     private String thumbnailUrl;
-    private String imgUrl;
     private Integer stockQuantity;
     @Enumerated(EnumType.STRING)
     private Category category;
 
-    private Product(User user, String name, Integer price, String description, String thumbnailUrl, String imgUrl, Integer stockQuantity, String categoryName) {
+    private Product(User user, String name, Integer price, String description, String thumbnailUrl, Integer stockQuantity, String categoryName) {
         this.user = user;
         this.name = name;
         this.price = price;
         this.description = description;
         this.thumbnailUrl = thumbnailUrl;
-        this.imgUrl = imgUrl;
         this.stockQuantity = stockQuantity;
         this.category = Category.of(categoryName);
     }
 
-    public static Product create(User user, String name, Integer price, String description, String thumbnailUrl, String imgUrl, Integer stockQuantity, String categoryName) {
-        return new Product(user, name, price, description, thumbnailUrl, imgUrl, stockQuantity, categoryName);
+    public static Product create(User user, String name, Integer price, String description, String thumbnailUrl, Integer stockQuantity, String categoryName) {
+        return new Product(user, name, price, description, thumbnailUrl, stockQuantity, categoryName);
     }
 
     public void decreaseStockQuantity(Integer quantity) {
@@ -55,17 +54,21 @@ public class Product {
         this.stockQuantity += quantity;
     }
 
-    public void update(String name, Integer price, String description, String thumbnailUrl, String imgUrl, String categoryName) {
+    public void update(String name, Integer price, String description, Integer stockQuantity, String thumbnailUrl, String categoryName) {
         this.name = name;
         this.price = price;
         this.description = description;
+        this.stockQuantity = stockQuantity;
         this.thumbnailUrl = thumbnailUrl;
-        this.imgUrl = imgUrl;
         this.category = Category.of(categoryName);
     }
 
     public void updateStockQuantity(Integer stockQuantity) {
         this.stockQuantity = stockQuantity;
+    }
+
+    public boolean isSeller(Long userId) {
+        return this.user.getId().equals(userId);
     }
 
     public enum Category {

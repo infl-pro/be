@@ -7,7 +7,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import song.mall2.domain.common.dto.ProductListDto;
-import song.mall2.domain.order.entity.OrderProduct;
 import song.mall2.domain.order.repository.OrderProductJpaRepository;
 import song.mall2.domain.product.dto.EditProductDto;
 import song.mall2.domain.product.dto.ProductDto;
@@ -19,8 +18,6 @@ import song.mall2.domain.user.entity.User;
 import song.mall2.domain.user.repository.UserJpaRepository;
 import song.mall2.exception.notfound.exceptions.ProductNotFoundException;
 import song.mall2.exception.notfound.exceptions.UserNotFoundException;
-
-import java.util.List;
 
 @Slf4j
 @Service
@@ -34,13 +31,13 @@ public class ProductService {
     public ProductDto saveProduct(Long userId, SaveProductDto saveProductDto) {
         User user = getUserById(userId);
         Product product = Product.create(user, saveProductDto.getName(), saveProductDto.getPrice(), saveProductDto.getDescription(),
-                saveProductDto.getThumbnailUrl(), saveProductDto.getProductImgUrl(), saveProductDto.getStockQuantity(), saveProductDto.getCategoryName());
+                saveProductDto.getThumbnailUrl(), saveProductDto.getStockQuantity(), saveProductDto.getCategoryName());
 
         Product saveProduct = productRepository.save(product);
 
         return new ProductDto(saveProduct.getId(), product.getName(), product.getPrice(), product.getDescription(),
-                product.getThumbnailUrl(), product.getImgUrl(), product.getStockQuantity(), product.getCategory().name(),
-                product.getUser().getUsername());
+                product.getThumbnailUrl(), product.getStockQuantity(), product.getCategory().name(),
+                product.getUser().getUsername(), false, true);
     }
 
     @Transactional
@@ -48,47 +45,45 @@ public class ProductService {
         Product product = findById(productId);
 
         return new ProductDto(product.getId(), product.getName(), product.getPrice(), product.getDescription(),
-                product.getThumbnailUrl(), product.getImgUrl(), product.getStockQuantity(), product.getCategory().name(),
+                product.getThumbnailUrl(), product.getStockQuantity(), product.getCategory().name(),
                 product.getUser().getUsername());
     }
 
     @Transactional
     public ProductDto getProduct(Long productId, Long userId) {
         Product product = findById(productId);
+        User user = getUserById(userId);
 
-        ProductDto productDto = new ProductDto(product.getId(), product.getName(), product.getPrice(), product.getDescription(),
-                product.getThumbnailUrl(), product.getImgUrl(), product.getStockQuantity(), product.getCategory().name(),
-                product.getUser().getUsername());
+        boolean isPurchased = isPurchased(user.getId(), product);
+        boolean isSeller = product.isSeller(user.getId());
 
-        List<OrderProduct> orderProductList = orderProductRepository.findAllByProductIdAndUserId(product.getId(), userId);
-        if (hasPurchased(orderProductList)) {
-            productDto.setPurchased(true);
-        }
-
-        return productDto;
+        return new ProductDto(product.getId(), product.getName(), product.getPrice(), product.getDescription(),
+                product.getThumbnailUrl(), product.getStockQuantity(), product.getCategory().name(),
+                product.getUser().getUsername(), isPurchased, isSeller);
     }
 
-    @Transactional
-    public EditProductDto getEditForm(Long productId, Long userId) {
-        Product product = productRepository.findByIdAndUserId(productId, userId)
-                .orElseThrow(() -> new ProductNotFoundException("상품을 찾을 수 없습니다."));
-
-        return new EditProductDto(product.getName(), product.getPrice(), product.getDescription(),
-                product.getThumbnailUrl(), product.getImgUrl(), product.getCategory().name());
-    }
+//    @Transactional
+//    public EditProductDto getEditForm(Long productId, Long userId) {
+//        Product product = productRepository.findByIdAndUserId(productId, userId)
+//                .orElseThrow(() -> new ProductNotFoundException("상품을 찾을 수 없습니다."));
+//
+//        return new EditProductDto(product.getName(), product.getPrice(), product.getDescription(),
+//                product.getThumbnailUrl(), product.getCategory().name());
+//    }
 
     @Transactional
     public ProductDto editProduct(Long productId, Long userId, EditProductDto editProductDto) {
         Product product = findByIdAndUserId(productId, userId);
 
         product.update(editProductDto.getProductName(), editProductDto.getProductPrice(), editProductDto.getProductDescription(),
-                editProductDto.getThumbnailUrl(), editProductDto.getImgUrl(), product.getCategory().name());
+                editProductDto.getStockQuantity(), editProductDto.getThumbnailUrl(), product.getCategory().name());
 
         Product saveProduct = productRepository.save(product);
+        boolean hasPurchased = isPurchased(product.getUser().getId(), product);
 
         return new ProductDto(saveProduct.getId(), saveProduct.getName(), saveProduct.getPrice(), saveProduct.getDescription(),
-                saveProduct.getThumbnailUrl(), saveProduct.getImgUrl(), saveProduct.getStockQuantity(), saveProduct.getCategory().name(),
-                saveProduct.getUser().getUsername());
+                saveProduct.getThumbnailUrl(), saveProduct.getStockQuantity(), saveProduct.getCategory().name(),
+                saveProduct.getUser().getUsername(), hasPurchased, true);
     }
 
     @Transactional
@@ -100,7 +95,7 @@ public class ProductService {
         Product saveProduct = productRepository.save(product);
 
         return new ProductDto(saveProduct.getId(), saveProduct.getName(), saveProduct.getPrice(), saveProduct.getDescription(),
-                saveProduct.getThumbnailUrl(), saveProduct.getImgUrl(), saveProduct.getStockQuantity(), saveProduct.getCategory().name(),
+                saveProduct.getThumbnailUrl(), saveProduct.getStockQuantity(), saveProduct.getCategory().name(),
                 saveProduct.getUser().getUsername());
     }
 
@@ -154,12 +149,6 @@ public class ProductService {
                 .orElseThrow(() -> new UserNotFoundException("사용자를 찾을 수 없습니다."));
     }
 
-    private boolean hasPurchased(List<OrderProduct> orderProductList) {
-        return !orderProductList.isEmpty() &&
-                orderProductList.stream()
-                        .noneMatch(orderProduct -> OrderProduct.Status.CANCELLED.equals(orderProduct.getStatus()));
-    }
-
     private Product findById(Long productId) {
         return productRepository.findById(productId)
                 .orElseThrow(() -> new ProductNotFoundException("상품을 찾을 수 없습니다."));
@@ -168,5 +157,10 @@ public class ProductService {
     private Product findByIdAndUserId(Long productId, Long userId) {
         return productRepository.findByIdAndUserId(productId, userId)
                 .orElseThrow(() -> new ProductNotFoundException("상품을 찾을 수 없습니다."));
+    }
+
+    private boolean isPurchased(Long userId, Product product) {
+        return orderProductRepository.findAllByProductIdAndUserId(product.getId(), userId).stream()
+                .anyMatch(orderProduct -> orderProduct.getProduct().getId().equals(product.getId()));
     }
 }
