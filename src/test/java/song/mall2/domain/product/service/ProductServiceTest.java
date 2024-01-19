@@ -10,7 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.TestPropertySource;
-import song.mall2.domain.common.dto.ProductPageDto;
+import song.mall2.domain.common.dto.ProductListDto;
 import song.mall2.domain.product.dto.EditProductDto;
 import song.mall2.domain.product.dto.ProductDto;
 import song.mall2.domain.product.dto.SaveProductDto;
@@ -76,7 +76,7 @@ class ProductServiceTest {
     @Test
     void getProductList() throws JsonProcessingException {
         PageRequest pageRequest = PageRequest.of(0, 10);
-        Page<ProductPageDto> productList = productService.findProductList(pageRequest);
+        Page<ProductListDto> productList = productService.findProductList(pageRequest);
 
         String page = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(productList);
         log.info("{}", page);

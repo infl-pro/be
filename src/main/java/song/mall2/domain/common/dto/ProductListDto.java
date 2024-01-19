@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductPageDto {
+public class ProductListDto {
     private Long productId;
     private String productName;
     private Integer productPrice;

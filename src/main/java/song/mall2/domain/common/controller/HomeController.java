@@ -38,7 +38,7 @@ public class HomeController {
             return ResponseEntity.ok(productService.findProductListByCategory(pageRequest, searchCategory));
         }
 
-        return ResponseEntity.ok(productService.findProductListBySearchAndCategory(pageRequest, searchCategory, searchValue));
+        return ResponseEntity.ok(productService.findProductListBySearchAndCategory(pageRequest, searchValue, searchCategory));
     }
 
     @PostMapping("/refreshToken")
