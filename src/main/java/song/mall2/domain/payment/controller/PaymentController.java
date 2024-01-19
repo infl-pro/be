@@ -39,7 +39,6 @@ public class PaymentController {
     @PostMapping("/callback")
     public ResponseEntity<OrdersIdDto> postCallback(@RequestBody Callback callback,
                                                     @AuthenticationPrincipal UserPrincipal userPrincipal) {
-        log.info("callback: {}", callback);
         OrdersIdDto ordersId = paymentService.getOrdersId(userPrincipal.getId(), callback.getPaymentId());
 
         return ResponseEntity.ok(ordersId);

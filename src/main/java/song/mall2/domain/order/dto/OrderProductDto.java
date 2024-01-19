@@ -11,6 +11,7 @@ import lombok.Setter;
 public class OrderProductDto {
     private Long productId;
     private String productName;
+    private String productThumbnail;
     private String status;
     private Integer amount;
     private Integer quantity;

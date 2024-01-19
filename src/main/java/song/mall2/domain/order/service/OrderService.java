@@ -21,9 +21,12 @@ import song.mall2.domain.payment.entity.Payment;
 import song.mall2.domain.payment.portone.service.PortoneService;
 import song.mall2.domain.payment.repository.PaymentJpaRepository;
 import song.mall2.domain.product.entity.Product;
+import song.mall2.domain.user.entity.User;
+import song.mall2.domain.user.repository.UserJpaRepository;
 import song.mall2.exception.invalid.exceptions.InvalidRequestException;
 import song.mall2.exception.notfound.exceptions.OrdersNotFoundException;
 import song.mall2.exception.notfound.exceptions.PaymentNotFoundException;
+import song.mall2.exception.notfound.exceptions.UserNotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +35,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class OrderService {
+    private final UserJpaRepository userRepository;
     private final OrdersJpaRepository ordersRepository;
     private final OrderProductJpaRepository orderProductRepository;
     private final PaymentJpaRepository paymentRepository;
@@ -45,17 +49,20 @@ public class OrderService {
 
     @Transactional
     public OrderFormDto getOrderForm(Long userId, List<CartIdDto> cartDtoList) {
+        User user = getUser(userId);
+
         List<Long> cartIdList = cartDtoList.stream().map(CartIdDto::getCartId).toList();
-        List<Cart> cartList = getCartList(userId, cartIdList);
+        List<Cart> cartList = getCartList(user.getId(), cartIdList);
 
         List<OrderFormDto.Products> productsList = getProductsList(cartList);
 
-        return new OrderFormDto(storeId, channelKey, getTotalAmount(cartList), userId, productsList, cartIdList);
+        return new OrderFormDto(storeId, channelKey, getTotalAmount(cartList), user.getId(), productsList, cartIdList);
     }
 
     @Transactional
     public List<OrderProductListDto> getOrderList(Long userId) {
-        return orderProductRepository.findAllByUserId(userId).stream()
+        User user = getUser(userId);
+        return orderProductRepository.findAllByUserId(user.getId()).stream()
                 .map(orderProduct -> new OrderProductListDto(orderProduct.getProduct().getId(), orderProduct.getProduct().getName(),
                         orderProduct.getProduct().getThumbnailUrl(), orderProduct.getOrders().getCreateAt(), orderProduct.getOrders().getId(),
                         orderProduct.getQuantity(), orderProduct.getAmount(), orderProduct.getStatus().name()))
@@ -64,7 +71,8 @@ public class OrderService {
 
     @Transactional
     public OrdersDto getOrders(Long userId, Long ordersId) {
-        Orders orders = ordersRepository.findByIdAndUserId(ordersId, userId)
+        User user = getUser(userId);
+        Orders orders = ordersRepository.findByIdAndUserId(ordersId, user.getId())
                 .orElseThrow(() -> new OrdersNotFoundException("주문을 찾을 수 없습니다."));
 
         List<OrderProductDto> orderProductDtoList = getOrderProductDtoList(orders);
@@ -76,7 +84,8 @@ public class OrderService {
 
     @Transactional
     public OrdersDto cancelOrders(Long ordersId, Long userId) {
-        Orders orders = ordersRepository.findByIdAndUserId(ordersId, userId)
+        User user = getUser(userId);
+        Orders orders = ordersRepository.findByIdAndUserId(ordersId, user.getId())
                 .orElseThrow(() -> new OrdersNotFoundException("주문을 찾을 수 없습니다."));
 
         List<OrderProductDto> orderProductDtoList = cancelOrderProductList(orders);
@@ -90,6 +99,11 @@ public class OrderService {
 
         return new OrdersDto(orders.getId(), orders.getCreateAt(), orderProductDtoList,
                 cancelledPayment.getTotalAmount(), cancelledPayment.getStatus());
+    }
+
+    private User getUser(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("사용자를 찾을 수 없습니다."));
     }
 
     private List<Cart> getCartList(Long userId, List<Long> cartIdList) {
@@ -114,7 +128,7 @@ public class OrderService {
     private List<OrderProductDto> getOrderProductDtoList(Orders orders) {
         return orderProductRepository.findAllByOrdersId(orders.getId())
                 .stream()
-                .map(orderProduct -> new OrderProductDto(orderProduct.getId(), orderProduct.getProduct().getName(),
+                .map(orderProduct -> new OrderProductDto(orderProduct.getId(), orderProduct.getProduct().getName(), orderProduct.getProduct().getThumbnailUrl(),
                         orderProduct.getStatus().name(), orderProduct.getAmount(), orderProduct.getQuantity()))
                 .toList();
     }
@@ -129,7 +143,7 @@ public class OrderService {
         });
 
         return orderProductList.stream()
-                .map(orderProduct -> new OrderProductDto(orderProduct.getProduct().getId(), orderProduct.getProduct().getName(),
+                .map(orderProduct -> new OrderProductDto(orderProduct.getProduct().getId(), orderProduct.getProduct().getName(), orderProduct.getProduct().getThumbnailUrl(),
                         orderProduct.getStatus().name(), orderProduct.getAmount(), orderProduct.getQuantity()))
                 .toList();
     }

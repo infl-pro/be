@@ -42,10 +42,12 @@ public class PaymentService {
 
     @Transactional
     public OrdersIdDto getOrdersId(Long userId, String paymentId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("사용자를 찾을 수 없습니다."));
         Payment payment = paymentRepository.findByPaymentId(paymentId)
-                .orElseThrow(PaymentNotFoundException::new);
+                .orElseThrow(() -> new PaymentNotFoundException("결제 정보를 찾을 수 없습니다."));
 
-        payment.isBuyer(userId);
+        payment.isBuyer(user.getId());
 
         return new OrdersIdDto(payment.getOrders().getId());
     }
