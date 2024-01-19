@@ -1,5 +1,6 @@
 package song.mall2.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -16,6 +17,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import song.mall2.domain.jwt.service.JwtService;
 import song.mall2.security.handler.AccessDeniedHandlerImpl;
 import song.mall2.security.handler.AuthenticationEntryPointImpl;
 import song.mall2.security.handler.LoginFailureHandler;
@@ -33,6 +35,9 @@ import static org.springframework.security.web.util.matcher.RegexRequestMatcher.
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final UserDetailsServiceImpl userDetailsService;
+    private final JwtService jwtService;
+    private final ObjectMapper objectMapper;
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationConfiguration configuration) throws Exception {
         return http
@@ -55,7 +60,7 @@ public class SecurityConfig {
                         .accessDeniedHandler(new AccessDeniedHandlerImpl()))
                 .logout(logout -> logout.disable())
                 .addFilterBefore(new UsernamePasswordFilter(authenticationManager(configuration), authenticationSuccessHandler(), authenticationFailureHandler()), UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(new JwtFilter(userDetailsService), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtFilter(userDetailsService, objectMapper), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(new LogFilter(), JwtFilter.class)
                 .build();
     }
@@ -67,7 +72,7 @@ public class SecurityConfig {
 
     @Bean
     public AuthenticationSuccessHandler authenticationSuccessHandler() {
-        return new LoginSuccessHandler();
+        return new LoginSuccessHandler(jwtService, objectMapper);
     }
 
     @Bean

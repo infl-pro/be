@@ -1,8 +1,7 @@
 package song.mall2.security.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.*;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,21 +11,22 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.filter.OncePerRequestFilter;
+import song.mall2.domain.jwt.service.JwtService;
 import song.mall2.exception.invalid.exceptions.InvalidJwtException;
+import song.mall2.security.authentication.userprincipal.UserPrincipal;
 import song.mall2.security.authentication.userprincipal.service.UserDetailsServiceImpl;
-import song.mall2.security.utils.jwt.JwtUtils;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
     private final UserDetailsServiceImpl userDetailsService;
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -39,10 +39,18 @@ public class JwtFilter extends OncePerRequestFilter {
 
         try {
             String token = authorization.substring(7);
-            String username = JwtUtils.validateJwt(token);
 
-            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-            UsernamePasswordAuthenticationToken authenticationToken = UsernamePasswordAuthenticationToken.authenticated(userDetails, userDetails.getPassword(), userDetails.getAuthorities());
+            JwtParser parser = JwtService.getAccessTokenParser();
+            Jws<Claims> jws = null;
+            try {
+                jws = parser.parseSignedClaims(token);
+            } catch (ExpiredJwtException e) {
+                throw new InvalidJwtException("토큰이 만료 되었습니다.");
+            }
+
+            UserPrincipal userPrincipal = getUserPrincipal(jws);
+
+            UsernamePasswordAuthenticationToken authenticationToken = UsernamePasswordAuthenticationToken.authenticated(userPrincipal, null, userPrincipal.getAuthorities());
             SecurityContext context = SecurityContextHolder.getContext();
             context.setAuthentication(authenticationToken);
         } catch (InvalidJwtException e) {
@@ -57,6 +65,14 @@ public class JwtFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    private UserPrincipal getUserPrincipal(Jws<Claims> jws) {
+        Long userId = Long.valueOf(jws.getPayload().getSubject());
+        String username = String.valueOf(jws.getPayload().get("username"));
+        List<?> authorities = ((List<?>) jws.getPayload().get("roles"));
+
+        return UserPrincipal.create(userId, username, authorities);
     }
 
     private void doResponse(HttpServletResponse response, int status, Exception e, String message) throws IOException {
