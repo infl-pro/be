@@ -61,11 +61,11 @@ public class Init {
             User matinkim = saveUser("mtkim", "mtkim", "마뗑킴", null);
             User eightseconds = saveUser("eightseconds", "eightseconds", "8seconds", null);
 
-            Product lmoodP1 = saveProduct(lmood, "화란 니트 인디핑크", 100, "엘무드 니트 인디핑크", "/file/downloadFile/lmood1-1.jpg", "/file/downloadFile/lmood1-2.jpg", 100, Product.Category.TOP);
-            Product lmoodP2 = saveProduct(lmood, "후드 크림", 300, "엘무드 후드 크림", "/file/downloadFile/lmood2-1.jpg", "/file/downloadFile/lmood2-2.jpg", 200, Product.Category.TOP);
-            Product lmoodP3 = saveProduct(lmood, "맨투맨 드라이 라벤더", 200, "엘무드 맨투맨 드라이 라벤더", "/file/downloadFile/lmood3-1.jpg", "/file/downloadFile/lmood3-2.jpg", 100, Product.Category.TOP);
-            Product lmoodP4 = saveProduct(lmood, "화란 니트 칸초", 100, "엘무드 니트 칸초", "/file/downloadFile/lmood4-1.jpg", "/file/downloadFile/lmood4-2.jpg", 100, Product.Category.TOP);
-            Product lmoodP5 = saveProduct(lmood, "화란 가디건 블랙", 250, "엘무드 가디건 블랙", "/file/downloadFile/lmood5-1.jpg", "/file/downloadFile/lmood5-2.jpg", 150, Product.Category.OUTER);
+            Product lmoodP1 = saveProduct(lmood, "화란 니트 인디핑크", 100, "엘무드 니트 인디핑크", "/file/downloadFile/lmood1-1.jpg", 100, Product.Category.TOP);
+            Product lmoodP2 = saveProduct(lmood, "후드 크림", 300, "엘무드 후드 크림", "/file/downloadFile/lmood2-1.jpg", 200, Product.Category.TOP);
+            Product lmoodP3 = saveProduct(lmood, "맨투맨 드라이 라벤더", 200, "엘무드 맨투맨 드라이 라벤더", "/file/downloadFile/lmood3-1.jpg", 100, Product.Category.TOP);
+            Product lmoodP4 = saveProduct(lmood, "화란 니트 칸초", 100, "엘무드 니트 칸초", "/file/downloadFile/lmood4-1.jpg", 100, Product.Category.TOP);
+            Product lmoodP5 = saveProduct(lmood, "화란 가디건 블랙", 250, "엘무드 가디건 블랙", "/file/downloadFile/lmood5-1.jpg", 150, Product.Category.OUTER);
 
 
             addCart(userA, lmoodP1, 10);
@@ -85,8 +85,8 @@ public class Init {
             userRoleRepository.save(userRole);
         }
 
-        private Product saveProduct(User userId, String name, Integer price, String description, String thumbnailUrl, String imgurl, Integer stockQuantity, Product.Category category) {
-            Product product = Product.create(userId, name, price, description, thumbnailUrl, imgurl, stockQuantity, category.name());
+        private Product saveProduct(User userId, String name, Integer price, String description, String thumbnailUrl, Integer stockQuantity, Product.Category category) {
+            Product product = Product.create(userId, name, price, description, thumbnailUrl, stockQuantity, category.name());
 
             return productRepository.save(product);
         }

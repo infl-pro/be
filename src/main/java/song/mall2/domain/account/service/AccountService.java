@@ -11,6 +11,7 @@ import song.mall2.domain.account.entity.EmailVerificationToken;
 import song.mall2.domain.account.entity.ResetPasswordToken;
 import song.mall2.domain.account.repository.EmailTokenJpaRepository;
 import song.mall2.domain.account.repository.ResetPasswordTokenJpaRepository;
+import song.mall2.domain.user.dto.UserDto;
 import song.mall2.domain.user.entity.User;
 import song.mall2.domain.user.entity.UserRole;
 import song.mall2.domain.user.repository.UserJpaRepository;
@@ -38,7 +39,7 @@ public class AccountService {
     private final EmailTokenJpaRepository emailTokenRepository;
 
     @Transactional
-    public Long saveUser(SignupDto signupDto) {
+    public UserDto saveUser(SignupDto signupDto) {
         validateUsername(signupDto.getUsername());
         validatePassword(signupDto.getPassword(), signupDto.getConfirmPassword());
         validateEmail(signupDto);
@@ -48,7 +49,7 @@ public class AccountService {
 
         grantRole(saveUser.getId(), UserRole.Role.ROLE_USER.name());
 
-        return saveUser.getId();
+        return new UserDto(user.getId(), user.getUsername(), user.getName(), user.getEmail());
     }
 
     private void validatePassword(String password, String confirmPassword) {

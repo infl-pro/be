@@ -6,103 +6,65 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailException;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import song.mall2.domain.common.api.ExceptionApi;
 import song.mall2.exception.illegal.IllegalException;
 import song.mall2.exception.invalid.InvalidException;
 import song.mall2.exception.notfound.NotFoundException;
 import song.mall2.exception.portone.PortoneException;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Slf4j
 @ControllerAdvice
 @RequiredArgsConstructor
 public class ExceptionController {
     @ExceptionHandler({NotFoundException.class})
-    public ResponseEntity<Map<String, String>> notFoundExceptionHandler(NotFoundException exception) {
-        Map<String, String> exceptionMap = new HashMap<>();
-        exceptionMap.put("type", exception.getClass().getSimpleName());
-        exceptionMap.put("message", exception.getMessage());
-
+    public ResponseEntity<ExceptionApi> notFoundExceptionHandler(NotFoundException exception) {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
-                .body(exceptionMap);
+                .body(new ExceptionApi(false, exception.getClass().getSimpleName(), exception.getMessage()));
     }
 
     @ExceptionHandler({InvalidException.class})
-    public ResponseEntity<Map<String, String>> invalidExceptionHandler(InvalidException exception) {
-        Map<String, String> exceptionMap = new HashMap<>();
-        exceptionMap.put("type", exception.getClass().getSimpleName());
-        exceptionMap.put("message", exception.getMessage());
-
+    public ResponseEntity<ExceptionApi> invalidExceptionHandler(InvalidException exception) {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body(exceptionMap);
+                .body(new ExceptionApi(false, exception.getClass().getSimpleName(), exception.getMessage()));
     }
 
     @ExceptionHandler({IllegalException.class})
-    public ResponseEntity<Map<String, String>> IllegalExceptionHandler(IllegalException exception) {
-        Map<String, String> exceptionMap = new HashMap<>();
-        exceptionMap.put("type", exception.getClass().getSimpleName());
-        exceptionMap.put("message", exception.getMessage());
-
+    public ResponseEntity<ExceptionApi> IllegalExceptionHandler(IllegalException exception) {
         return ResponseEntity
                 .status(HttpStatus.NOT_ACCEPTABLE)
-                .body(exceptionMap);
+                .body(new ExceptionApi(false, exception.getClass().getSimpleName(), exception.getMessage()));
     }
 
     @ExceptionHandler({MethodArgumentNotValidException.class})
-    public ResponseEntity<Map<String, Object>> argumentNotValidExceptionHandler(MethodArgumentNotValidException exception) {
-        Map<String, String> fieldExceptionMap = new HashMap<>();
-        exception.getBindingResult().getAllErrors().forEach(error -> {
-            String fieldName = ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
-            fieldExceptionMap.put(fieldName, errorMessage);
-        });
-
-        Map<String, Object> exceptionMap = new HashMap<>();
-        exceptionMap.put("type", exception.getClass().getSimpleName());
-        exceptionMap.put("message", fieldExceptionMap);
-
+    public ResponseEntity<ExceptionApi> argumentNotValidExceptionHandler(MethodArgumentNotValidException exception) {
         return ResponseEntity
                 .status(HttpServletResponse.SC_BAD_REQUEST)
-                .body(exceptionMap);
+                .body(new ExceptionApi(false, exception.getClass().getSimpleName(), "입력 형식이 올바르지 않습니다."));
     }
 
     @ExceptionHandler({PortoneException.class})
-    public ResponseEntity<Map<String, String>> portoneExceptionHandler(PortoneException exception) {
-        Map<String, String> exceptionMap = new HashMap<>();
-        exceptionMap.put("type", exception.getClass().getSimpleName());
-        exceptionMap.put("message", exception.getMessage());
-
+    public ResponseEntity<ExceptionApi> portoneExceptionHandler(PortoneException exception) {
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(exceptionMap);
+                .body(new ExceptionApi(false, exception.getClass().getSimpleName(), exception.getMessage()));
     }
 
     @ExceptionHandler({MailException.class})
-    public ResponseEntity<Map<String, String>> mailExceptionHandler(MailException exception) {
-        Map<String, String> exceptionMap = new HashMap<>();
-        exceptionMap.put("type", exception.getClass().getSimpleName());
-        exceptionMap.put("message", "이메일 전송에 실패했습니다.");
-
+    public ResponseEntity<ExceptionApi> mailExceptionHandler(MailException exception) {
         return ResponseEntity
                 .status(HttpStatus.SERVICE_UNAVAILABLE)
-                .body(exceptionMap);
+                .body(new ExceptionApi(false, exception.getClass().getSimpleName(), exception.getMessage()));
     }
 
     @ExceptionHandler({Exception.class})
-    public ResponseEntity<Map<String, String>> exceptionHandler(Exception exception) {
-        Map<String, String> exceptionMap = new HashMap<>();
-        exceptionMap.put("type", exception.getClass().getSimpleName());
-        exceptionMap.put("message", "알수없는 오류가 발생했습니다.");
-
+    public ResponseEntity<ExceptionApi> exceptionHandler(Exception exception) {
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(exceptionMap);
+                .body(new ExceptionApi(false, exception.getClass().getSimpleName(), "알 수 없는 오류가 발생했습니다."));
     }
 }

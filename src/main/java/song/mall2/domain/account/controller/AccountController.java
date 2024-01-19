@@ -10,6 +10,8 @@ import song.mall2.domain.account.dto.*;
 import song.mall2.domain.account.entity.ResetPasswordToken;
 import song.mall2.domain.account.service.AccountService;
 import song.mall2.domain.account.service.EmailService;
+import song.mall2.domain.common.api.ResponseApi;
+import song.mall2.domain.user.dto.UserDto;
 
 import java.net.URI;
 
@@ -26,33 +28,33 @@ public class AccountController {
     public static final String AWS_URL = "http://52.79.222.161:8080/account/resetPassword/";
 
     @PostMapping("/signup")
-    public ResponseEntity<Object> postSaveUser(@Valid @RequestBody SignupDto signupDto) {
-        accountService.saveUser(signupDto);
+    public ResponseEntity<ResponseApi> postSaveUser(@Valid @RequestBody SignupDto signupDto) {
+        UserDto user = accountService.saveUser(signupDto);
 
-        return ResponseEntity.created(URI.create("/login")).build();
+        return ResponseEntity.created(URI.create("/login")).body(new ResponseApi(true, "회원가입 성공", user));
     }
 
     @PostMapping("/validateUsername")
-    public ResponseEntity<Object> validateUsername(@Valid @RequestBody RequestValidateUsername requestValidateUsername) {
+    public ResponseEntity<ResponseApi> validateUsername(@Valid @RequestBody RequestValidateUsername requestValidateUsername) {
         accountService.validateUsername(requestValidateUsername.getUsername());
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(new ResponseApi(true, "중복 검증 성공", null));
     }
 
     @PostMapping("/verifyEmail")
-    public ResponseEntity<Object> postVerifyEmail(@Valid @RequestBody RequestVerifyEmail requestVerifyEmail) {
+    public ResponseEntity<ResponseApi> postVerifyEmail(@Valid @RequestBody RequestVerifyEmail requestVerifyEmail) {
         String token = accountService.createEmailVerificationToken(requestVerifyEmail.getEmail());
 
         emailService.sendMail(requestVerifyEmail.getEmail(), "이메일 인증", "token: " + token);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(new ResponseApi(true, "인증 토큰 발송", null));
     }
 
     @PostMapping("/verifyEmailToken")
-    public ResponseEntity<Object> postVerifyEmailToken(@RequestBody RequestVerifyEmailToken requestVerifyEmailToken) {
+    public ResponseEntity<ResponseApi> postVerifyEmailToken(@RequestBody RequestVerifyEmailToken requestVerifyEmailToken) {
         accountService.verifyEmail(requestVerifyEmailToken.getEmail(), requestVerifyEmailToken.getToken());
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(new ResponseApi(true, "토큰 인증 성공", null));
     }
 
     @PostMapping("/findUsername")

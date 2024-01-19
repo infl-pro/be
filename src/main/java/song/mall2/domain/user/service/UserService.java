@@ -22,7 +22,7 @@ public class UserService {
     public UserDto getUser(Long userId) {
         User user = findUser(userId);
 
-        return new UserDto(user.getName(), user.getProfileUrl(), user.getEmail());
+        return new UserDto(user.getId(), user.getName(), user.getProfileUrl(), user.getEmail());
     }
 
     @Transactional
@@ -32,7 +32,7 @@ public class UserService {
         user.updateProfile(profileUrl);
         User saveUser = userRepository.save(user);
 
-        return new UserDto(saveUser.getName(), saveUser.getProfileUrl(), saveUser.getEmail());
+        return new UserDto(saveUser.getId(), saveUser.getName(), saveUser.getProfileUrl(), saveUser.getEmail());
     }
 
     @Transactional
@@ -53,7 +53,7 @@ public class UserService {
 
         User saveUser = userRepository.save(user);
 
-        return new UserDto(saveUser.getName(), saveUser.getProfileUrl(), saveUser.getEmail());
+        return new UserDto(saveUser.getId(), saveUser.getName(), saveUser.getProfileUrl(), saveUser.getEmail());
     }
 
     private User findUser(Long userId) {

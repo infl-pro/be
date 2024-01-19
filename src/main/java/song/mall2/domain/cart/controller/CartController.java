@@ -11,6 +11,7 @@ import song.mall2.domain.cart.dto.CartIdDto;
 import song.mall2.domain.cart.dto.SaveCartDto;
 import song.mall2.domain.cart.dto.UpdateCartQuantity;
 import song.mall2.domain.cart.service.CartService;
+import song.mall2.domain.common.api.ResponseApi;
 import song.mall2.security.authentication.userprincipal.UserPrincipal;
 
 import java.util.List;
@@ -24,33 +25,33 @@ public class CartController {
     private final CartService cartService;
 
     @GetMapping
-    public ResponseEntity<List<CartDto>> getCart(@AuthenticationPrincipal UserPrincipal userPrincipal) {
+    public ResponseEntity<ResponseApi> getCart(@AuthenticationPrincipal UserPrincipal userPrincipal) {
         List<CartDto> cartList = cartService.getCartList(userPrincipal.getId());
 
-        return ResponseEntity.ok(cartList);
+        return ResponseEntity.ok(new ResponseApi(true, "장바구니 조회", cartList));
     }
 
     @PostMapping("/add")
-    public ResponseEntity<CartDto> postAddCart(@AuthenticationPrincipal UserPrincipal userPrincipal,
-                                               @RequestBody SaveCartDto saveCartDto) {
+    public ResponseEntity<ResponseApi> postAddCart(@AuthenticationPrincipal UserPrincipal userPrincipal,
+                                                   @RequestBody SaveCartDto saveCartDto) {
         CartDto cartDto = cartService.addCart(userPrincipal.getId(), saveCartDto.getProductId(), saveCartDto.getQuantity());
 
-        return ResponseEntity.ok(cartDto);
+        return ResponseEntity.ok(new ResponseApi(true, "장바구니 추가 성공", cartDto));
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<Object> postDeleteCart(@AuthenticationPrincipal UserPrincipal userPrincipal,
-                                                 @RequestBody List<CartIdDto> cartIdDtoList) {
+    public ResponseEntity<ResponseApi> postDeleteCart(@AuthenticationPrincipal UserPrincipal userPrincipal,
+                                                      @RequestBody List<CartIdDto> cartIdDtoList) {
         cartService.deleteCart(userPrincipal.getId(), cartIdDtoList);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(new ResponseApi(true, "장바구니 삭제 성공", null));
     }
 
     @PatchMapping("/updateQuantity")
-    public ResponseEntity<CartDto> postUpdateQuantity(@AuthenticationPrincipal UserPrincipal userPrincipal,
-                                                     @RequestBody UpdateCartQuantity cartQuantity) {
+    public ResponseEntity<ResponseApi> postUpdateQuantity(@AuthenticationPrincipal UserPrincipal userPrincipal,
+                                                          @RequestBody UpdateCartQuantity cartQuantity) {
         CartDto cartDto = cartService.updateCartQuantity(userPrincipal.getId(), cartQuantity.getCartId(), cartQuantity.getQuantity());
 
-        return ResponseEntity.ok(cartDto);
+        return ResponseEntity.ok(new ResponseApi(true, "장바구니 수량 수정", cartDto));
     }
 }

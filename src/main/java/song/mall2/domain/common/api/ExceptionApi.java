@@ -8,8 +8,8 @@ import lombok.Setter;
 @Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ResponseApi {
+public class ExceptionApi {
     private boolean success;
+    private String type;
     private String message;
-    private Object data;
 }

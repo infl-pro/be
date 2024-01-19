@@ -34,13 +34,13 @@ public class FileController {
             uploadFileDtoList.add(uploadFile);
         }
 
-        return ResponseEntity.ok(new ResponseApi(true, null, "이미지 업로드에 성공했습니다.", uploadFileDtoList));
+        return ResponseEntity.ok(new ResponseApi(true, "이미지 업로드 성공", uploadFileDtoList));
     }
 
-    @GetMapping("/downloadFile/{savedFileName}")
-    public ResponseEntity<Resource> getDownload(@PathVariable(value = "savedFileName") String savedFileName) {
-        UrlResource resource = fileService.get(savedFileName);
-        String contentType = getContentType(savedFileName);
+    @GetMapping("/downloadFile/{fileName}")
+    public ResponseEntity<Resource> getDownload(@PathVariable(value = "fileName") String fileName) {
+        UrlResource resource = fileService.get(fileName);
+        String contentType = getContentType(fileName);
 
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(contentType))

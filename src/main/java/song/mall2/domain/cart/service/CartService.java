@@ -28,8 +28,8 @@ public class CartService {
 
     @Transactional
     public CartDto addCart(Long userId, Long productId, Integer quantity) {
-        User user = getUserById(userId);
-        Product product = getProductById(productId);
+        User user = getUser(userId);
+        Product product = getProduct(productId);
 
         Cart cart = Cart.create(user, product, quantity);
         Cart saveCart = cartRepository.save(cart);
@@ -40,7 +40,8 @@ public class CartService {
 
     @Transactional
     public List<CartDto> getCartList(Long userId) {
-        List<Cart> cartList = cartRepository.findAllByUserId(userId);
+        User user = getUser(userId);
+        List<Cart> cartList = cartRepository.findAllByUserId(user.getId());
 
         return cartList.stream()
                 .map(cart -> new CartDto(cart.getId(), cart.getQuantity(), cart.getProduct().getId(),
@@ -50,15 +51,17 @@ public class CartService {
 
     @Transactional
     public void deleteCart(Long userId, List<CartIdDto> cartIdDtoList) {
+        User user = getUser(userId);
         List<Long> cartIdList = cartIdDtoList.stream()
                 .map(CartIdDto::getCartId)
                 .toList();
-        cartRepository.deleteAllByIdAndUserId(cartIdList, userId);
+        cartRepository.deleteAllByIdAndUserId(cartIdList, user.getId());
     }
 
     @Transactional
     public CartDto updateCartQuantity(Long userId, Long cartId, Integer quantity) {
-        Cart cart = cartRepository.findByIdAndUserId(cartId, userId)
+        User user = getUser(userId);
+        Cart cart = cartRepository.findByIdAndUserId(cartId, user.getId())
                 .orElseThrow(() -> new CartNotFoundException("장바구니 상품을 찾을 수 없습니다."));
 
         cart.updateQuantity(quantity);
@@ -68,12 +71,12 @@ public class CartService {
                 saveCart.getProduct().getPrice(), saveCart.getProduct().getThumbnailUrl());
     }
 
-    private Product getProductById(Long productId) {
+    private Product getProduct(Long productId) {
         return productRepository.findById(productId)
                 .orElseThrow(ProductNotFoundException::new);
     }
 
-    private User getUserById(Long userId) {
+    private User getUser(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(UserNotFoundException::new);
     }
