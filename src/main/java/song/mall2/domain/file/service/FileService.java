@@ -7,11 +7,13 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import song.mall2.domain.file.dto.UploadFileDto;
+import song.mall2.exception.invalid.exceptions.InvalidRequestException;
 import song.mall2.exception.notfound.exceptions.FileNotFoundException;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -20,6 +22,18 @@ import java.util.UUID;
 public class FileService {
     @Value("${upload.path}")
     private String uploadPath;
+
+    public void canUpload(List<MultipartFile> multipartFileList) {
+        List<String> extList = multipartFileList.stream()
+                .map(multipartFile -> getExt(multipartFile.getOriginalFilename()))
+                .toList();
+
+        for (String ext : extList) {
+            if (!ext.equals("jpeg") && !ext.equals("jpg") && !ext.equals("png")) {
+                throw new InvalidRequestException("지원되지 않는 파일 형식입니다.");
+            }
+        }
+    }
 
     public UploadFileDto upload(MultipartFile multipartFile) throws IOException {
         if (multipartFile.isEmpty()) {

@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import song.mall2.domain.common.api.ResponseApi;
 import song.mall2.domain.file.dto.UploadFileDto;
 import song.mall2.domain.file.service.FileService;
 
@@ -24,14 +25,16 @@ public class FileController {
     private final FileService fileService;
 
     @PostMapping("/uploadFile")
-    public ResponseEntity<List<UploadFileDto>> postUploadFile(@RequestParam("files") List<MultipartFile> files) throws IOException {
+    public ResponseEntity<ResponseApi> postUploadFile(@RequestParam("files") List<MultipartFile> files) throws IOException {
+        fileService.canUpload(files);
+
         List<UploadFileDto> uploadFileDtoList = new ArrayList<>();
         for (MultipartFile multipartFile : files) {
             UploadFileDto uploadFile = fileService.upload(multipartFile);
             uploadFileDtoList.add(uploadFile);
         }
 
-        return ResponseEntity.ok(uploadFileDtoList);
+        return ResponseEntity.ok(new ResponseApi(true, null, "이미지 업로드에 성공했습니다.", uploadFileDtoList));
     }
 
     @GetMapping("/downloadFile/{savedFileName}")
