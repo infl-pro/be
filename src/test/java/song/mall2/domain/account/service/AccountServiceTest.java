@@ -10,6 +10,7 @@ import org.springframework.test.context.TestPropertySource;
 import song.mall2.domain.account.dto.SignupDto;
 import song.mall2.domain.account.entity.EmailVerificationToken;
 import song.mall2.domain.account.repository.EmailTokenJpaRepository;
+import song.mall2.domain.user.dto.UserDto;
 import song.mall2.domain.user.entity.User;
 import song.mall2.domain.user.repository.UserJpaRepository;
 import song.mall2.exception.invalid.exceptions.InvalidRequestException;
@@ -42,12 +43,13 @@ class AccountServiceTest {
         SignupDto signupDto = new SignupDto();
         signupDto.setUsername("testUser");
         signupDto.setPassword("testPwd");
+        signupDto.setConfirmPassword("testPwd");
         signupDto.setName("testName");
         signupDto.setEmail("test@naver.com");
 
-        Long saveUserId = accountService.saveUser(signupDto);
+        UserDto userDto = accountService.saveUser(signupDto);
 
-        User user = userRepository.findById(saveUserId).get();
+        User user = userRepository.findById(userDto.getUserId()).get();
         assertThat(user.getUsername())
                 .isEqualTo(signupDto.getUsername());
     }

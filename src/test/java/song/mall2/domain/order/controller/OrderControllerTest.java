@@ -54,7 +54,7 @@ class OrderControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(cartIdDtoList)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.customer.userId").value(userAId.toString()));
+                .andExpect(jsonPath("$.data.customer.userId").value(userAId.toString()));
     }
 
     @Test
@@ -62,7 +62,7 @@ class OrderControllerTest {
     void getOrders() throws Exception {
         mockMvc.perform(get("/orders/{ordersId}", orders1Id))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.ordersId").value(orders1Id));
+                .andExpect(jsonPath("$.data.ordersId").value(orders1Id));
     }
 
 }

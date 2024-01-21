@@ -3,6 +3,7 @@ package song.mall2.domain.cart.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -43,7 +44,7 @@ class CartControllerTest {
     void cartList() throws Exception {
         MvcResult result = mockMvc.perform(get("/cart"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$.success", Matchers.equalTo(true)))
                 .andReturn();
 
         String content = result.getResponse().getContentAsString();

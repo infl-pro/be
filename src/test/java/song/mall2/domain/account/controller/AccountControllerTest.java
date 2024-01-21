@@ -48,17 +48,18 @@ class AccountControllerTest {
         SignupDto signupDto = new SignupDto();
         signupDto.setUsername("testUsername");
         signupDto.setPassword("testPassword");
+        signupDto.setConfirmPassword("testPassword");
         signupDto.setName("testName");
         signupDto.setEmail(email);
-        mockMvc.perform(post("/account/signupUser")
+        mockMvc.perform(post("/account/signup")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(signupDto)))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
     }
 
     @Test
     void validateUsername() throws Exception {
-        RequestValidateUsername validateUsername = new RequestValidateUsername("testValidateUsername");
+        RequestValidateUsername validateUsername = new RequestValidateUsername("testUsername");
         mockMvc.perform(post("/account/validateUsername")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(validateUsername)))

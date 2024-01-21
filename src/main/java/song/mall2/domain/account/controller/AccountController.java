@@ -45,7 +45,7 @@ public class AccountController {
     public ResponseEntity<ResponseApi> postVerifyEmail(@Valid @RequestBody RequestVerifyEmail requestVerifyEmail) {
         String token = accountService.createEmailVerificationToken(requestVerifyEmail.getEmail());
 
-        emailService.sendMail(requestVerifyEmail.getEmail(), "이메일 인증", "token: " + token);
+//        emailService.sendMail(requestVerifyEmail.getEmail(), "이메일 인증", "token: " + token);
 
         return ResponseEntity.ok(new ResponseApi(true, "인증 토큰 발송", null));
     }
@@ -68,7 +68,7 @@ public class AccountController {
     public ResponseEntity<Object> postFindPassword(@RequestBody RequestFindPassword requestFindPassword) {
         ResetPasswordToken passwordToken = accountService.createResetPasswordToken(requestFindPassword.getUsername(), requestFindPassword.getName(), requestFindPassword.getEmail());
 
-        emailService.sendMail(passwordToken.getEmail(), "비밀번호 초기화", AWS_URL + passwordToken.getToken());
+//        emailService.sendMail(passwordToken.getEmail(), "비밀번호 초기화", AWS_URL + passwordToken.getToken());
 
         return ResponseEntity.ok().build();
     }

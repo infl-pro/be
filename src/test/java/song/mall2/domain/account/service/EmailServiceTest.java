@@ -1,5 +1,6 @@
 package song.mall2.domain.account.service;
 
+import jakarta.mail.MessagingException;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,7 @@ class EmailServiceTest {
     EmailService emailService;
 
     @Test
-    void sendMail() {
+    void sendMail() throws MessagingException {
         emailService.sendMail("dkclasltmf@naver.com", "test email", "test");
     }
 

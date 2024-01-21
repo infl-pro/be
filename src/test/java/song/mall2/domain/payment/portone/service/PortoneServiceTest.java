@@ -1,10 +1,12 @@
 package song.mall2.domain.payment.portone.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
+import song.mall2.exception.portone.exceptions.PortoneCancellationException;
 
 @Slf4j
 @SpringBootTest
@@ -28,6 +30,7 @@ class PortoneServiceTest {
 
     @Test
     void cancelPayment() {
-        portoneService.cancel("pid-a4d82a34");
+        Assertions.assertThatThrownBy(() -> portoneService.cancel("pid-a4d82a34"))
+                .isInstanceOf(PortoneCancellationException.class);
     }
 }

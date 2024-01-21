@@ -13,6 +13,7 @@ import org.springframework.test.context.TestPropertySource;
 import song.mall2.domain.common.dto.ProductListDto;
 import song.mall2.domain.product.dto.EditProductDto;
 import song.mall2.domain.product.dto.ProductDto;
+import song.mall2.domain.product.dto.ProductPageDto;
 import song.mall2.domain.product.dto.SaveProductDto;
 import song.mall2.domain.product.entity.Product;
 
@@ -55,16 +56,10 @@ class ProductServiceTest {
     }
 
     @Test
-    void getEditForm() {
-        EditProductDto editForm = productService.getEditForm(productAId, lmoodId);
-        assertThat(editForm.getProductName())
-                .isEqualTo(productService.getProduct(productAId).getProductName());
-    }
-
-    @Test
     void editProduct() {
-        EditProductDto editForm = productService.getEditForm(productAId, lmoodId);
+        EditProductDto editForm = new EditProductDto();
         editForm.setProductName("edit name");
+        editForm.setProductDescription("edit description");
         editForm.setProductPrice(1);
 
         ProductDto productDto = productService.editProduct(productAId, lmoodId, editForm);
@@ -76,7 +71,7 @@ class ProductServiceTest {
     @Test
     void getProductList() throws JsonProcessingException {
         PageRequest pageRequest = PageRequest.of(0, 10);
-        Page<ProductListDto> productList = productService.findProductList(pageRequest);
+        ProductPageDto productList = productService.findProductList(pageRequest);
 
         String page = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(productList);
         log.info("{}", page);
