@@ -54,12 +54,12 @@ public class ProductService {
         Product product = findById(productId);
         User user = getUserById(userId);
 
-        boolean isPurchased = isPurchased(user.getId(), product);
+        boolean hasPurchased = isPurchased(user.getId(), product);
         boolean isSeller = product.isSeller(user.getId());
 
         return new ProductDto(product.getId(), product.getName(), product.getPrice(), product.getDescription(),
                 product.getThumbnailUrl(), product.getStockQuantity(), product.getCategory().name(),
-                product.getUser().getUsername(), isPurchased, isSeller);
+                product.getUser().getUsername(), hasPurchased, isSeller);
     }
 
 //    @Transactional
