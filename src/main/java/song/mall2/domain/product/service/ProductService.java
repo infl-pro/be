@@ -7,17 +7,17 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import song.mall2.domain.common.dto.PageDto;
-import song.mall2.domain.product.dto.ProductListDto;
+import song.mall2.domain.product.dto.*;
 import song.mall2.domain.order.repository.OrderProductJpaRepository;
-import song.mall2.domain.product.dto.EditProductDto;
-import song.mall2.domain.product.dto.ProductDto;
-import song.mall2.domain.product.dto.SaveProductDto;
 import song.mall2.domain.product.entity.Product;
 import song.mall2.domain.product.repository.ProductJpaRepository;
+import song.mall2.domain.review.repository.ReviewJpaRepository;
 import song.mall2.domain.user.entity.User;
 import song.mall2.domain.user.repository.UserJpaRepository;
 import song.mall2.exception.notfound.exceptions.ProductNotFoundException;
 import song.mall2.exception.notfound.exceptions.UserNotFoundException;
+
+import java.util.List;
 
 @Slf4j
 @Service
@@ -26,10 +26,11 @@ public class ProductService {
     private final ProductJpaRepository productRepository;
     private final UserJpaRepository userRepository;
     private final OrderProductJpaRepository orderProductRepository;
+    private final ReviewJpaRepository reviewRepository;
 
     @Transactional
     public ProductDto saveProduct(Long userId, SaveProductDto saveProductDto) {
-        User user = getUserById(userId);
+        User user = getUser(userId);
         Product product = Product.create(user, saveProductDto.getName(), saveProductDto.getPrice(), saveProductDto.getDescription(),
                 saveProductDto.getThumbnailUrl(), saveProductDto.getStockQuantity(), saveProductDto.getCategoryName());
 
@@ -37,29 +38,33 @@ public class ProductService {
 
         return new ProductDto(saveProduct.getId(), product.getName(), product.getPrice(), product.getDescription(),
                 product.getThumbnailUrl(), product.getStockQuantity(), product.getCategory().name(),
-                product.getUser().getUsername(), false, true);
+                product.getUser().getUsername(), null, false, true);
     }
 
     @Transactional
     public ProductDto getProduct(Long productId) {
         Product product = findById(productId);
 
+        List<ProductReviewDto> reviewList = getReviewList(product);
+
         return new ProductDto(product.getId(), product.getName(), product.getPrice(), product.getDescription(),
                 product.getThumbnailUrl(), product.getStockQuantity(), product.getCategory().name(),
-                product.getUser().getUsername());
+                product.getUser().getUsername(), reviewList);
     }
 
     @Transactional
     public ProductDto getProduct(Long productId, Long userId) {
         Product product = findById(productId);
-        User user = getUserById(userId);
+        User user = getUser(userId);
+
+        List<ProductReviewDto> reviewList = getReviewList(product);
 
         boolean hasPurchased = isPurchased(user.getId(), product);
         boolean isSeller = product.isSeller(user.getId());
 
         return new ProductDto(product.getId(), product.getName(), product.getPrice(), product.getDescription(),
                 product.getThumbnailUrl(), product.getStockQuantity(), product.getCategory().name(),
-                product.getUser().getUsername(), hasPurchased, isSeller);
+                product.getUser().getUsername(), reviewList, hasPurchased, isSeller);
     }
 
 //    @Transactional
@@ -80,24 +85,27 @@ public class ProductService {
 
         Product saveProduct = productRepository.save(product);
         boolean hasPurchased = isPurchased(product.getUser().getId(), product);
+        List<ProductReviewDto> reviewList = getReviewList(saveProduct);
 
         return new ProductDto(saveProduct.getId(), saveProduct.getName(), saveProduct.getPrice(), saveProduct.getDescription(),
                 saveProduct.getThumbnailUrl(), saveProduct.getStockQuantity(), saveProduct.getCategory().name(),
-                saveProduct.getUser().getUsername(), hasPurchased, true);
+                saveProduct.getUser().getUsername(), reviewList, hasPurchased, true);
     }
 
-    @Transactional
-    public ProductDto updateStockQuantity(Long productId, Long userId, Integer stockQuantity) {
-        Product product = findByIdAndUserId(productId, userId);
-
-        product.updateStockQuantity(stockQuantity);
-
-        Product saveProduct = productRepository.save(product);
-
-        return new ProductDto(saveProduct.getId(), saveProduct.getName(), saveProduct.getPrice(), saveProduct.getDescription(),
-                saveProduct.getThumbnailUrl(), saveProduct.getStockQuantity(), saveProduct.getCategory().name(),
-                saveProduct.getUser().getUsername());
-    }
+//    @Transactional
+//    public ProductDto updateStockQuantity(Long productId, Long userId, Integer stockQuantity) {
+//        Product product = findByIdAndUserId(productId, userId);
+//
+//        product.updateStockQuantity(stockQuantity);
+//
+//        Product saveProduct = productRepository.save(product);
+//
+//        List<ProductReviewDto> reviewList = getReviewList(saveProduct);
+//
+//        return new ProductDto(saveProduct.getId(), saveProduct.getName(), saveProduct.getPrice(), saveProduct.getDescription(),
+//                saveProduct.getThumbnailUrl(), saveProduct.getStockQuantity(), saveProduct.getCategory().name(),
+//                saveProduct.getUser().getUsername(), reviewList);
+//    }
 
     @Transactional
     public PageDto findProductList(Pageable pageable) {
@@ -144,7 +152,7 @@ public class ProductService {
         return new PageDto(pageDto);
     }
 
-    private User getUserById(Long userId) {
+    private User getUser(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("사용자를 찾을 수 없습니다."));
     }
@@ -152,6 +160,14 @@ public class ProductService {
     private Product findById(Long productId) {
         return productRepository.findById(productId)
                 .orElseThrow(() -> new ProductNotFoundException("상품을 찾을 수 없습니다."));
+    }
+
+    private List<ProductReviewDto> getReviewList(Product product) {
+        return reviewRepository.findAllByProductId(product.getId())
+                .stream()
+                .map(review -> new ProductReviewDto(review.getId(), review.getUser().getUsername(), review.getContent(),
+                        review.getRating(), review.getCreateAt()))
+                .toList();
     }
 
     private Product findByIdAndUserId(Long productId, Long userId) {

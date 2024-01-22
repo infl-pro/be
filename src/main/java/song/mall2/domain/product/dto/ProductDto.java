@@ -4,6 +4,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter @Setter
 @NoArgsConstructor
 public class ProductDto {
@@ -19,8 +22,10 @@ public class ProductDto {
     private boolean hasPurchased = false;
     private boolean isSeller = false;
 
+    private List<ProductReviewDto> reviewList = new ArrayList<>();
+
     public ProductDto(Long productId, String productName, Integer price, String description, String thumbnailUrl, Integer stockQuantity,
-                      String category, String sellerName) {
+                      String category, String sellerName, List<ProductReviewDto> reviewList) {
         this.productId = productId;
         this.productName = productName;
         this.price = price;
@@ -29,10 +34,11 @@ public class ProductDto {
         this.stockQuantity = stockQuantity;
         this.category = category;
         this.sellerName = sellerName;
+        this.reviewList = reviewList;
     }
 
     public ProductDto(Long productId, String productName, Integer price, String description, String thumbnailUrl, Integer stockQuantity,
-                      String category, String sellerName, boolean hasPurchased, boolean isSeller) {
+                      String category, String sellerName, List<ProductReviewDto> reviewList, boolean hasPurchased, boolean isSeller) {
         this.productId = productId;
         this.productName = productName;
         this.price = price;
@@ -41,6 +47,7 @@ public class ProductDto {
         this.stockQuantity = stockQuantity;
         this.category = category;
         this.sellerName = sellerName;
+        this.reviewList = reviewList;
 
         this.hasPurchased = hasPurchased;
         this.isSeller = isSeller;
