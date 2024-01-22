@@ -6,11 +6,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import song.mall2.domain.common.dto.ProductListDto;
+import song.mall2.domain.common.dto.PageDto;
+import song.mall2.domain.product.dto.ProductListDto;
 import song.mall2.domain.order.repository.OrderProductJpaRepository;
 import song.mall2.domain.product.dto.EditProductDto;
 import song.mall2.domain.product.dto.ProductDto;
-import song.mall2.domain.product.dto.ProductPageDto;
 import song.mall2.domain.product.dto.SaveProductDto;
 import song.mall2.domain.product.entity.Product;
 import song.mall2.domain.product.repository.ProductJpaRepository;
@@ -100,7 +100,7 @@ public class ProductService {
     }
 
     @Transactional
-    public ProductPageDto findProductList(Pageable pageable) {
+    public PageDto findProductList(Pageable pageable) {
         Page<ProductListDto> pageDto = productRepository.findAll(pageable)
                 .map(product -> new ProductListDto(
                         product.getId(), product.getName(), product.getPrice(), product.getThumbnailUrl(),
@@ -108,32 +108,32 @@ public class ProductService {
                 ));
 
 
-        return new ProductPageDto(pageDto);
+        return new PageDto(pageDto);
     }
 
     @Transactional
-    public ProductPageDto findProductListBySearch(Pageable pageable, String searchValue) {
+    public PageDto findProductListBySearch(Pageable pageable, String searchValue) {
         Page<ProductListDto> pageDto = productRepository.findAllBySearch(pageable, searchValue)
                 .map(product -> new ProductListDto(
                         product.getId(), product.getName(), product.getPrice(), product.getThumbnailUrl(),
                         product.getUser().getName()
                 ));
-        return new ProductPageDto(pageDto);
+        return new PageDto(pageDto);
     }
 
     @Transactional
-    public ProductPageDto findProductListByCategory(Pageable pageable, String categoryName) {
+    public PageDto findProductListByCategory(Pageable pageable, String categoryName) {
         Product.Category category = Product.Category.of(categoryName);
         Page<ProductListDto> pageDto = productRepository.findAllByCategory(pageable, category)
                 .map(product -> new ProductListDto(
                         product.getId(), product.getName(), product.getPrice(), product.getThumbnailUrl(),
                         product.getUser().getName()
                 ));
-        return new ProductPageDto(pageDto);
+        return new PageDto(pageDto);
     }
 
     @Transactional
-    public ProductPageDto findProductListBySearchAndCategory(Pageable pageable, String searchValue, String categoryName) {
+    public PageDto findProductListBySearchAndCategory(Pageable pageable, String searchValue, String categoryName) {
         Product.Category category = Product.Category.of(categoryName);
 
         Page<ProductListDto> pageDto = productRepository.findAllBySearchAndCategory(pageable, searchValue, category)
@@ -141,7 +141,7 @@ public class ProductService {
                         product.getId(), product.getName(), product.getPrice(), product.getThumbnailUrl(),
                         product.getUser().getName()
                 ));
-        return new ProductPageDto(pageDto);
+        return new PageDto(pageDto);
     }
 
     private User getUserById(Long userId) {

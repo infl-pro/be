@@ -1,4 +1,4 @@
-package song.mall2.domain.common.dto;
+package song.mall2.domain.order.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,11 +8,11 @@ import lombok.Setter;
 @Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductListDto {
+public class OrderProductDto {
     private Long productId;
     private String productName;
-    private Integer productPrice;
     private String productThumbnail;
-
-    private String brandName;
+    private String status;
+    private Integer amount;
+    private Integer quantity;
 }

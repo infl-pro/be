@@ -8,11 +8,11 @@ import lombok.Setter;
 @Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class OrderProductDto {
-    private Long productId;
-    private String productName;
-    private String productThumbnail;
+public class OrderProductPaymentDto {
+    private Long id;
+    private Long userId;
+    private Long ordersId;
+    private String paymentId;
     private String status;
     private Integer amount;
-    private Integer quantity;
 }

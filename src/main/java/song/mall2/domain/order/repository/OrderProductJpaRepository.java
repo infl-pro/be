@@ -1,5 +1,7 @@
 package song.mall2.domain.order.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -25,5 +27,6 @@ public interface OrderProductJpaRepository extends JpaRepository<OrderProduct, L
 
     @EntityGraph(attributePaths = {"orders", "orders.payment"})
     @Query("select op from OrderProduct op where op.product.id = :productId")
-    List<OrderProduct> findAllByProductId(Long productId);
+    Page<OrderProduct> findAllByProductId(@Param("productId") Long productId,
+                                          Pageable pageable);
 }
