@@ -9,14 +9,14 @@ import org.springframework.stereotype.Service;
 import song.mall2.domain.cart.dto.CartIdDto;
 import song.mall2.domain.cart.entity.Cart;
 import song.mall2.domain.cart.repository.CartJpaRepository;
-import song.mall2.domain.order.dto.OrderProductDto;
+import song.mall2.domain.orderproduct.dto.OrderProductDto;
 import song.mall2.domain.order.dto.OrderFormDto;
-import song.mall2.domain.order.dto.OrderProductListDto;
+import song.mall2.domain.orderproduct.dto.OrderProductListDto;
 import song.mall2.domain.order.dto.OrdersDto;
-import song.mall2.domain.order.entity.OrderProduct;
+import song.mall2.domain.orderproduct.entity.OrderProduct;
 import song.mall2.domain.order.entity.Orders;
 import song.mall2.domain.order.repository.OrderProductJpaRepository;
-import song.mall2.domain.order.repository.OrdersJpaRepository;
+import song.mall2.domain.orderproduct.repository.OrdersJpaRepository;
 import song.mall2.domain.payment.entity.Payment;
 import song.mall2.domain.payment.portone.service.PortoneService;
 import song.mall2.domain.payment.repository.PaymentJpaRepository;
@@ -25,7 +25,6 @@ import song.mall2.domain.user.entity.User;
 import song.mall2.domain.user.repository.UserJpaRepository;
 import song.mall2.exception.invalid.exceptions.InvalidRequestException;
 import song.mall2.exception.notfound.exceptions.OrdersNotFoundException;
-import song.mall2.exception.notfound.exceptions.PaymentNotFoundException;
 import song.mall2.exception.notfound.exceptions.UserNotFoundException;
 
 import java.util.ArrayList;
@@ -76,10 +75,8 @@ public class OrderService {
                 .orElseThrow(() -> new OrdersNotFoundException("주문을 찾을 수 없습니다."));
 
         List<OrderProductDto> orderProductDtoList = getOrderProductDtoList(orders);
-        Payment payment = paymentRepository.findByOrdersId(orders.getId())
-                .orElseThrow(() -> new PaymentNotFoundException("결제 정보를 찾을 수 없습니다."));
 
-        return new OrdersDto(orders.getId(), orders.getCreateAt(), orderProductDtoList, payment.getTotalAmount(), payment.getStatus());
+        return new OrdersDto(orders.getId(), orders.getCreateAt(), orderProductDtoList, orders.getPayment().getTotalAmount(), orders.getPayment().getStatus());
     }
 
     @Transactional
@@ -90,8 +87,7 @@ public class OrderService {
 
         List<OrderProductDto> orderProductDtoList = cancelOrderProductList(orders);
 
-        Payment payment = paymentRepository.findByOrdersId(orders.getId()).
-                orElseThrow(() -> new PaymentNotFoundException("결제 정보를 찾을 수 없습니다."));
+        Payment payment = orders.getPayment();
         CancellationResponse cancellationResponse = portoneService.cancel(payment.getPaymentId());
 
         payment.cancel(cancellationResponse.getCancellation().getCancelledAt());

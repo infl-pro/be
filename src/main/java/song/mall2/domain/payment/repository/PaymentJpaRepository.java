@@ -11,11 +11,11 @@ import java.util.Optional;
 
 @Repository
 public interface PaymentJpaRepository extends JpaRepository<Payment, Long> {
-    @EntityGraph(attributePaths = {"user", "orders"})
+    @EntityGraph(attributePaths = {"user"})
     @Query("select p from Payment p where p.paymentId = :paymentId")
     Optional<Payment> findByPaymentId(@Param("paymentId") String paymentId);
 
-    @EntityGraph(attributePaths = {"user", "orders"})
-    @Query("select p from Payment p where p.orders.id = :ordersId")
-    Optional<Payment> findByOrdersId(@Param("ordersId") Long ordersId);
+//    @EntityGraph(attributePaths = {"user"})
+//    @Query("select p from Payment p where p.orders.id = :ordersId")
+//    Optional<Payment> findByOrdersId(@Param("ordersId") Long ordersId);
 }

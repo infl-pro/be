@@ -8,10 +8,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import song.mall2.domain.cart.entity.Cart;
 import song.mall2.domain.cart.repository.CartJpaRepository;
-import song.mall2.domain.order.entity.OrderProduct;
+import song.mall2.domain.orderproduct.entity.OrderProduct;
 import song.mall2.domain.order.entity.Orders;
 import song.mall2.domain.order.repository.OrderProductJpaRepository;
-import song.mall2.domain.order.repository.OrdersJpaRepository;
+import song.mall2.domain.orderproduct.repository.OrdersJpaRepository;
 import song.mall2.domain.payment.entity.Payment;
 import song.mall2.domain.payment.repository.PaymentJpaRepository;
 import song.mall2.domain.product.entity.Product;
@@ -98,7 +98,11 @@ public class Init {
         }
 
         private Orders saveOrder(User user, Product product, Integer quantity) {
-            Orders orders = Orders.create(user);
+            Payment payment = Payment.of(user, "testPayment", "PAID", product.getPrice() * quantity, DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm").format(LocalDateTime.now()), null, null,
+                    "korea seoul");
+            Payment savePayment = paymentRepository.save(payment);
+
+            Orders orders = Orders.create(user, savePayment);
 
             List<OrderProduct> orderProductList = new ArrayList<>();
             OrderProduct orderProduct = OrderProduct.create(orders, product, user, quantity);
@@ -106,9 +110,6 @@ public class Init {
 
             Orders saveOrders = ordersRepository.save(orders);
             List<OrderProduct> saveOrderProductList = orderProductRepository.saveAll(orderProductList);
-
-            Payment payment = Payment.of(user, orders, "testPayment", "PAID", orderProduct.getAmount(), DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm").format(LocalDateTime.now()), null, null);
-            Payment savePayment = paymentRepository.save(payment);
 
             return saveOrders;
         }

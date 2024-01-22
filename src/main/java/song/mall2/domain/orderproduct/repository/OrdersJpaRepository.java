@@ -1,4 +1,4 @@
-package song.mall2.domain.order.repository;
+package song.mall2.domain.orderproduct.repository;
 
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,7 +11,10 @@ import java.util.Optional;
 
 @Repository
 public interface OrdersJpaRepository extends JpaRepository<Orders, Long> {
-    @EntityGraph(attributePaths = {"user"})
+    @EntityGraph(attributePaths = {"user", "payment"})
     @Query("select o from Orders o where o.id = :ordersId and o.user.id = :userId")
     Optional<Orders> findByIdAndUserId(@Param("ordersId") Long ordersId,@Param("userId") Long userId);
+
+    @Query("select o from Orders o where o.payment.paymentId = :paymentId")
+    Optional<Orders> findByPaymentId(@Param("paymentId") String paymentId);
 }

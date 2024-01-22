@@ -7,8 +7,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import song.mall2.domain.common.api.ResponseApi;
-import song.mall2.domain.order.dto.OrdersIdDto;
 import song.mall2.domain.payment.dto.Callback;
+import song.mall2.domain.payment.dto.PaymentDto;
 import song.mall2.domain.payment.dto.Webhook;
 import song.mall2.domain.payment.service.PaymentService;
 import song.mall2.security.authentication.userprincipal.UserPrincipal;
@@ -37,11 +37,11 @@ public class PaymentController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/callback")
-    public ResponseEntity<ResponseApi> postCallback(@RequestBody Callback callback,
-                                                    @AuthenticationPrincipal UserPrincipal userPrincipal) {
-        OrdersIdDto ordersId = paymentService.getOrdersId(userPrincipal.getId(), callback.getPaymentId());
+    @GetMapping
+    public ResponseEntity<ResponseApi> getPayment(@RequestBody Callback callback,
+                                                  @AuthenticationPrincipal UserPrincipal userPrincipal) {
+        PaymentDto payment = paymentService.getPayment(userPrincipal.getId(), callback.getPaymentId());
 
-        return ResponseEntity.ok(new ResponseApi(true, "주문 생성 성공", ordersId));
+        return ResponseEntity.ok(new ResponseApi(true, "결제 조회", payment));
     }
 }

@@ -1,4 +1,4 @@
-package song.mall2.domain.order.dto;
+package song.mall2.domain.orderproduct.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

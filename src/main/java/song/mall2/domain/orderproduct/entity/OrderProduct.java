@@ -1,9 +1,10 @@
-package song.mall2.domain.order.entity;
+package song.mall2.domain.orderproduct.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import song.mall2.domain.order.entity.Orders;
 import song.mall2.domain.product.entity.Product;
 import song.mall2.domain.user.entity.User;
 import song.mall2.exception.invalid.exceptions.InvalidRequestException;

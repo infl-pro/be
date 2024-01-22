@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import song.mall2.domain.orderproduct.entity.OrderProduct;
+import song.mall2.domain.payment.entity.Payment;
 import song.mall2.domain.user.entity.User;
 
 import java.time.LocalDateTime;
@@ -24,6 +26,10 @@ public class Orders {
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
+    @JoinColumn(name = "payment")
+    @OneToOne(fetch = FetchType.LAZY)
+    private Payment payment;
+
     @OneToMany(mappedBy = "orders", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private List<OrderProduct> orderProductList = new ArrayList<>();
 
@@ -31,15 +37,20 @@ public class Orders {
     @Column(updatable = false)
     private LocalDateTime createAt;
 
-    private Orders(User user) {
+    private Orders(User user, Payment payment) {
         this.user = user;
+        this.payment = payment;
     }
 
-    public static Orders create(User user) {
-        return new Orders(user);
+    public static Orders create(User user, Payment payment) {
+        return new Orders(user, payment);
     }
 
     public void addOrderProduct(OrderProduct orderProduct) {
         this.orderProductList.add(orderProduct);
+    }
+
+    public boolean isBuyer(Long userId) {
+        return this.user.getId().equals(userId);
     }
 }
