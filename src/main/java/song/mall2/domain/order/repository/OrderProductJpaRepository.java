@@ -8,11 +8,17 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import song.mall2.domain.orderproduct.entity.OrderProduct;
+import song.mall2.domain.product.entity.Product;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface OrderProductJpaRepository extends JpaRepository<OrderProduct, Long> {
+    @EntityGraph(attributePaths = {"orders", "product", "user"})
+    @Query("select op from OrderProduct op where op.id = :id")
+    Optional<OrderProduct> findById(@Param("id") Long id);
+
     @EntityGraph(attributePaths = {"orders", "product"})
     @Query("select op from OrderProduct op where op.orders.id = :ordersId")
     List<OrderProduct> findAllByOrdersId(@Param("ordersId") Long ordersId);

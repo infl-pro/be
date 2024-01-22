@@ -55,6 +55,10 @@ public class OrderProduct {
         this.product.increaseStockQuantity(quantity);
     }
 
+    public boolean isBuyer(Long userId) {
+        return this.user.getId().equals(userId);
+    }
+
     public enum Status {
         PREPARING, PAID, SHIPPING, COMPLETED, CANCELLED;
 
