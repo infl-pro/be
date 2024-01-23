@@ -59,12 +59,12 @@ public class ProductService {
 
         List<ProductReviewDto> reviewList = getReviewList(product);
 
-        boolean hasPurchased = isPurchased(user.getId(), product);
+        boolean isPurchased = isPurchased(user.getId(), product);
         boolean isSeller = product.isSeller(user.getId());
 
         return new ProductDto(product.getId(), product.getName(), product.getPrice(), product.getDescription(),
                 product.getThumbnailUrl(), product.getStockQuantity(), product.getCategory().name(),
-                product.getUser().getUsername(), reviewList, hasPurchased, isSeller);
+                product.getUser().getUsername(), reviewList, isPurchased, isSeller);
     }
 
 //    @Transactional
@@ -84,12 +84,12 @@ public class ProductService {
                 editProductDto.getStockQuantity(), editProductDto.getThumbnailUrl(), product.getCategory().name());
 
         Product saveProduct = productRepository.save(product);
-        boolean hasPurchased = isPurchased(product.getUser().getId(), product);
+        boolean isPurchased = isPurchased(product.getUser().getId(), product);
         List<ProductReviewDto> reviewList = getReviewList(saveProduct);
 
         return new ProductDto(saveProduct.getId(), saveProduct.getName(), saveProduct.getPrice(), saveProduct.getDescription(),
                 saveProduct.getThumbnailUrl(), saveProduct.getStockQuantity(), saveProduct.getCategory().name(),
-                saveProduct.getUser().getUsername(), reviewList, hasPurchased, true);
+                saveProduct.getUser().getUsername(), reviewList, isPurchased, true);
     }
 
 //    @Transactional

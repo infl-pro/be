@@ -19,10 +19,12 @@ public class ProductDto {
     private String category;
     private String sellerName;
 
-    private boolean hasPurchased = false;
+    private boolean isPurchased = false;
     private boolean isSeller = false;
 
     private List<ProductReviewDto> reviewList = new ArrayList<>();
+//    private Integer favorite;
+//    private boolean isFavorite;
 
     public ProductDto(Long productId, String productName, Integer price, String description, String thumbnailUrl, Integer stockQuantity,
                       String category, String sellerName, List<ProductReviewDto> reviewList) {
@@ -38,7 +40,7 @@ public class ProductDto {
     }
 
     public ProductDto(Long productId, String productName, Integer price, String description, String thumbnailUrl, Integer stockQuantity,
-                      String category, String sellerName, List<ProductReviewDto> reviewList, boolean hasPurchased, boolean isSeller) {
+                      String category, String sellerName, List<ProductReviewDto> reviewList, boolean isPurchased, boolean isSeller) {
         this.productId = productId;
         this.productName = productName;
         this.price = price;
@@ -49,7 +51,7 @@ public class ProductDto {
         this.sellerName = sellerName;
         this.reviewList = reviewList;
 
-        this.hasPurchased = hasPurchased;
+        this.isPurchased = isPurchased;
         this.isSeller = isSeller;
     }
 }
