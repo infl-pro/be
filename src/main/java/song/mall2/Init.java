@@ -8,6 +8,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import song.mall2.domain.cart.entity.Cart;
 import song.mall2.domain.cart.repository.CartJpaRepository;
+import song.mall2.domain.favorite.entity.Favorite;
+import song.mall2.domain.favorite.repository.FavoriteJpaRepository;
 import song.mall2.domain.orderproduct.entity.OrderProduct;
 import song.mall2.domain.order.entity.Orders;
 import song.mall2.domain.order.repository.OrderProductJpaRepository;
@@ -53,6 +55,7 @@ public class Init {
         private final OrderProductJpaRepository orderProductRepository;
         private final PaymentJpaRepository paymentRepository;
         private final ReviewJpaRepository reviewRepository;
+        private final FavoriteJpaRepository favoriteRepository;
 
         @Transactional
         public void setData() {
@@ -77,6 +80,15 @@ public class Init {
             Orders orders = saveOrder(userA, lmoodP1, 10);
 
             saveReview(orders, userA);
+            Favorite userAFavorite1 = addFavorite(userA, lmoodP1);
+            Favorite userAFavorite2 = addFavorite(userA, lmoodP2);
+            Favorite userAFavorite3 = addFavorite(userA, lmoodP3);
+        }
+
+        private Favorite addFavorite(User user, Product product) {
+            Favorite favorite = Favorite.create(user, product);
+
+            return favoriteRepository.save(favorite);
         }
 
         private User saveUser(String username, String password, String name, String email) {
