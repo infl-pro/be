@@ -4,67 +4,62 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import song.mall2.domain.common.api.ExceptionApi;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import song.mall2.domain.common.api.ResponseApi;
 import song.mall2.exception.illegal.IllegalException;
 import song.mall2.exception.invalid.InvalidException;
 import song.mall2.exception.notfound.NotFoundException;
 import song.mall2.exception.portone.PortoneException;
 
 @Slf4j
+@ResponseBody
 @ControllerAdvice
 @RequiredArgsConstructor
 public class ExceptionController {
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler({NotFoundException.class})
-    public ResponseEntity<ExceptionApi> notFoundExceptionHandler(NotFoundException exception) {
-        return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .body(new ExceptionApi(false, exception.getClass().getSimpleName(), exception.getMessage()));
+    public ResponseApi<String> notFoundExceptionHandler(NotFoundException exception) {
+        return new ResponseApi<>(HttpStatus.NOT_FOUND.value(), exception.getClass(), exception.getMessage());
     }
 
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler({InvalidException.class})
-    public ResponseEntity<ExceptionApi> invalidExceptionHandler(InvalidException exception) {
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(new ExceptionApi(false, exception.getClass().getSimpleName(), exception.getMessage()));
+    public ResponseApi<String> invalidExceptionHandler(InvalidException exception) {
+        return new ResponseApi<>(HttpStatus.BAD_REQUEST.value(), exception.getClass(), exception.getMessage());
     }
 
+    @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
     @ExceptionHandler({IllegalException.class})
-    public ResponseEntity<ExceptionApi> IllegalExceptionHandler(IllegalException exception) {
-        return ResponseEntity
-                .status(HttpStatus.NOT_ACCEPTABLE)
-                .body(new ExceptionApi(false, exception.getClass().getSimpleName(), exception.getMessage()));
+    public ResponseApi<String> IllegalExceptionHandler(IllegalException exception) {
+        return new ResponseApi<>(HttpStatus.NOT_ACCEPTABLE.value(), exception.getClass(), exception.getMessage());
     }
 
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler({MethodArgumentNotValidException.class})
-    public ResponseEntity<ExceptionApi> argumentNotValidExceptionHandler(MethodArgumentNotValidException exception) {
-        return ResponseEntity
-                .status(HttpServletResponse.SC_BAD_REQUEST)
-                .body(new ExceptionApi(false, exception.getClass().getSimpleName(), "입력 형식이 올바르지 않습니다."));
+    public ResponseApi<String> argumentNotValidExceptionHandler(MethodArgumentNotValidException exception) {
+        return new ResponseApi<>(HttpStatus.BAD_REQUEST.value(), exception.getClass(), exception.getMessage());
     }
 
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler({PortoneException.class})
-    public ResponseEntity<ExceptionApi> portoneExceptionHandler(PortoneException exception) {
-        return ResponseEntity
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new ExceptionApi(false, exception.getClass().getSimpleName(), exception.getMessage()));
+    public ResponseApi<String> portoneExceptionHandler(PortoneException exception) {
+        return new ResponseApi<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), exception.getClass(), exception.getMessage());
     }
 
+    @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
     @ExceptionHandler({MailException.class})
-    public ResponseEntity<ExceptionApi> mailExceptionHandler(MailException exception) {
-        return ResponseEntity
-                .status(HttpStatus.SERVICE_UNAVAILABLE)
-                .body(new ExceptionApi(false, exception.getClass().getSimpleName(), exception.getMessage()));
+    public ResponseApi<String> mailExceptionHandler(MailException exception) {
+        return new ResponseApi<>(HttpStatus.SERVICE_UNAVAILABLE.value(), exception.getClass(), exception.getMessage());
     }
 
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler({Exception.class})
-    public ResponseEntity<ExceptionApi> exceptionHandler(Exception exception) {
-        return ResponseEntity
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new ExceptionApi(false, exception.getClass().getSimpleName(), "알 수 없는 오류가 발생했습니다."));
+    public ResponseApi<String> exceptionHandler(Exception exception) {
+        return new ResponseApi<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), exception.getClass(), exception.getMessage());
     }
 }

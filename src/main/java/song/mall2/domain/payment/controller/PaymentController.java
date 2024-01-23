@@ -2,6 +2,7 @@ package song.mall2.domain.payment.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -15,6 +16,7 @@ import song.mall2.security.authentication.userprincipal.UserPrincipal;
 
 @Slf4j
 @Controller
+@ResponseBody
 @RequestMapping("/payment")
 @RequiredArgsConstructor
 public class PaymentController {
@@ -29,6 +31,7 @@ public class PaymentController {
         return "pay/portone";
     }
 
+    @ResponseStatus(HttpStatus.OK)
     @PostMapping("/webhook")
     public ResponseEntity<Object> postWebhook(@RequestBody Webhook webhook) {
         log.info("webhook: {}", webhook);
@@ -37,11 +40,12 @@ public class PaymentController {
         return ResponseEntity.ok().build();
     }
 
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping
-    public ResponseEntity<ResponseApi> getPayment(@RequestBody Callback callback,
-                                                  @AuthenticationPrincipal UserPrincipal userPrincipal) {
+    public ResponseApi<PaymentDto> getPayment(@RequestBody Callback callback,
+                                              @AuthenticationPrincipal UserPrincipal userPrincipal) {
         PaymentDto payment = paymentService.getPayment(userPrincipal.getId(), callback.getPaymentId());
 
-        return ResponseEntity.ok(new ResponseApi(true, "결제 조회", payment));
+        return new ResponseApi<>(HttpStatus.OK.value(), "결제 조회", payment);
     }
 }

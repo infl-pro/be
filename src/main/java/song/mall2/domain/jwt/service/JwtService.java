@@ -2,10 +2,7 @@ package song.mall2.domain.jwt.service;
 
 import io.jsonwebtoken.*;
 import jakarta.transaction.Transactional;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -142,7 +139,20 @@ public class JwtService {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class TokenDto {
-        private String accessToken;
+        private AccessTokenDto accessToken;
         private String refreshToken;
+
+        public TokenDto(String accessToken, String refreshToken) {
+            this.accessToken = new AccessTokenDto(accessToken, "Bearer");
+            this.refreshToken = refreshToken;
+        }
+
+        @Getter @Setter
+        @NoArgsConstructor
+        @AllArgsConstructor
+        public static class AccessTokenDto {
+            private String accessToken;
+            private String tokenType;
+        }
     }
 }

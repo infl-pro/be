@@ -5,12 +5,12 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
+import song.mall2.domain.common.api.ResponseApi;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 @Slf4j
 public class AccessDeniedHandlerImpl implements AccessDeniedHandler {
@@ -18,13 +18,10 @@ public class AccessDeniedHandlerImpl implements AccessDeniedHandler {
 
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setStatus(HttpStatus.UNAUTHORIZED.value());
         response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
 
-        Map<String, String> messages = new HashMap<>();
-        messages.put("type", accessDeniedException.getClass().getSimpleName());
-        messages.put("message", "forbidden");
-
-        response.getWriter().write(objectMapper.writeValueAsString(messages));
+        response.getWriter().write(objectMapper.writeValueAsString(new ResponseApi<>(response.getStatus(), accessDeniedException.getClass(), "unauthorized")));
     }
 }

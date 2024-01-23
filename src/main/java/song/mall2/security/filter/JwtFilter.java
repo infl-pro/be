@@ -8,19 +8,19 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
+import song.mall2.domain.common.api.ResponseApi;
 import song.mall2.domain.jwt.service.JwtService;
 import song.mall2.exception.invalid.exceptions.InvalidJwtException;
 import song.mall2.security.authentication.userprincipal.UserPrincipal;
 import song.mall2.security.authentication.userprincipal.service.UserDetailsServiceImpl;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -54,13 +54,13 @@ public class JwtFilter extends OncePerRequestFilter {
             SecurityContext context = SecurityContextHolder.getContext();
             context.setAuthentication(authenticationToken);
         } catch (InvalidJwtException e) {
-            doResponse(response, HttpServletResponse.SC_UNAUTHORIZED, e, "토큰이 만료되었습니다.");
+            doResponse(response, HttpStatus.UNAUTHORIZED.value(), e, "토큰이 만료되었습니다.");
             return;
         } catch (JwtException e) {
-            doResponse(response, HttpServletResponse.SC_BAD_REQUEST, e, "jwt exception");
+            doResponse(response, HttpStatus.BAD_REQUEST.value(), e, "유효하지 않은 인증 토큰입니다.");
             return;
         } catch (Exception e) {
-            doResponse(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e, "알 수 없는 에러가 발생했습니다.");
+            doResponse(response, HttpStatus.INTERNAL_SERVER_ERROR.value(), e, "알 수 없는 에러가 발생했습니다.");
             return;
         }
 
@@ -80,11 +80,8 @@ public class JwtFilter extends OncePerRequestFilter {
 
         response.setStatus(status);
         response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
 
-        Map<String, String> messages = new HashMap<>();
-        messages.put("type", e.getClass().getSimpleName());
-        messages.put("message", message);
-
-        response.getWriter().write(objectMapper.writeValueAsString(messages));
+        response.getWriter().write(objectMapper.writeValueAsString(new ResponseApi<>(response.getStatus(), e.getClass(), message)));
     }
 }

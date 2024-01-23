@@ -16,6 +16,8 @@ import song.mall2.domain.payment.entity.Payment;
 import song.mall2.domain.payment.repository.PaymentJpaRepository;
 import song.mall2.domain.product.entity.Product;
 import song.mall2.domain.product.repository.ProductJpaRepository;
+import song.mall2.domain.review.entity.Review;
+import song.mall2.domain.review.repository.ReviewJpaRepository;
 import song.mall2.domain.user.entity.User;
 import song.mall2.domain.user.entity.UserRole;
 import song.mall2.domain.user.repository.UserJpaRepository;
@@ -50,6 +52,7 @@ public class Init {
         private final OrdersJpaRepository ordersRepository;
         private final OrderProductJpaRepository orderProductRepository;
         private final PaymentJpaRepository paymentRepository;
+        private final ReviewJpaRepository reviewRepository;
 
         @Transactional
         public void setData() {
@@ -71,7 +74,9 @@ public class Init {
             addCart(userA, lmoodP1, 10);
             addCart(userA, lmoodP2, 10);
 
-            saveOrder(userA, lmoodP1, 10);
+            Orders orders = saveOrder(userA, lmoodP1, 10);
+
+            saveReview(orders, userA);
         }
 
         private User saveUser(String username, String password, String name, String email) {
@@ -112,6 +117,14 @@ public class Init {
             List<OrderProduct> saveOrderProductList = orderProductRepository.saveAll(orderProductList);
 
             return saveOrders;
+        }
+
+        private void saveReview(Orders orders, User userA) {
+            List<OrderProduct> orderProductList = orderProductRepository.findAllByOrdersId(orders.getId());
+            for (OrderProduct orderProduct : orderProductList) {
+                Review review = Review.create(userA, orderProduct, "testReview", 5);
+                Review saveReview = reviewRepository.save(review);
+            }
         }
     }
 }

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -19,13 +20,15 @@ import java.util.List;
 
 @Slf4j
 @Controller
+@ResponseBody
 @RequestMapping("/file")
 @RequiredArgsConstructor
 public class FileController {
     private final FileService fileService;
 
+    @ResponseStatus(HttpStatus.OK)
     @PostMapping("/uploadFile")
-    public ResponseEntity<ResponseApi> postUploadFile(@RequestParam("files") List<MultipartFile> files) throws IOException {
+    public ResponseApi<List<UploadFileDto>> postUploadFile(@RequestParam("files") List<MultipartFile> files) throws IOException {
         fileService.canUpload(files);
 
         List<UploadFileDto> uploadFileDtoList = new ArrayList<>();
@@ -34,9 +37,10 @@ public class FileController {
             uploadFileDtoList.add(uploadFile);
         }
 
-        return ResponseEntity.ok(new ResponseApi(true, "이미지 업로드 성공", uploadFileDtoList));
+        return new ResponseApi<>(HttpStatus.OK.value(), "이미지 업로드 성공", uploadFileDtoList);
     }
 
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/downloadFile/{fileName}")
     public ResponseEntity<Resource> getDownload(@PathVariable(value = "fileName") String fileName) {
         UrlResource resource = fileService.get(fileName);

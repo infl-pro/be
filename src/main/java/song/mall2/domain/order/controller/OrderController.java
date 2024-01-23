@@ -2,6 +2,7 @@ package song.mall2.domain.order.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -19,39 +20,45 @@ import java.util.List;
 
 @Slf4j
 @Controller
+@ResponseBody
 @RequestMapping("/orders")
 @RequiredArgsConstructor
 public class OrderController {
     private final OrderService orderService;
+
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/form")
-    public ResponseEntity<ResponseApi> getOrderForm(@AuthenticationPrincipal UserPrincipal userPrincipal,
-                                                    @RequestBody List<CartIdDto> cartIdList) {
+    public ResponseApi<OrderFormDto> getOrderForm(@AuthenticationPrincipal UserPrincipal userPrincipal,
+                                                  @RequestBody List<CartIdDto> cartIdList) {
         OrderFormDto orderRequest = orderService.getOrderForm(userPrincipal.getId(), cartIdList);
 
-        return ResponseEntity.ok(new ResponseApi(true, "주문 폼 생성", orderRequest));
+        return new ResponseApi<>(HttpStatus.OK.value(), "주문 폼 생성", orderRequest);
     }
 
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping
-    public ResponseEntity<ResponseApi> getOrderList(@AuthenticationPrincipal UserPrincipal userPrincipal) {
+    public ResponseApi<List<OrderProductListDto>> getOrderList(@AuthenticationPrincipal UserPrincipal userPrincipal) {
         List<OrderProductListDto> orderProductList = orderService.getOrderList(userPrincipal.getId());
 
-        return ResponseEntity.ok(new ResponseApi(true, "주문 내역 조회", orderProductList));
+        return new ResponseApi<>(HttpStatus.OK.value(), "주문 내역 조회", orderProductList);
     }
 
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{ordersId}")
-    public ResponseEntity<ResponseApi> getOrders(@PathVariable("ordersId") Long ordersId,
-                                                 @AuthenticationPrincipal UserPrincipal userPrincipal) {
+    public ResponseApi<OrdersDto> getOrders(@PathVariable("ordersId") Long ordersId,
+                                            @AuthenticationPrincipal UserPrincipal userPrincipal) {
         OrdersDto orders = orderService.getOrders(userPrincipal.getId(), ordersId);
 
-        return ResponseEntity.ok(new ResponseApi(true, "주문 상세 조회", orders));
+        return new ResponseApi<>(HttpStatus.OK.value(), "주문 상세 조회", orders);
     }
 
+    @ResponseStatus(HttpStatus.OK)
     @PostMapping("/{ordersId}/cancel")
-    public ResponseEntity<ResponseApi> postCancelOrders(@PathVariable("ordersId") Long ordersId,
-                                                        @AuthenticationPrincipal UserPrincipal userPrincipal) {
+    public ResponseApi<OrdersDto> postCancelOrders(@PathVariable("ordersId") Long ordersId,
+                                                   @AuthenticationPrincipal UserPrincipal userPrincipal) {
         OrdersDto orders = orderService.cancelOrders(ordersId, userPrincipal.getId());
 
-        return ResponseEntity.ok(new ResponseApi(true, "주문 취소 성공", orders));
+        return new ResponseApi<>(HttpStatus.OK.value(), "주문 취소", orders);
     }
 
     @GetMapping("/carttest")
