@@ -17,7 +17,6 @@ import song.mall2.domain.common.api.ResponseApi;
 import song.mall2.domain.jwt.service.JwtService;
 import song.mall2.exception.invalid.exceptions.InvalidJwtException;
 import song.mall2.security.authentication.userprincipal.UserPrincipal;
-import song.mall2.security.authentication.userprincipal.service.UserDetailsServiceImpl;
 
 import java.io.IOException;
 import java.util.List;
@@ -25,11 +24,17 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
-    private final UserDetailsServiceImpl userDetailsService;
     private final ObjectMapper objectMapper;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        String uri = request.getRequestURI();
+
+        if (uri.equals("/refreshToken")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         String authorization = request.getHeader("Authorization");
 
         if (authorization == null || !authorization.startsWith("Bearer ")) {

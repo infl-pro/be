@@ -1,6 +1,6 @@
 package song.mall2.domain.common.controller;
 
-import jakarta.servlet.http.HttpServletResponse;
+import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -55,6 +55,12 @@ public class ExceptionController {
     @ExceptionHandler({MailException.class})
     public ResponseApi<String> mailExceptionHandler(MailException exception) {
         return new ResponseApi<>(HttpStatus.SERVICE_UNAVAILABLE.value(), exception.getClass(), exception.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler({JwtException.class})
+    public ResponseApi<String> jwtExceptionHandler(JwtException exception) {
+        return new ResponseApi<>(HttpStatus.UNAUTHORIZED.value(), exception.getClass(), "유효하지 않은 인증 토큰입니다.");
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)

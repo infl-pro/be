@@ -6,7 +6,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import song.mall2.domain.common.api.ResponseApi;
@@ -43,11 +42,11 @@ public class HomeController {
         return new ResponseApi<>(HttpStatus.OK.value(), "상품 목록 조회", productService.findProductListBySearchAndCategory(pageRequest, searchValue, searchCategory));
     }
 
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/refreshToken")
-    public ResponseEntity<JwtService.TokenDto> postRefreshToken(@RequestHeader("Authorization") String accessToken,
-                                                                @CookieValue("refreshToken") String refreshToken) {
-        JwtService.TokenDto tokenDto = jwtService.reissueToken(accessToken, refreshToken);
+    public ResponseApi<JwtService.TokenDto.AccessTokenDto> postRefreshToken(@CookieValue("refreshToken") String refreshToken) {
+        JwtService.TokenDto.AccessTokenDto tokenDto = jwtService.reissueToken(refreshToken);
 
-        return ResponseEntity.ok(tokenDto);
+        return new ResponseApi<>(HttpStatus.CREATED.value(), "토큰 재발급", tokenDto);
     }
 }

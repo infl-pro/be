@@ -46,6 +46,7 @@ public class SecurityConfig {
                 .sessionManagement(sessionManagement -> sessionManagement
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/refreshToken/**").permitAll()
                         .requestMatchers("/cart/**").authenticated()
                         .requestMatchers(regexMatcher("^/product/[0-9]+$")).permitAll()
                         .requestMatchers("/product/**").authenticated()
@@ -61,7 +62,7 @@ public class SecurityConfig {
                         .accessDeniedHandler(new AccessDeniedHandlerImpl()))
                 .logout(logout -> logout.disable())
                 .addFilterBefore(new UsernamePasswordFilter(authenticationManager(configuration), authenticationSuccessHandler(), authenticationFailureHandler()), UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(new JwtFilter(userDetailsService, objectMapper), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtFilter(objectMapper), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(new LogFilter(), JwtFilter.class)
                 .build();
     }
