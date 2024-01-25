@@ -16,7 +16,6 @@ import song.mall2.security.authentication.userprincipal.UserPrincipal;
 
 @Slf4j
 @Controller
-@ResponseBody
 @RequestMapping("/payment")
 @RequiredArgsConstructor
 public class PaymentController {
@@ -31,6 +30,7 @@ public class PaymentController {
         return "pay/portone";
     }
 
+    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/webhook")
     public ResponseEntity<Object> postWebhook(@RequestBody Webhook webhook) {
@@ -40,6 +40,7 @@ public class PaymentController {
         return ResponseEntity.ok().build();
     }
 
+    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
     public ResponseApi<PaymentDto> getPayment(@RequestBody Callback callback,
