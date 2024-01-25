@@ -4,17 +4,20 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.util.UriUtils;
 import song.mall2.domain.common.api.ResponseApi;
 import song.mall2.domain.file.dto.UploadFileDto;
 import song.mall2.domain.file.service.FileService;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,14 +43,17 @@ public class FileController {
         return new ResponseApi<>(HttpStatus.OK.value(), "이미지 업로드 성공", uploadFileDtoList);
     }
 
-    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/downloadFile/{fileName}")
     public ResponseEntity<Resource> getDownload(@PathVariable(value = "fileName") String fileName) {
         UrlResource resource = fileService.get(fileName);
         String contentType = getContentType(fileName);
 
+        String resourceName = UriUtils.encode(resource.getFilename(), StandardCharsets.UTF_8);
+        String contentDisposition = "inline; filename=\"" + resourceName + "\"";
+
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(contentType))
+                .header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition)
                 .body(resource);
     }
 
