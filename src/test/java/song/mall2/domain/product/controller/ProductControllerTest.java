@@ -10,8 +10,6 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
-import song.mall2.domain.product.dto.EditProductDto;
-import song.mall2.domain.product.dto.SaveProductDto;
 import song.mall2.domain.product.entity.Product;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -35,17 +33,14 @@ class ProductControllerTest {
     @Test
     @WithUserDetails("a")
     void postSaveProduct() throws Exception {
-        SaveProductDto saveProductDto = new SaveProductDto();
-        saveProductDto.setName("test name");
-        saveProductDto.setPrice(10000);
-        saveProductDto.setDescription("test description");
-        saveProductDto.setStockQuantity(100);
-        saveProductDto.setThumbnailUrl("testUrl");
-        saveProductDto.setCategoryName(Product.Category.TOP.name());
-
-        mockMvc.perform(post("/product/save")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(saveProductDto)))
+        mockMvc.perform(multipart("/product/save")
+                        .param("name", "test name")
+                        .param("price", "10000")
+                        .param("description", "test description")
+                        .param("stockQuantity", "100")
+                        .param("thumbnailUrl", "testUrl")
+                        .param("categoryName", Product.Category.TOP.name())
+                        .contentType(MediaType.MULTIPART_FORM_DATA))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.data.productName").value("test name"));
     }
@@ -58,17 +53,20 @@ class ProductControllerTest {
     }
 
     @Test
-    @WithUserDetails("lmood")
+    @WithUserDetails("northfc")
     void patchProductEdit() throws Exception {
-        EditProductDto editProductDto = new EditProductDto();
-        editProductDto.setProductName("edit name");
-        editProductDto.setProductPrice(1);
-        editProductDto.setProductDescription("edit description");
-        editProductDto.setThumbnailUrl("edit thumbnail");
-
-        mockMvc.perform(patch("/product/{productId}/edit", product1Id)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(editProductDto)))
+        mockMvc.perform(multipart("/product/1/edit")
+                        .with(request -> {
+                            request.setMethod("PATCH");
+                            return request;
+                        })
+                        .param("name", "edit name")
+                        .param("price", "1")
+                        .param("description", "edit description")
+                        .param("stockQuantity", "100")
+                        .param("thumbnailUrl", "edit thumbnail")
+                        .param("categoryName", Product.Category.TOP.name())
+                        .contentType(MediaType.MULTIPART_FORM_DATA))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.productName").value("edit name"));
     }

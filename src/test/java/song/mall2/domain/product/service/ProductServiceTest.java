@@ -10,7 +10,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.TestPropertySource;
 import song.mall2.domain.common.dto.PageDto;
-import song.mall2.domain.product.dto.EditProductDto;
 import song.mall2.domain.product.dto.ProductDto;
 import song.mall2.domain.product.dto.SaveProductDto;
 import song.mall2.domain.product.entity.Product;
@@ -32,7 +31,7 @@ class ProductServiceTest {
 
     Long userAId = 1L;
     Long lmoodId = 2L;
-    Long productAId = 1L;
+    Long lmoodPro1Id = 25L;
 
     @DisplayName("상품 등록")
     @Test
@@ -50,20 +49,20 @@ class ProductServiceTest {
     @DisplayName("상품 상세 조회")
     @Test
     void getProduct() {
-        assertDoesNotThrow(() -> productService.getProduct(productAId));
+        assertDoesNotThrow(() -> productService.getProduct(lmoodPro1Id));
     }
 
     @Test
     void editProduct() {
-        EditProductDto editForm = new EditProductDto();
-        editForm.setProductName("edit name");
-        editForm.setProductDescription("edit description");
-        editForm.setProductPrice(1);
+        SaveProductDto editForm = new SaveProductDto();
+        editForm.setName("edit name");
+        editForm.setDescription("edit description");
+        editForm.setPrice(1);
 
-        ProductDto productDto = productService.editProduct(productAId, lmoodId, editForm);
+        ProductDto productDto = productService.editProduct(lmoodPro1Id, lmoodId, editForm);
 
         assertThat(productDto.getProductName())
-                .isEqualTo(editForm.getProductName());
+                .isEqualTo(editForm.getName());
     }
 
     @Test

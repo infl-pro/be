@@ -1,6 +1,5 @@
 package song.mall2.domain.orderproduct.controller;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -14,9 +13,6 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import song.mall2.domain.common.dto.PageDto;
-import song.mall2.domain.orderproduct.dto.OrderProductPaymentDto;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
 @SpringBootTest
@@ -25,18 +21,18 @@ import static org.junit.jupiter.api.Assertions.*;
         "JASYPT_ENCRYPTOR_PASSWORD=test"
 })
 @AutoConfigureMockMvc
-class OrderProductControllerTest {
+public class OrderProductControllerTest {
     @Autowired
     MockMvc mockMvc;
     @Autowired
     ObjectMapper objectMapper;
 
-    Long product1Id = 1L;
+    Long lmoodPro1Id = 25L;
 
     @Test
     @WithUserDetails("lmood")
     void getOrderProductList() throws Exception {
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/orderProduct/{productId}", product1Id))
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/orderProduct/{productId}", lmoodPro1Id))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.totalPage").isNumber())
                 .andReturn();

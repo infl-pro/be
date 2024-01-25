@@ -19,11 +19,11 @@ class FavoriteJpaRepositoryTest {
     FavoriteJpaRepository favoriteRepository;
 
     Long userAId = 1L;
-    Long product1Id = 1L;
+    Long lmoodPro1Id = 25L;
 
     @Test
     void exists() {
-        assertThat(favoriteRepository.findByUserIdAndProductId(userAId, product1Id))
+        assertThat(favoriteRepository.findByUserIdAndProductId(userAId, lmoodPro1Id))
                 .isNotEmpty();
     }
 

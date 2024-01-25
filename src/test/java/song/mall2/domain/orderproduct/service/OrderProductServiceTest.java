@@ -24,13 +24,13 @@ class OrderProductServiceTest {
     private ObjectMapper objectMapper;
 
     Long lmoodId = 2L;
-    Long product1Id = 1L;
+    Long lmoodPro1Id = 25L;
 
     @Test
     void getOrderProductList() throws JsonProcessingException {
         PageRequest pageRequest = PageRequest.of(0, 10);
 
-        PageDto orderProductList = orderProductService.getOrderProductList(product1Id, lmoodId, pageRequest);
+        PageDto orderProductList = orderProductService.getOrderProductList(lmoodPro1Id, lmoodId, pageRequest);
 
         Assertions.assertThat(orderProductList.getTotalElements())
                 .isEqualTo(1);
