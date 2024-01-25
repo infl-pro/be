@@ -91,7 +91,7 @@ public class ProductService {
                 saveProductDto.getStockQuantity(), saveProductDto.getThumbnailUrl(), product.getCategory().name());
         Product saveProduct = productRepository.save(product);
 
-        updateImageList(saveProductDto, saveProduct);
+        updateImageList(saveProductDto.getImgList(), saveProduct);
 
         boolean isPurchased = isPurchased(saveProduct.getUser().getId(), saveProduct);
         List<ImageDto> imgDtoList = getImgDtoList(saveProduct.getId());
@@ -99,27 +99,6 @@ public class ProductService {
         return new ProductDto(saveProduct.getId(), saveProduct.getName(), saveProduct.getPrice(), saveProduct.getDescription(),
                 saveProduct.getThumbnailUrl(), saveProduct.getStockQuantity(), saveProduct.getCategory().name(),
                 saveProduct.getUser().getName(), imgDtoList, isPurchased, true);
-    }
-
-    private void updateImageList(SaveProductDto saveProductDto, Product saveProduct) {
-        List<Image> productImageList = saveProduct.getImageList();
-        List<String> productImageNameList = productImageList.stream()
-                .map(Image::getStoredName)
-                .toList();
-        List<MultipartFile> editImgList = saveProductDto.getImgList();
-        List<String> editImgNameList = editImgList.stream()
-                .map(MultipartFile::getOriginalFilename)
-                .toList();
-
-        imageRepository.deleteAll(productImageList.stream()
-                .filter(image -> !editImgNameList.contains(image.getStoredName()))
-                .toList());
-
-        List<MultipartFile> newImageFile = editImgList.stream()
-                .filter(multipartFile -> !productImageNameList.contains(multipartFile.getOriginalFilename()))
-                .toList();
-
-        saveImgList(newImageFile, saveProduct);
     }
 
     @Transactional
@@ -183,6 +162,26 @@ public class ProductService {
                 .stream()
                 .map(image -> new ImageDto(image.getFileUrl()))
                 .toList();
+    }
+
+    private void updateImageList(List<MultipartFile> editImgList, Product saveProduct) {
+        List<Image> productImageList = saveProduct.getImageList();
+        List<String> productImageNameList = productImageList.stream()
+                .map(Image::getStoredName)
+                .toList();
+        List<String> editImgNameList = editImgList.stream()
+                .map(MultipartFile::getOriginalFilename)
+                .toList();
+
+        imageRepository.deleteAll(productImageList.stream()
+                .filter(image -> !editImgNameList.contains(image.getStoredName()))
+                .toList());
+
+        List<MultipartFile> newImageFile = editImgList.stream()
+                .filter(multipartFile -> !productImageNameList.contains(multipartFile.getOriginalFilename()))
+                .toList();
+
+        saveImgList(newImageFile, saveProduct);
     }
 
     private User getUser(Long userId) {
