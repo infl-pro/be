@@ -1,4 +1,4 @@
-package song.mall2.domain.file.service;
+package song.mall2.domain.img.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -6,13 +6,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import song.mall2.domain.file.dto.UploadFileDto;
+import song.mall2.domain.img.dto.UploadFileDto;
 import song.mall2.exception.invalid.exceptions.InvalidRequestException;
 import song.mall2.exception.notfound.exceptions.FileNotFoundException;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -23,19 +24,18 @@ public class FileService {
     @Value("${upload.path}")
     private String uploadPath;
 
-    public void canUpload(List<MultipartFile> multipartFileList) {
-        List<String> extList = multipartFileList.stream()
-                .map(multipartFile -> getExt(multipartFile.getOriginalFilename()))
-                .toList();
+    public List<UploadFileDto> upload(List<MultipartFile> multipartFileList) throws IOException {
+        canUpload(multipartFileList);
+        List<UploadFileDto> fileDtoList = new ArrayList<>();
 
-        for (String ext : extList) {
-            if (!ext.equals("jpeg") && !ext.equals("jpg") && !ext.equals("png")) {
-                throw new InvalidRequestException("지원되지 않는 파일 형식입니다.");
-            }
+        for (MultipartFile multipartFile : multipartFileList) {
+            UploadFileDto upload = upload(multipartFile);
+            fileDtoList.add(upload);
         }
+        return fileDtoList;
     }
 
-    public UploadFileDto upload(MultipartFile multipartFile) throws IOException {
+    private UploadFileDto upload(MultipartFile multipartFile) throws IOException {
         if (multipartFile.isEmpty()) {
             return null;
         }
@@ -47,11 +47,15 @@ public class FileService {
         return new UploadFileDto(savedFileName);
     }
 
-    public void delete(String savedFileName) {
-        File file = new File(getFullPath(savedFileName));
+    private void canUpload(List<MultipartFile> multipartFileList) {
+        List<String> extList = multipartFileList.stream()
+                .map(multipartFile -> getExt(multipartFile.getOriginalFilename()))
+                .toList();
 
-        if (file.exists()) {
-            file.delete();
+        for (String ext : extList) {
+            if (!ext.equals("jpeg") && !ext.equals("jpg") && !ext.equals("png")) {
+                throw new InvalidRequestException("지원되지 않는 파일 형식입니다.");
+            }
         }
     }
 
@@ -80,6 +84,14 @@ public class FileService {
     private String getExt(String originalFilename) {
         int p = originalFilename.lastIndexOf(".");
         return originalFilename.substring(p + 1);
+    }
+
+    public void delete(String savedFileName) {
+        File file = new File(getFullPath(savedFileName));
+
+        if (file.exists()) {
+            file.delete();
+        }
     }
 
     public void isExists(String saveFileName) {

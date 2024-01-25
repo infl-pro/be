@@ -7,7 +7,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import song.mall2.domain.common.api.ResponseApi;
-import song.mall2.domain.product.dto.EditProductDto;
 import song.mall2.domain.product.dto.ProductDto;
 import song.mall2.domain.product.dto.SaveProductDto;
 import song.mall2.domain.product.service.ProductService;
@@ -24,7 +23,7 @@ public class ProductController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/save")
     public ResponseApi<ProductDto> postSaveProduct(@AuthenticationPrincipal UserPrincipal userPrincipal,
-                                                   @RequestBody SaveProductDto saveProductDto) {
+                                                   @ModelAttribute SaveProductDto saveProductDto) {
         ProductDto productDto = productService.saveProduct(userPrincipal.getId(), saveProductDto);
 
         return new ResponseApi<>(HttpStatus.CREATED.value(), "상품 등록", productDto);
@@ -45,8 +44,8 @@ public class ProductController {
     @PatchMapping("/{productId}/edit")
     public ResponseApi<ProductDto> postEditProduct(@PathVariable("productId") Long productId,
                                                    @AuthenticationPrincipal UserPrincipal userPrincipal,
-                                                   @RequestBody EditProductDto editProductDto) {
-        ProductDto productDto = productService.editProduct(productId, userPrincipal.getId(), editProductDto);
+                                                   @ModelAttribute SaveProductDto saveProductDto) {
+        ProductDto productDto = productService.editProduct(productId, userPrincipal.getId(), saveProductDto);
 
         return new ResponseApi<>(HttpStatus.OK.value(), "상품 수정", productDto);
     }

@@ -4,9 +4,13 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import song.mall2.domain.img.entity.Image;
 import song.mall2.domain.user.entity.User;
 import song.mall2.exception.invalid.exceptions.InvalidRequestException;
 import song.mall2.exception.invalid.exceptions.InvalidStockQuantityException;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -18,6 +22,9 @@ public class Product {
     @JoinColumn(name = "user_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
+
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
+    private List<Image> imageList = new ArrayList<>();
 
     private String name;
     private Integer price;
@@ -63,8 +70,8 @@ public class Product {
         this.category = Category.of(categoryName);
     }
 
-    public void updateStockQuantity(Integer stockQuantity) {
-        this.stockQuantity = stockQuantity;
+    public void addImage(Image image) {
+        this.imageList.add(image);
     }
 
     public boolean isSeller(Long userId) {
@@ -76,7 +83,7 @@ public class Product {
 
         public static Category of(String categoryName) {
             for (Category category : values()) {
-                if (categoryName.equals(category.name())) {
+                if (categoryName.toUpperCase().equals(category.name())) {
                     return category;
                 }
             }

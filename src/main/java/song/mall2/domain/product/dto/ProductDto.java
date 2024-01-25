@@ -3,6 +3,7 @@ package song.mall2.domain.product.dto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import song.mall2.domain.img.dto.ImageDto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,12 +23,14 @@ public class ProductDto {
     private boolean isPurchased = false;
     private boolean isSeller = false;
 
-    private List<ProductReviewDto> reviewList = new ArrayList<>();
+    private List<ImageDto> imgList = new ArrayList<>();
+
+//    private List<ProductReviewDto> reviewList = new ArrayList<>();
 //    private Integer favorite;
 //    private boolean isFavorite;
 
     public ProductDto(Long productId, String productName, Integer price, String description, String thumbnailUrl, Integer stockQuantity,
-                      String category, String sellerName, List<ProductReviewDto> reviewList) {
+                      String category, String sellerName, List<ImageDto> imageList) {
         this.productId = productId;
         this.productName = productName;
         this.price = price;
@@ -36,11 +39,11 @@ public class ProductDto {
         this.stockQuantity = stockQuantity;
         this.category = category;
         this.sellerName = sellerName;
-        this.reviewList = reviewList;
+        this.imgList = imageList;
     }
 
     public ProductDto(Long productId, String productName, Integer price, String description, String thumbnailUrl, Integer stockQuantity,
-                      String category, String sellerName, List<ProductReviewDto> reviewList, boolean isPurchased, boolean isSeller) {
+                      String category, String sellerName, List<ImageDto> imageList, boolean isPurchased, boolean isSeller) {
         this.productId = productId;
         this.productName = productName;
         this.price = price;
@@ -49,7 +52,7 @@ public class ProductDto {
         this.stockQuantity = stockQuantity;
         this.category = category;
         this.sellerName = sellerName;
-        this.reviewList = reviewList;
+        this.imgList = imageList;
 
         this.isPurchased = isPurchased;
         this.isSeller = isSeller;

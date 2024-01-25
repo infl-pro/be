@@ -1,4 +1,4 @@
-package song.mall2.domain.file.dto;
+package song.mall2.domain.img.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,7 +9,7 @@ import lombok.Setter;
 public class UploadFileDto {
     private String fileUrl;
 
-    public UploadFileDto(String savedFileName) {
-        this.fileUrl = "/file/downloadFile/" + savedFileName;
+    public UploadFileDto(String storedName) {
+        this.fileUrl = "/file/downloadFile/" + storedName;
     }
 }

@@ -6,17 +6,26 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import song.mall2.domain.common.dto.PageDto;
+import song.mall2.domain.img.dto.ImageDto;
+import song.mall2.domain.img.dto.UploadFileDto;
+import song.mall2.domain.img.entity.Image;
+import song.mall2.domain.img.repository.ImageJpaRepository;
+import song.mall2.domain.img.service.FileService;
 import song.mall2.domain.product.dto.*;
 import song.mall2.domain.order.repository.OrderProductJpaRepository;
 import song.mall2.domain.product.entity.Product;
 import song.mall2.domain.product.repository.ProductJpaRepository;
-import song.mall2.domain.review.repository.ReviewJpaRepository;
 import song.mall2.domain.user.entity.User;
 import song.mall2.domain.user.repository.UserJpaRepository;
+import song.mall2.exception.invalid.exceptions.InvalidImageException;
+import song.mall2.exception.invalid.exceptions.InvalidUserException;
 import song.mall2.exception.notfound.exceptions.ProductNotFoundException;
 import song.mall2.exception.notfound.exceptions.UserNotFoundException;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -26,7 +35,8 @@ public class ProductService {
     private final ProductJpaRepository productRepository;
     private final UserJpaRepository userRepository;
     private final OrderProductJpaRepository orderProductRepository;
-    private final ReviewJpaRepository reviewRepository;
+    private final ImageJpaRepository imageRepository;
+    private final FileService fileService;
 
     @Transactional
     public ProductDto saveProduct(Long userId, SaveProductDto saveProductDto) {
@@ -35,21 +45,23 @@ public class ProductService {
                 saveProductDto.getThumbnailUrl(), saveProductDto.getStockQuantity(), saveProductDto.getCategoryName());
 
         Product saveProduct = productRepository.save(product);
+        saveImgList(saveProductDto.getImgList(), saveProduct);
 
+        List<ImageDto> imgDtoList = getImgDtoList(saveProduct.getId());
         return new ProductDto(saveProduct.getId(), product.getName(), product.getPrice(), product.getDescription(),
                 product.getThumbnailUrl(), product.getStockQuantity(), product.getCategory().name(),
-                product.getUser().getUsername(), null, false, true);
+                product.getUser().getName(), imgDtoList, false, true);
     }
 
     @Transactional
     public ProductDto getProduct(Long productId) {
         Product product = findById(productId);
 
-        List<ProductReviewDto> reviewList = getReviewList(product);
+        List<ImageDto> imgDtoList = getImgDtoList(product.getId());
 
         return new ProductDto(product.getId(), product.getName(), product.getPrice(), product.getDescription(),
                 product.getThumbnailUrl(), product.getStockQuantity(), product.getCategory().name(),
-                product.getUser().getUsername(), reviewList);
+                product.getUser().getName(), imgDtoList);
     }
 
     @Transactional
@@ -57,55 +69,58 @@ public class ProductService {
         Product product = findById(productId);
         User user = getUser(userId);
 
-        List<ProductReviewDto> reviewList = getReviewList(product);
+        List<ImageDto> imgDtoList = getImgDtoList(product.getId());
 
         boolean isPurchased = isPurchased(user.getId(), product);
         boolean isSeller = product.isSeller(user.getId());
 
         return new ProductDto(product.getId(), product.getName(), product.getPrice(), product.getDescription(),
                 product.getThumbnailUrl(), product.getStockQuantity(), product.getCategory().name(),
-                product.getUser().getUsername(), reviewList, isPurchased, isSeller);
+                product.getUser().getName(), imgDtoList, isPurchased, isSeller);
     }
 
-//    @Transactional
-//    public EditProductDto getEditForm(Long productId, Long userId) {
-//        Product product = productRepository.findByIdAndUserId(productId, userId)
-//                .orElseThrow(() -> new ProductNotFoundException("상품을 찾을 수 없습니다."));
-//
-//        return new EditProductDto(product.getName(), product.getPrice(), product.getDescription(),
-//                product.getThumbnailUrl(), product.getCategory().name());
-//    }
-
     @Transactional
-    public ProductDto editProduct(Long productId, Long userId, EditProductDto editProductDto) {
-        Product product = findByIdAndUserId(productId, userId);
+    public ProductDto editProduct(Long productId, Long userId, SaveProductDto saveProductDto) {
+        User user = getUser(userId);
+        Product product = findById(productId);
+        if (!product.isSeller(user.getId())) {
+            throw new InvalidUserException("접근 권한이 없습니다.");
+        }
 
-        product.update(editProductDto.getProductName(), editProductDto.getProductPrice(), editProductDto.getProductDescription(),
-                editProductDto.getStockQuantity(), editProductDto.getThumbnailUrl(), product.getCategory().name());
-
+        product.update(saveProductDto.getName(), saveProductDto.getPrice(), saveProductDto.getDescription(),
+                saveProductDto.getStockQuantity(), saveProductDto.getThumbnailUrl(), product.getCategory().name());
         Product saveProduct = productRepository.save(product);
-        boolean isPurchased = isPurchased(product.getUser().getId(), product);
-        List<ProductReviewDto> reviewList = getReviewList(saveProduct);
+
+        updateImageList(saveProductDto, saveProduct);
+
+        boolean isPurchased = isPurchased(saveProduct.getUser().getId(), saveProduct);
+        List<ImageDto> imgDtoList = getImgDtoList(saveProduct.getId());
 
         return new ProductDto(saveProduct.getId(), saveProduct.getName(), saveProduct.getPrice(), saveProduct.getDescription(),
                 saveProduct.getThumbnailUrl(), saveProduct.getStockQuantity(), saveProduct.getCategory().name(),
-                saveProduct.getUser().getUsername(), reviewList, isPurchased, true);
+                saveProduct.getUser().getName(), imgDtoList, isPurchased, true);
     }
 
-//    @Transactional
-//    public ProductDto updateStockQuantity(Long productId, Long userId, Integer stockQuantity) {
-//        Product product = findByIdAndUserId(productId, userId);
-//
-//        product.updateStockQuantity(stockQuantity);
-//
-//        Product saveProduct = productRepository.save(product);
-//
-//        List<ProductReviewDto> reviewList = getReviewList(saveProduct);
-//
-//        return new ProductDto(saveProduct.getId(), saveProduct.getName(), saveProduct.getPrice(), saveProduct.getDescription(),
-//                saveProduct.getThumbnailUrl(), saveProduct.getStockQuantity(), saveProduct.getCategory().name(),
-//                saveProduct.getUser().getUsername(), reviewList);
-//    }
+    private void updateImageList(SaveProductDto saveProductDto, Product saveProduct) {
+        List<Image> productImageList = saveProduct.getImageList();
+        List<String> productImageNameList = productImageList.stream()
+                .map(Image::getStoredName)
+                .toList();
+        List<MultipartFile> editImgList = saveProductDto.getImgList();
+        List<String> editImgNameList = editImgList.stream()
+                .map(MultipartFile::getOriginalFilename)
+                .toList();
+
+        imageRepository.deleteAll(productImageList.stream()
+                .filter(image -> !editImgNameList.contains(image.getStoredName()))
+                .toList());
+
+        List<MultipartFile> newImageFile = editImgList.stream()
+                .filter(multipartFile -> !productImageNameList.contains(multipartFile.getOriginalFilename()))
+                .toList();
+
+        saveImgList(newImageFile, saveProduct);
+    }
 
     @Transactional
     public PageDto findProductList(Pageable pageable) {
@@ -152,6 +167,24 @@ public class ProductService {
         return new PageDto(pageDto);
     }
 
+    private void saveImgList(List<MultipartFile> imgList, Product saveProduct) {
+        try {
+            imageRepository.saveAll(fileService.upload(imgList)
+                    .stream()
+                    .map(fileDto -> Image.create(saveProduct, fileDto.getFileUrl()))
+                    .toList());
+        } catch (IOException e) {
+            throw new InvalidImageException("이미지를 업로드할 수 없습니다.");
+        }
+    }
+
+    private List<ImageDto> getImgDtoList(Long productId) {
+        return imageRepository.findAllByProductId(productId)
+                .stream()
+                .map(image -> new ImageDto(image.getFileUrl()))
+                .toList();
+    }
+
     private User getUser(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("사용자를 찾을 수 없습니다."));
@@ -159,19 +192,6 @@ public class ProductService {
 
     private Product findById(Long productId) {
         return productRepository.findById(productId)
-                .orElseThrow(() -> new ProductNotFoundException("상품을 찾을 수 없습니다."));
-    }
-
-    private List<ProductReviewDto> getReviewList(Product product) {
-        return reviewRepository.findAllByProductId(product.getId())
-                .stream()
-                .map(review -> new ProductReviewDto(review.getId(), review.getUser().getUsername(), review.getContent(),
-                        review.getRating(), review.getCreateAt()))
-                .toList();
-    }
-
-    private Product findByIdAndUserId(Long productId, Long userId) {
-        return productRepository.findByIdAndUserId(productId, userId)
                 .orElseThrow(() -> new ProductNotFoundException("상품을 찾을 수 없습니다."));
     }
 
