@@ -27,7 +27,7 @@ public class CartController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
-    public ResponseApi<List<CartDto>> getCart(@AuthenticationPrincipal UserPrincipal userPrincipal) {
+    public ResponseApi<List<CartDto>, String> getCart(@AuthenticationPrincipal UserPrincipal userPrincipal) {
         List<CartDto> cartList = cartService.getCartList(userPrincipal.getId());
 
         return new ResponseApi<>(HttpStatus.OK.value(), "장바구니 조회", cartList);
@@ -35,7 +35,7 @@ public class CartController {
 
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/add")
-    public ResponseApi<CartDto> postAddCart(@AuthenticationPrincipal UserPrincipal userPrincipal,
+    public ResponseApi<CartDto, String> postAddCart(@AuthenticationPrincipal UserPrincipal userPrincipal,
                                             @Valid @RequestBody SaveCartDto saveCartDto) {
         CartDto cartDto = cartService.addCart(userPrincipal.getId(), saveCartDto.getProductId(), saveCartDto.getQuantity());
 
@@ -44,7 +44,7 @@ public class CartController {
 
     @ResponseStatus(HttpStatus.OK)
     @DeleteMapping("/delete")
-    public ResponseApi<Object> postDeleteCart(@AuthenticationPrincipal UserPrincipal userPrincipal,
+    public ResponseApi<Object, String> postDeleteCart(@AuthenticationPrincipal UserPrincipal userPrincipal,
                                               @Valid @RequestBody List<CartIdDto> cartIdDtoList) {
         cartService.deleteCart(userPrincipal.getId(), cartIdDtoList);
 
@@ -53,7 +53,7 @@ public class CartController {
 
     @ResponseStatus(HttpStatus.OK)
     @PatchMapping("/updateQuantity")
-    public ResponseApi<CartDto> postUpdateQuantity(@AuthenticationPrincipal UserPrincipal userPrincipal,
+    public ResponseApi<CartDto, String> postUpdateQuantity(@AuthenticationPrincipal UserPrincipal userPrincipal,
                                                    @Valid @RequestBody UpdateCartQuantity cartQuantity) {
         CartDto cartDto = cartService.updateCartQuantity(userPrincipal.getId(), cartQuantity.getCartId(), cartQuantity.getQuantity());
 

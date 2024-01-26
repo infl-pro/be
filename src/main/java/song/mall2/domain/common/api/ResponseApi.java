@@ -8,14 +8,14 @@ import lombok.Setter;
 @Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ResponseApi<T> {
+public class ResponseApi<T, M> {
     private boolean success;
     private int status;
     private String type;
-    private String message;
+    private M message;
     private T data;
 
-    public ResponseApi(int status, Class<? extends Exception> type, String message) {
+    public ResponseApi(int status, Class<? extends Exception> type, M message) {
         this.success = false;
         this.status = status;
         this.type = type.getSimpleName();
@@ -23,7 +23,7 @@ public class ResponseApi<T> {
         this.data = null;
     }
 
-    public ResponseApi(int status, String message, T data) {
+    public ResponseApi(int status, M message, T data) {
         this.success = true;
         this.status = status;
         this.type = null;

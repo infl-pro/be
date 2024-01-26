@@ -25,7 +25,7 @@ public class HomeController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/productList")
-    public ResponseApi<PageDto> getHome(@PageableDefault(size = 6, page = 0, sort = "id", direction = DESC) Pageable pageable,
+    public ResponseApi<PageDto, String> getHome(@PageableDefault(size = 6, page = 0, sort = "id", direction = DESC) Pageable pageable,
                                         @RequestParam(value = "searchCategory", required = false) String searchCategory,
                                         @RequestParam(value = "searchValue", required = false) String searchValue) {
         PageRequest pageRequest = PageRequest.of(pageable.getPageNumber(), 6, pageable.getSort());
@@ -44,7 +44,7 @@ public class HomeController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/refreshToken")
-    public ResponseApi<JwtService.TokenDto.AccessTokenDto> postRefreshToken(@CookieValue("refreshToken") String refreshToken) {
+    public ResponseApi<JwtService.TokenDto.AccessTokenDto, String> postRefreshToken(@CookieValue("refreshToken") String refreshToken) {
         JwtService.TokenDto.AccessTokenDto tokenDto = jwtService.reissueToken(refreshToken);
 
         return new ResponseApi<>(HttpStatus.CREATED.value(), "토큰 재발급", tokenDto);

@@ -43,7 +43,7 @@ public class PaymentController {
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
-    public ResponseApi<PaymentDto> getPayment(@RequestBody Callback callback,
+    public ResponseApi<PaymentDto, String> getPayment(@RequestBody Callback callback,
                                               @AuthenticationPrincipal UserPrincipal userPrincipal) {
         PaymentDto payment = paymentService.getPayment(userPrincipal.getId(), callback.getPaymentId());
 

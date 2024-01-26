@@ -21,7 +21,7 @@ public class FavoriteController {
 
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/{productId}")
-    public ResponseApi<FavoriteDto> postFavorite(@PathVariable("productId") Long productId,
+    public ResponseApi<FavoriteDto, String> postFavorite(@PathVariable("productId") Long productId,
                                                  @AuthenticationPrincipal UserPrincipal userPrincipal) {
         FavoriteDto favorite = favoriteService.addFavorite(userPrincipal.getId(), productId);
 
@@ -30,7 +30,7 @@ public class FavoriteController {
 
     @ResponseStatus(HttpStatus.OK)
     @DeleteMapping("/{productId}")
-    public ResponseApi<Object> deleteFavorite(@PathVariable("productId") Long productId,
+    public ResponseApi<Object, String> deleteFavorite(@PathVariable("productId") Long productId,
                                               @AuthenticationPrincipal UserPrincipal userPrincipal) {
         favoriteService.deleteFavorite(userPrincipal.getId(), productId);
 

@@ -7,6 +7,7 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import song.mall2.domain.img.dto.UploadFileDto;
+import song.mall2.exception.invalid.exceptions.InvalidImageException;
 import song.mall2.exception.invalid.exceptions.InvalidRequestException;
 import song.mall2.exception.notfound.exceptions.FileNotFoundException;
 
@@ -24,38 +25,50 @@ public class FileService {
     @Value("${upload.path}")
     private String uploadPath;
 
-    public List<UploadFileDto> upload(List<MultipartFile> multipartFileList) throws IOException {
-        canUpload(multipartFileList);
+    public List<UploadFileDto> upload(List<MultipartFile> multipartFileList) {
         List<UploadFileDto> fileDtoList = new ArrayList<>();
 
-        for (MultipartFile multipartFile : multipartFileList) {
-            UploadFileDto upload = upload(multipartFile);
-            fileDtoList.add(upload);
-        }
-        return fileDtoList;
-    }
+        try {
+            for (MultipartFile multipartFile : multipartFileList) {
+                if (multipartFile == null || multipartFile.isEmpty()) {
+                    return fileDtoList;
+                }
+                canUpload(multipartFile);
+                String originalFilename = multipartFile.getOriginalFilename().replace(" ", "");
+                String savedFileName = createSavedFileName(originalFilename);
+                multipartFile.transferTo(new File(getFullPath(savedFileName)));
 
-    private UploadFileDto upload(MultipartFile multipartFile) throws IOException {
-        if (multipartFile.isEmpty()) {
-            return null;
-        }
-
-        String originalFilename = multipartFile.getOriginalFilename().replace(" ", "");
-        String savedFileName = createSavedFileName(originalFilename);
-        multipartFile.transferTo(new File(getFullPath(savedFileName)));
-
-        return new UploadFileDto(savedFileName);
-    }
-
-    private void canUpload(List<MultipartFile> multipartFileList) {
-        List<String> extList = multipartFileList.stream()
-                .map(multipartFile -> getExt(multipartFile.getOriginalFilename()))
-                .toList();
-
-        for (String ext : extList) {
-            if (!ext.equals("jpeg") && !ext.equals("jpg") && !ext.equals("png")) {
-                throw new InvalidRequestException("지원되지 않는 파일 형식입니다.");
+                UploadFileDto upload = new UploadFileDto(savedFileName);
+                fileDtoList.add(upload);
             }
+            return fileDtoList;
+        } catch (IOException e) {
+            throw new InvalidImageException("이미지를 저장할 수 없습니다.");
+        }
+    }
+
+    public UploadFileDto upload(MultipartFile multipartFile) {
+        try {
+            if (multipartFile.isEmpty()) {
+                return null;
+            }
+            canUpload(multipartFile);
+
+            String originalFilename = multipartFile.getOriginalFilename().replace(" ", "");
+            String savedFileName = createSavedFileName(originalFilename);
+            multipartFile.transferTo(new File(getFullPath(savedFileName)));
+
+            return new UploadFileDto(savedFileName);
+        } catch (IOException e) {
+            throw new InvalidImageException("이미지를 저장할 수 없습니다.");
+        }
+    }
+
+    private void canUpload(MultipartFile multipartFile) {
+        String ext = getExt(multipartFile.getOriginalFilename());
+
+        if (!ext.equals("jpeg") && !ext.equals("jpg") && !ext.equals("png")) {
+            throw new InvalidRequestException("지원되지 않는 파일 형식입니다.");
         }
     }
 

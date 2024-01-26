@@ -29,7 +29,7 @@ public class OrderController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/form")
-    public ResponseApi<OrderFormDto> getOrderForm(@AuthenticationPrincipal UserPrincipal userPrincipal,
+    public ResponseApi<OrderFormDto, String> getOrderForm(@AuthenticationPrincipal UserPrincipal userPrincipal,
                                                   @Valid @RequestBody List<CartIdDto> cartIdList) {
         OrderFormDto orderRequest = orderService.getOrderForm(userPrincipal.getId(), cartIdList);
 
@@ -38,7 +38,7 @@ public class OrderController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
-    public ResponseApi<List<OrderProductListDto>> getOrderList(@AuthenticationPrincipal UserPrincipal userPrincipal) {
+    public ResponseApi<List<OrderProductListDto>, String> getOrderList(@AuthenticationPrincipal UserPrincipal userPrincipal) {
         List<OrderProductListDto> orderProductList = orderService.getOrderList(userPrincipal.getId());
 
         return new ResponseApi<>(HttpStatus.OK.value(), "주문 내역 조회", orderProductList);
@@ -46,7 +46,7 @@ public class OrderController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{ordersId}")
-    public ResponseApi<OrdersDto> getOrders(@PathVariable("ordersId") Long ordersId,
+    public ResponseApi<OrdersDto, String> getOrders(@PathVariable("ordersId") Long ordersId,
                                             @AuthenticationPrincipal UserPrincipal userPrincipal) {
         OrdersDto orders = orderService.getOrders(userPrincipal.getId(), ordersId);
 
@@ -55,7 +55,7 @@ public class OrderController {
 
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/{ordersId}/cancel")
-    public ResponseApi<OrdersDto> postCancelOrders(@PathVariable("ordersId") Long ordersId,
+    public ResponseApi<OrdersDto, String> postCancelOrders(@PathVariable("ordersId") Long ordersId,
                                                    @AuthenticationPrincipal UserPrincipal userPrincipal) {
         OrdersDto orders = orderService.cancelOrders(ordersId, userPrincipal.getId());
 

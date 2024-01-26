@@ -23,7 +23,7 @@ public class ProductController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/save")
-    public ResponseApi<ProductDto> postSaveProduct(@AuthenticationPrincipal UserPrincipal userPrincipal,
+    public ResponseApi<ProductDto, String> postSaveProduct(@AuthenticationPrincipal UserPrincipal userPrincipal,
                                                    @Valid @ModelAttribute SaveProductDto saveProductDto) {
         ProductDto productDto = productService.saveProduct(userPrincipal.getId(), saveProductDto);
 
@@ -32,7 +32,7 @@ public class ProductController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{productId}")
-    public ResponseApi<ProductDto> getProduct(@PathVariable("productId") Long productId,
+    public ResponseApi<ProductDto, String> getProduct(@PathVariable("productId") Long productId,
                                               @AuthenticationPrincipal UserPrincipal userPrincipal) {
         if (userPrincipal == null) {
             return new ResponseApi<>(HttpStatus.OK.value(), "상품 조회", productService.getProduct(productId));
@@ -43,7 +43,7 @@ public class ProductController {
 
     @ResponseStatus(HttpStatus.OK)
     @PatchMapping("/{productId}/edit")
-    public ResponseApi<ProductDto> postEditProduct(@PathVariable("productId") Long productId,
+    public ResponseApi<ProductDto, String> postEditProduct(@PathVariable("productId") Long productId,
                                                    @AuthenticationPrincipal UserPrincipal userPrincipal,
                                                    @Valid @ModelAttribute SaveProductDto saveProductDto) {
         ProductDto productDto = productService.editProduct(productId, userPrincipal.getId(), saveProductDto);

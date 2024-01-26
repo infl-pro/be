@@ -24,7 +24,7 @@ public class OrderProductController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{productId}")
-    public ResponseApi<PageDto> getOrderProductList(@PathVariable("productId") Long productId,
+    public ResponseApi<PageDto, String> getOrderProductList(@PathVariable("productId") Long productId,
                                                     @AuthenticationPrincipal UserPrincipal userPrincipal,
                                                     @PageableDefault(page = 0) Pageable pageable) {
         PageRequest pageRequest = PageRequest.of(pageable.getPageNumber(), 5);

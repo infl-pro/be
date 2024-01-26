@@ -5,21 +5,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriUtils;
-import song.mall2.domain.common.api.ResponseApi;
-import song.mall2.domain.img.dto.UploadFileDto;
 import song.mall2.domain.img.service.FileService;
 
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
 
 @Slf4j
 @Controller
@@ -28,20 +21,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class FileController {
     private final FileService fileService;
-
-//    @ResponseStatus(HttpStatus.OK)
-//    @PostMapping("/uploadFile")
-//    public ResponseApi<List<UploadFileDto>> postUploadFile(@RequestParam("files") List<MultipartFile> files) throws IOException {
-//        fileService.canUpload(files);
-//
-//        List<UploadFileDto> uploadFileDtoList = new ArrayList<>();
-//        for (MultipartFile multipartFile : files) {
-//            UploadFileDto uploadFile = fileService.upload(multipartFile);
-//            uploadFileDtoList.add(uploadFile);
-//        }
-//
-//        return new ResponseApi<>(HttpStatus.OK.value(), "이미지 업로드 성공", uploadFileDtoList);
-//    }
 
     @GetMapping("/downloadFile/{fileName}")
     public ResponseEntity<Resource> getDownload(@PathVariable(value = "fileName") String fileName) {

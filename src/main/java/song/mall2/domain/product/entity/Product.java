@@ -70,6 +70,14 @@ public class Product {
         this.category = Category.of(categoryName);
     }
 
+    public void update(String name, Integer price, String description, Integer stockQuantity, String categoryName) {
+        this.name = name;
+        this.price = price;
+        this.description = description;
+        this.stockQuantity = stockQuantity;
+        this.category = Category.of(categoryName);
+    }
+
     public void addImage(Image image) {
         this.imageList.add(image);
     }

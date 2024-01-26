@@ -19,13 +19,10 @@ import song.mall2.domain.product.entity.Product;
 import song.mall2.domain.product.repository.ProductJpaRepository;
 import song.mall2.domain.user.entity.User;
 import song.mall2.domain.user.repository.UserJpaRepository;
-import song.mall2.exception.invalid.exceptions.InvalidImageException;
 import song.mall2.exception.invalid.exceptions.InvalidUserException;
 import song.mall2.exception.notfound.exceptions.ProductNotFoundException;
 import song.mall2.exception.notfound.exceptions.UserNotFoundException;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -41,10 +38,14 @@ public class ProductService {
     @Transactional
     public ProductDto saveProduct(Long userId, SaveProductDto saveProductDto) {
         User user = getUser(userId);
+
+        UploadFileDto thumbnailUpload = getThumbnail(saveProductDto.getThumbnail());
+
         Product product = Product.create(user, saveProductDto.getName(), saveProductDto.getPrice(), saveProductDto.getDescription(),
-                saveProductDto.getThumbnailUrl(), saveProductDto.getStockQuantity(), saveProductDto.getCategoryName());
+                thumbnailUpload.getFileUrl(), saveProductDto.getStockQuantity(), saveProductDto.getCategoryName());
 
         Product saveProduct = productRepository.save(product);
+        log.info("size ==================== {}", saveProductDto.getImgList().size());
         saveImgList(saveProductDto.getImgList(), saveProduct);
 
         List<ImageDto> imgDtoList = getImgDtoList(saveProduct.getId());
@@ -87,8 +88,15 @@ public class ProductService {
             throw new InvalidUserException("접근 권한이 없습니다.");
         }
 
-        product.update(saveProductDto.getName(), saveProductDto.getPrice(), saveProductDto.getDescription(),
-                saveProductDto.getStockQuantity(), saveProductDto.getThumbnailUrl(), product.getCategory().name());
+        if (!product.getThumbnailUrl().substring(product.getThumbnailUrl().lastIndexOf("/")).equals(saveProductDto.getThumbnail().getOriginalFilename())) {
+            UploadFileDto newThumbnailUpload = getThumbnail(saveProductDto.getThumbnail());
+            product.update(saveProductDto.getName(), saveProductDto.getPrice(), saveProductDto.getDescription(),
+                    saveProductDto.getStockQuantity(), newThumbnailUpload.getFileUrl(), product.getCategory().name());
+        } else {
+            product.update(saveProductDto.getName(), saveProductDto.getPrice(), saveProductDto.getDescription(),
+                    saveProductDto.getStockQuantity(), product.getCategory().name());
+        }
+
         Product saveProduct = productRepository.save(product);
 
         updateImageList(saveProductDto.getImgList(), saveProduct);
@@ -147,14 +155,13 @@ public class ProductService {
     }
 
     private void saveImgList(List<MultipartFile> imgList, Product saveProduct) {
-        try {
-            imageRepository.saveAll(fileService.upload(imgList)
-                    .stream()
-                    .map(fileDto -> Image.create(saveProduct, fileDto.getFileUrl()))
-                    .toList());
-        } catch (IOException e) {
-            throw new InvalidImageException("이미지를 업로드할 수 없습니다.");
+        if (imgList == null || imgList.isEmpty()) {
+            return;
         }
+        imageRepository.saveAll(fileService.upload(imgList)
+                .stream()
+                .map(fileDto -> Image.create(saveProduct, fileDto.getFileUrl()))
+                .toList());
     }
 
     private List<ImageDto> getImgDtoList(Long productId) {
@@ -165,6 +172,9 @@ public class ProductService {
     }
 
     private void updateImageList(List<MultipartFile> editImgList, Product saveProduct) {
+        if (editImgList == null) {
+            return;
+        }
         List<Image> productImageList = saveProduct.getImageList();
         List<String> productImageNameList = productImageList.stream()
                 .map(Image::getStoredName)
@@ -187,6 +197,10 @@ public class ProductService {
     private User getUser(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("사용자를 찾을 수 없습니다."));
+    }
+
+    private UploadFileDto getThumbnail(MultipartFile thumbnail) {
+        return fileService.upload(thumbnail);
     }
 
     private Product findById(Long productId) {

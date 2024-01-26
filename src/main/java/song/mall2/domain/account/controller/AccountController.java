@@ -27,7 +27,7 @@ public class AccountController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/signup")
-    public ResponseApi<UserDto> postSaveUser(@Valid @RequestBody SignupDto signupDto) {
+    public ResponseApi<UserDto, String> postSaveUser(@Valid @RequestBody SignupDto signupDto) {
         UserDto user = accountService.saveUser(signupDto);
 
         return new ResponseApi<>(HttpStatus.CREATED.value(), "회원가입 성공", user);
@@ -35,7 +35,7 @@ public class AccountController {
 
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/validateUsername")
-    public ResponseApi<Object> validateUsername(@Valid @RequestBody RequestValidateUsername requestValidateUsername) {
+    public ResponseApi<Object, String> validateUsername(@Valid @RequestBody RequestValidateUsername requestValidateUsername) {
         accountService.validateUsername(requestValidateUsername.getUsername());
 
         return new ResponseApi<>(HttpStatus.OK.value(), "아이디 중복 검증 성공", null);
@@ -43,7 +43,7 @@ public class AccountController {
 
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/verifyEmail")
-    public ResponseApi<Object> postVerifyEmail(@Valid @RequestBody RequestVerifyEmail requestVerifyEmail) throws MessagingException {
+    public ResponseApi<Object, String> postVerifyEmail(@Valid @RequestBody RequestVerifyEmail requestVerifyEmail) throws MessagingException {
         String token = accountService.createEmailVerificationToken(requestVerifyEmail.getEmail());
 
         emailService.sendMail(requestVerifyEmail.getEmail(), "이메일 인증", "token: " + token);
@@ -53,7 +53,7 @@ public class AccountController {
 
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/verifyEmailToken")
-    public ResponseApi<Object> postVerifyEmailToken(@Valid @RequestBody RequestVerifyEmailToken requestVerifyEmailToken) {
+    public ResponseApi<Object, String> postVerifyEmailToken(@Valid @RequestBody RequestVerifyEmailToken requestVerifyEmailToken) {
         accountService.verifyEmail(requestVerifyEmailToken.getEmail(), requestVerifyEmailToken.getToken());
 
         return new ResponseApi<>(HttpStatus.OK.value(), "토큰 인증 성공", null);
