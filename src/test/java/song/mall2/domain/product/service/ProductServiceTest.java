@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.TestPropertySource;
 import song.mall2.domain.common.dto.PageDto;
 import song.mall2.domain.product.dto.ProductDto;
@@ -36,10 +37,18 @@ class ProductServiceTest {
     @DisplayName("상품 등록")
     @Test
     void saveProduct() {
+        MockMultipartFile mockMultipartFile = new MockMultipartFile(
+                "thumbnail",
+                "test.png",
+                "image/png",
+                "1".getBytes()
+        );
+
         SaveProductDto saveProductDto = new SaveProductDto();
         saveProductDto.setName("test product");
         saveProductDto.setPrice(10000);
         saveProductDto.setDescription("test description");
+        saveProductDto.setThumbnail(mockMultipartFile);
         saveProductDto.setStockQuantity(100);
         saveProductDto.setCategoryName(Product.Category.TOP.name());
 
@@ -54,9 +63,17 @@ class ProductServiceTest {
 
     @Test
     void editProduct() {
+        MockMultipartFile mockMultipartFile = new MockMultipartFile(
+                "thumbnail",
+                "test.png",
+                "image/png",
+                "1".getBytes()
+        );
+
         SaveProductDto editForm = new SaveProductDto();
         editForm.setName("edit name");
         editForm.setDescription("edit description");
+        editForm.setThumbnail(mockMultipartFile);
         editForm.setPrice(1);
 
         ProductDto productDto = productService.editProduct(lmoodPro1Id, lmoodId, editForm);
