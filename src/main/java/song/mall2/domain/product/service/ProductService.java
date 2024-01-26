@@ -88,11 +88,16 @@ public class ProductService {
             throw new InvalidUserException("접근 권한이 없습니다.");
         }
 
-        if (!product.getThumbnailUrl().substring(product.getThumbnailUrl().lastIndexOf("/")).equals(saveProductDto.getThumbnail().getOriginalFilename())) {
+        String thumbnailName = product.getThumbnailUrl().substring(product.getThumbnailUrl().lastIndexOf("/") + 1);
+        String newThumbnailName = saveProductDto.getThumbnail().getOriginalFilename();
+        log.info("thumbnailName = {}, newThumbnailName = {}", thumbnailName, newThumbnailName);
+        if (!thumbnailName.equals(newThumbnailName)) {
+            log.info("섬네일 체인지");
             UploadFileDto newThumbnailUpload = getThumbnail(saveProductDto.getThumbnail());
             product.update(saveProductDto.getName(), saveProductDto.getPrice(), saveProductDto.getDescription(),
                     saveProductDto.getStockQuantity(), newThumbnailUpload.getFileUrl(), product.getCategory().name());
         } else {
+            log.info("섬네일 안체인지");
             product.update(saveProductDto.getName(), saveProductDto.getPrice(), saveProductDto.getDescription(),
                     saveProductDto.getStockQuantity(), product.getCategory().name());
         }
