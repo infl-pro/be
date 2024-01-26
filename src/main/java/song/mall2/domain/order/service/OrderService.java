@@ -24,6 +24,7 @@ import song.mall2.domain.product.entity.Product;
 import song.mall2.domain.user.entity.User;
 import song.mall2.domain.user.repository.UserJpaRepository;
 import song.mall2.exception.invalid.exceptions.InvalidRequestException;
+import song.mall2.exception.invalid.exceptions.InvalidUserException;
 import song.mall2.exception.notfound.exceptions.OrdersNotFoundException;
 import song.mall2.exception.notfound.exceptions.UserNotFoundException;
 
@@ -82,8 +83,11 @@ public class OrderService {
     @Transactional
     public OrdersDto cancelOrders(Long ordersId, Long userId) {
         User user = getUser(userId);
-        Orders orders = ordersRepository.findByIdAndUserId(ordersId, user.getId())
+        Orders orders = ordersRepository.findById(ordersId)
                 .orElseThrow(() -> new OrdersNotFoundException("주문을 찾을 수 없습니다."));
+        if (!orders.isBuyer(user.getId())) {
+            throw new InvalidUserException("접근 권한이 없습니다.");
+        }
 
         List<OrderProductDto> orderProductDtoList = cancelOrderProductList(orders);
 

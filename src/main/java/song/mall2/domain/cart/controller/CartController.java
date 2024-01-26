@@ -1,5 +1,6 @@
 package song.mall2.domain.cart.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -35,7 +36,7 @@ public class CartController {
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/add")
     public ResponseApi<CartDto> postAddCart(@AuthenticationPrincipal UserPrincipal userPrincipal,
-                                            @RequestBody SaveCartDto saveCartDto) {
+                                            @Valid @RequestBody SaveCartDto saveCartDto) {
         CartDto cartDto = cartService.addCart(userPrincipal.getId(), saveCartDto.getProductId(), saveCartDto.getQuantity());
 
         return new ResponseApi<>(HttpStatus.OK.value(), "장바구니 추가", cartDto);
@@ -44,7 +45,7 @@ public class CartController {
     @ResponseStatus(HttpStatus.OK)
     @DeleteMapping("/delete")
     public ResponseApi<Object> postDeleteCart(@AuthenticationPrincipal UserPrincipal userPrincipal,
-                                              @RequestBody List<CartIdDto> cartIdDtoList) {
+                                              @Valid @RequestBody List<CartIdDto> cartIdDtoList) {
         cartService.deleteCart(userPrincipal.getId(), cartIdDtoList);
 
         return new ResponseApi<>(HttpStatus.OK.value(), "장바구니 삭제", null);
@@ -53,7 +54,7 @@ public class CartController {
     @ResponseStatus(HttpStatus.OK)
     @PatchMapping("/updateQuantity")
     public ResponseApi<CartDto> postUpdateQuantity(@AuthenticationPrincipal UserPrincipal userPrincipal,
-                                                   @RequestBody UpdateCartQuantity cartQuantity) {
+                                                   @Valid @RequestBody UpdateCartQuantity cartQuantity) {
         CartDto cartDto = cartService.updateCartQuantity(userPrincipal.getId(), cartQuantity.getCartId(), cartQuantity.getQuantity());
 
         return new ResponseApi<>(HttpStatus.OK.value(), "장바구니 수량 수정", cartDto);

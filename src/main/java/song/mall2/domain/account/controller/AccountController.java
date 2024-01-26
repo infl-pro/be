@@ -53,7 +53,7 @@ public class AccountController {
 
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/verifyEmailToken")
-    public ResponseApi<Object> postVerifyEmailToken(@RequestBody RequestVerifyEmailToken requestVerifyEmailToken) {
+    public ResponseApi<Object> postVerifyEmailToken(@Valid @RequestBody RequestVerifyEmailToken requestVerifyEmailToken) {
         accountService.verifyEmail(requestVerifyEmailToken.getEmail(), requestVerifyEmailToken.getToken());
 
         return new ResponseApi<>(HttpStatus.OK.value(), "토큰 인증 성공", null);

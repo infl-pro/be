@@ -1,5 +1,6 @@
 package song.mall2.domain.order.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -29,7 +30,7 @@ public class OrderController {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/form")
     public ResponseApi<OrderFormDto> getOrderForm(@AuthenticationPrincipal UserPrincipal userPrincipal,
-                                                  @RequestBody List<CartIdDto> cartIdList) {
+                                                  @Valid @RequestBody List<CartIdDto> cartIdList) {
         OrderFormDto orderRequest = orderService.getOrderForm(userPrincipal.getId(), cartIdList);
 
         return new ResponseApi<>(HttpStatus.OK.value(), "주문 폼 생성", orderRequest);

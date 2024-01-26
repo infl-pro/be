@@ -1,5 +1,6 @@
 package song.mall2.domain.product.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -23,7 +24,7 @@ public class ProductController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/save")
     public ResponseApi<ProductDto> postSaveProduct(@AuthenticationPrincipal UserPrincipal userPrincipal,
-                                                   @ModelAttribute SaveProductDto saveProductDto) {
+                                                   @Valid @ModelAttribute SaveProductDto saveProductDto) {
         ProductDto productDto = productService.saveProduct(userPrincipal.getId(), saveProductDto);
 
         return new ResponseApi<>(HttpStatus.CREATED.value(), "상품 등록", productDto);
@@ -44,7 +45,7 @@ public class ProductController {
     @PatchMapping("/{productId}/edit")
     public ResponseApi<ProductDto> postEditProduct(@PathVariable("productId") Long productId,
                                                    @AuthenticationPrincipal UserPrincipal userPrincipal,
-                                                   @ModelAttribute SaveProductDto saveProductDto) {
+                                                   @Valid @ModelAttribute SaveProductDto saveProductDto) {
         ProductDto productDto = productService.editProduct(productId, userPrincipal.getId(), saveProductDto);
 
         return new ResponseApi<>(HttpStatus.OK.value(), "상품 수정", productDto);
