@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
+import song.mall2.domain.common.validator.annotation.FileValid;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +27,7 @@ public class SaveProductDto {
     @NotNull(message = "재고수량을 입력해주세요.")
     @Min(value = 1, message = "재고 수량은 최소 1개 이상이여야 합니다.") @Max(value = 1000, message = "재고 수량은 최대 1000개 이하여야 합니다.")
     private Integer stockQuantity;
-    @NotNull(message = "대표이미지를 등록해주세요.")
+    @FileValid(message = "대표이미지를 등록해주세요.")
     private MultipartFile thumbnail;
     @NotBlank(message = "카테고리를 입력해주세요.")
     private String categoryName;

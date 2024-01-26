@@ -49,8 +49,8 @@ public class FileService {
 
     public UploadFileDto upload(MultipartFile multipartFile) {
         try {
-            if (multipartFile.isEmpty()) {
-                return null;
+            if (multipartFile == null || multipartFile.isEmpty()) {
+                throw new InvalidImageException("이미지를 저장할 수 없습니다.");
             }
             canUpload(multipartFile);
 
