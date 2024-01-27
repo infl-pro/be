@@ -39,29 +39,22 @@ public class ProductService {
     public ProductDto saveProduct(Long userId, SaveProductDto saveProductDto) {
         User user = getUser(userId);
 
-        UploadFileDto thumbnailUpload = getThumbnail(saveProductDto.getThumbnail());
+        UploadFileDto thumbnailDto = getThumbnail(saveProductDto.getThumbnail());
 
         Product product = Product.create(user, saveProductDto.getName(), saveProductDto.getPrice(), saveProductDto.getDescription(),
-                thumbnailUpload.getFileUrl(), saveProductDto.getStockQuantity(), saveProductDto.getCategoryName());
+                thumbnailDto.getFileUrl(), saveProductDto.getStockQuantity(), saveProductDto.getCategoryName());
 
         Product saveProduct = productRepository.save(product);
         saveImgList(saveProductDto.getImgList(), saveProduct);
 
-        List<ImageDto> imgDtoList = getImgDtoList(saveProduct.getId());
-        return new ProductDto(saveProduct.getId(), product.getName(), product.getPrice(), product.getDescription(),
-                product.getThumbnailUrl(), product.getStockQuantity(), product.getCategory().name(),
-                product.getUser().getName(), imgDtoList, false, true);
+        return getProductDto(user, saveProduct);
     }
 
     @Transactional
     public ProductDto getProduct(Long productId) {
         Product product = findById(productId);
 
-        List<ImageDto> imgDtoList = getImgDtoList(product.getId());
-
-        return new ProductDto(product.getId(), product.getName(), product.getPrice(), product.getDescription(),
-                product.getThumbnailUrl(), product.getStockQuantity(), product.getCategory().name(),
-                product.getUser().getName(), imgDtoList);
+        return getProductDto(product);
     }
 
     @Transactional
@@ -69,14 +62,7 @@ public class ProductService {
         Product product = findById(productId);
         User user = getUser(userId);
 
-        List<ImageDto> imgDtoList = getImgDtoList(product.getId());
-
-        boolean isPurchased = isPurchased(user.getId(), product);
-        boolean isSeller = product.isSeller(user.getId());
-
-        return new ProductDto(product.getId(), product.getName(), product.getPrice(), product.getDescription(),
-                product.getThumbnailUrl(), product.getStockQuantity(), product.getCategory().name(),
-                product.getUser().getName(), imgDtoList, isPurchased, isSeller);
+        return getProductDto(user, product);
     }
 
     @Transactional
@@ -99,15 +85,9 @@ public class ProductService {
         }
 
         Product saveProduct = productRepository.save(product);
-
         updateImageList(saveProductDto.getImgList(), saveProduct);
 
-        boolean isPurchased = isPurchased(saveProduct.getUser().getId(), saveProduct);
-        List<ImageDto> imgDtoList = getImgDtoList(saveProduct.getId());
-
-        return new ProductDto(saveProduct.getId(), saveProduct.getName(), saveProduct.getPrice(), saveProduct.getDescription(),
-                saveProduct.getThumbnailUrl(), saveProduct.getStockQuantity(), saveProduct.getCategory().name(),
-                saveProduct.getUser().getName(), imgDtoList, isPurchased, true);
+        return getProductDto(user, product);
     }
 
     @Transactional
@@ -163,6 +143,20 @@ public class ProductService {
                 .stream()
                 .map(fileDto -> Image.create(saveProduct, fileDto.getFileUrl()))
                 .toList());
+    }
+
+    private ProductDto getProductDto(User user, Product product) {
+        List<ImageDto> imgDtoList = getImgDtoList(product.getId());
+        boolean isPurchased = isPurchased(user.getId(), product);
+        boolean isSeller = product.isSeller(user.getId());
+
+        return new ProductDto(product, imgDtoList, isPurchased, isSeller);
+    }
+
+    private ProductDto getProductDto(Product product) {
+        List<ImageDto> imgDtoList = getImgDtoList(product.getId());
+
+        return new ProductDto(product, imgDtoList, false, false);
     }
 
     private List<ImageDto> getImgDtoList(Long productId) {

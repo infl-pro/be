@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import song.mall2.domain.img.dto.ImageDto;
+import song.mall2.domain.product.entity.Product;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,29 +30,27 @@ public class ProductDto {
 //    private Integer favorite;
 //    private boolean isFavorite;
 
-    public ProductDto(Long productId, String productName, Integer price, String description, String thumbnailUrl, Integer stockQuantity,
-                      String category, String sellerName, List<ImageDto> imageList) {
-        this.productId = productId;
-        this.productName = productName;
-        this.price = price;
-        this.description = description;
-        this.thumbnailUrl = thumbnailUrl;
-        this.stockQuantity = stockQuantity;
-        this.category = category;
-        this.sellerName = sellerName;
+    public ProductDto(Product product, List<ImageDto> imageList) {
+        this.productId = product.getId();
+        this.productName = product.getName();
+        this.price = product.getPrice();
+        this.description = product.getDescription();
+        this.thumbnailUrl = product.getThumbnailUrl();
+        this.stockQuantity = product.getStockQuantity();
+        this.category = product.getCategory().name();
+        this.sellerName = product.getUser().getName();
         this.imgList = imageList;
     }
 
-    public ProductDto(Long productId, String productName, Integer price, String description, String thumbnailUrl, Integer stockQuantity,
-                      String category, String sellerName, List<ImageDto> imageList, boolean isPurchased, boolean isSeller) {
-        this.productId = productId;
-        this.productName = productName;
-        this.price = price;
-        this.description = description;
-        this.thumbnailUrl = thumbnailUrl;
-        this.stockQuantity = stockQuantity;
-        this.category = category;
-        this.sellerName = sellerName;
+    public ProductDto(Product product, List<ImageDto> imageList, boolean isPurchased, boolean isSeller) {
+        this.productId = product.getId();
+        this.productName = product.getName();
+        this.price = product.getPrice();
+        this.description = product.getDescription();
+        this.thumbnailUrl = product.getThumbnailUrl();
+        this.stockQuantity = product.getStockQuantity();
+        this.category = product.getCategory().name();
+        this.sellerName = product.getUser().getName();
         this.imgList = imageList;
 
         this.isPurchased = isPurchased;
