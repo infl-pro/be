@@ -32,19 +32,8 @@ public class User {
         this.profileUrl = "/file/downloadFile/user.png";
     }
 
-    private User(String username, String password, String name) {
-        this.username = username;
-        this.password = password;
-        this.name = name;
-        this.profileUrl = "/file/downloadFile/user.png";
-    }
-
-    public static User create(String username, String password, String name, String email) {
+    public static User of(String username, String password, String name, String email) {
         return new User(username, password, name, email);
-    }
-
-    public static User create(String username, String password, String name) {
-        return new User(username, password, name);
     }
 
     public void addRole(UserRole userRole) {

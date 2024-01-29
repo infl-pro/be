@@ -57,7 +57,7 @@ class AccountServiceTest {
     @Test
     void validateUsername() {
         String username = "testUN";
-        User user = User.create(username, "testPwd", "testName");
+        User user = User.of(username, "testPwd", "testName", "test@email.com");
         userRepository.save(user);
 
         Assertions.assertThatThrownBy(() -> accountService.validateUsername(username))

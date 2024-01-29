@@ -58,35 +58,4 @@ public class AccountController {
 
         return new ResponseApi<>(HttpStatus.OK.value(), "토큰 인증 성공", null);
     }
-
-//    @PostMapping("/findUsername")
-//    public ResponseEntity<ResponseFindUsername> postFindUsername(@RequestBody RequestFindUsername requestFindUsername) {
-//        ResponseFindUsername findUsername = accountService.findUsername(requestFindUsername.getName(), requestFindUsername.getEmail());
-//
-//        return ResponseEntity.ok(findUsername);
-//    }
-//
-//    @PostMapping("/findPassword")
-//    public ResponseEntity<Object> postFindPassword(@RequestBody RequestFindPassword requestFindPassword) {
-//        ResetPasswordToken passwordToken = accountService.createResetPasswordToken(requestFindPassword.getUsername(), requestFindPassword.getName(), requestFindPassword.getEmail());
-//
-////        emailService.sendMail(passwordToken.getEmail(), "비밀번호 초기화", AWS_URL + passwordToken.getToken());
-//
-//        return ResponseEntity.ok().build();
-//    }
-//
-//    @GetMapping("/resetPassword/{token}")
-//    public ResponseEntity<Object> getResetPassword(@PathVariable("token") String token) {
-//        accountService.validateRestPasswordToken(token);
-//
-//        return ResponseEntity.ok().build();
-//    }
-//
-//    @PostMapping("/resetPassword/{token}")
-//    public ResponseEntity<Object> postResetPassword(@PathVariable("token") String token,
-//                                                    @RequestBody RequestResetPassword requestResetPassword) {
-//        accountService.resetPassword(token, requestResetPassword.getNewPassword(), requestResetPassword.getConfirmPassword());
-//
-//        return ResponseEntity.ok().build();
-//    }
 }

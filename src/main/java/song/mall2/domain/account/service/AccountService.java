@@ -5,12 +5,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import song.mall2.domain.account.dto.ResponseFindUsername;
 import song.mall2.domain.account.dto.SignupDto;
 import song.mall2.domain.account.entity.EmailVerificationToken;
-import song.mall2.domain.account.entity.ResetPasswordToken;
 import song.mall2.domain.account.repository.EmailTokenJpaRepository;
-import song.mall2.domain.account.repository.ResetPasswordTokenJpaRepository;
 import song.mall2.domain.user.dto.UserDto;
 import song.mall2.domain.user.entity.User;
 import song.mall2.domain.user.entity.UserRole;
@@ -19,7 +16,6 @@ import song.mall2.domain.user.repository.UserRoleJpaRepository;
 import song.mall2.exception.illegal.exceptions.IllegalTokenException;
 import song.mall2.exception.invalid.exceptions.InvalidPasswordException;
 import song.mall2.exception.invalid.exceptions.InvalidTokenException;
-import song.mall2.exception.invalid.exceptions.InvalidRequestException;
 import song.mall2.exception.invalid.exceptions.InvalidUsernameException;
 import song.mall2.exception.notfound.exceptions.TokenNotFoundException;
 import song.mall2.exception.notfound.exceptions.UserNotFoundException;
@@ -35,7 +31,6 @@ public class AccountService {
     private final PasswordEncoder passwordEncoder;
     private final UserJpaRepository userRepository;
     private final UserRoleJpaRepository userRoleRepository;
-    private final ResetPasswordTokenJpaRepository resetPasswordTokenRepository;
     private final EmailTokenJpaRepository emailTokenRepository;
 
     @Transactional
@@ -44,18 +39,12 @@ public class AccountService {
         validatePassword(signupDto.getPassword(), signupDto.getConfirmPassword());
         validateEmail(signupDto);
 
-        User user = User.create(signupDto.getUsername(), passwordEncoder.encode(signupDto.getPassword()), signupDto.getName(), signupDto.getEmail());
+        User user = User.of(signupDto.getUsername(), passwordEncoder.encode(signupDto.getPassword()), signupDto.getName(), signupDto.getEmail());
         User saveUser = userRepository.save(user);
 
         grantRole(saveUser.getId(), UserRole.Role.ROLE_USER.name());
 
         return new UserDto(user.getId(), user.getUsername(), user.getName(), user.getEmail());
-    }
-
-    private void validatePassword(String password, String confirmPassword) {
-        if (!password.equals(confirmPassword)) {
-            throw new InvalidPasswordException("비밀번호를 다시 입력해주세요.");
-        }
     }
 
     @Transactional
@@ -99,43 +88,10 @@ public class AccountService {
         emailVerificationToken.verifyEmail();
     }
 
-    @Transactional
-    public ResponseFindUsername findUsername(String name, String email) {
-        User user = userRepository.findByNameAndEmail(name, email)
-                .orElseThrow(() -> new UserNotFoundException("사용자를 찾을 수 없습니다."));
-
-        return new ResponseFindUsername(user.getUsername());
-    }
-
-    @Transactional
-    public ResetPasswordToken createResetPasswordToken(String username, String name, String email) {
-        userRepository.findByUsernameAndNameAndEmail(username, name, email)
-                .orElseThrow(() -> new UserNotFoundException("사용자를 찾을 수 없습니다."));
-
-        return createPasswordToken(email);
-    }
-
-    @Transactional
-    public void validateRestPasswordToken(String token) {
-        ResetPasswordToken passwordToken = getPasswordToken(token);
-
-        if (passwordToken.getExpiryTime().isBefore(LocalDateTime.now())) {
-            throw new IllegalTokenException("토큰이 만료되었습니다.");
+    private void validatePassword(String password, String confirmPassword) {
+        if (!password.equals(confirmPassword)) {
+            throw new InvalidPasswordException("비밀번호를 다시 입력해주세요.");
         }
-    }
-
-    @Transactional
-    public void resetPassword(String token, String newPassword, String confirmPassword) {
-        ResetPasswordToken passwordToken = getPasswordToken(token);
-
-        if (!newPassword.equals(confirmPassword)) {
-            throw new InvalidRequestException("비밀번호가 일치하지 않습니다.");
-        }
-
-        User user = getUser(passwordToken.getEmail());
-
-        user.updatePassword(passwordEncoder.encode(newPassword));
-        resetPasswordTokenRepository.delete(passwordToken);
     }
 
     private void validateEmail(SignupDto signupDto) {
@@ -151,23 +107,6 @@ public class AccountService {
                 .orElseThrow(UserNotFoundException::new);
     }
 
-    private ResetPasswordToken createPasswordToken(String email) {
-        Optional<ResetPasswordToken> optionalPasswordToken = resetPasswordTokenRepository.findByEmail(email);
-        if (optionalPasswordToken.isPresent()) {
-            ResetPasswordToken passwordToken = optionalPasswordToken.get();
-            passwordToken.updateToken(UUID.randomUUID().toString().substring(0, 5));
-            return resetPasswordTokenRepository.save(passwordToken);
-        }
-
-        ResetPasswordToken passwordToken = new ResetPasswordToken(email, UUID.randomUUID().toString().substring(0, 5));
-        return resetPasswordTokenRepository.save(passwordToken);
-    }
-
-    private ResetPasswordToken getPasswordToken(String token) {
-        return resetPasswordTokenRepository.findByToken(token)
-                .orElseThrow(() -> new TokenNotFoundException("토큰을 찾을 수 없습니다."));
-    }
-
     private String createEmailToken(String email) {
         Optional<EmailVerificationToken> findToken = emailTokenRepository.findByEmail(email);
         if (findToken.isPresent()) {
@@ -180,10 +119,5 @@ public class AccountService {
         EmailVerificationToken emailVerificationToken = new EmailVerificationToken(email, UUID.randomUUID().toString().substring(0, 5));
         EmailVerificationToken saveToken = emailTokenRepository.save(emailVerificationToken);
         return saveToken.getToken();
-    }
-
-    private User getUser(String email) {
-        return userRepository.findByEmail(email)
-                .orElseThrow(UserNotFoundException::new);
     }
 }

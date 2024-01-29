@@ -148,7 +148,7 @@ public class Init {
         }
 
         private User saveUser(String username, String password, String name, String email) {
-            User user = User.create(username, passwordEncoder.encode(password), name, email);
+            User user = User.of(username, passwordEncoder.encode(password), name, email);
 
             return userRepository.save(user);
         }
