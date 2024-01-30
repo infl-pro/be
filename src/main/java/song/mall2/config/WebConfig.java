@@ -12,13 +12,13 @@ import song.mall2.interceptor.LogInterceptor;
 @Slf4j
 @Configuration
 @RequiredArgsConstructor
-public class WebConfig implements WebMvcConfigurer{
+public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost:8080","http://52.79.222.161:8080/",
-                        "http://localhost:3000")
+                .allowedOrigins("http://localhost:8080/", "http://52.79.222.161:8080/",
+                        "http://localhost:3000/")
                 .allowedMethods(HttpMethod.GET.name(), HttpMethod.POST.name(),
                         HttpMethod.DELETE.name(), HttpMethod.OPTIONS.name(),
                         HttpMethod.PATCH.name(), HttpMethod.PUT.name())
