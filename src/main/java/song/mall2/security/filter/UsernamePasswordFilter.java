@@ -17,8 +17,10 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import song.mall2.security.cors.CorsFactory;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 @Slf4j
 public class UsernamePasswordFilter extends AbstractAuthenticationProcessingFilter {
@@ -38,7 +40,9 @@ public class UsernamePasswordFilter extends AbstractAuthenticationProcessingFilt
             throw new AuthenticationServiceException("Authentication method not supported: " + request.getMethod());
         }
         if (request.getMethod().equals("OPTIONS")) {
-            response.setStatus(HttpStatus.OK.value());
+            HttpServletResponse httpServletResponse = CorsFactory.setCors(request, response);
+
+            httpServletResponse.setStatus(HttpStatus.OK.value());
             return null;
         }
         if (request.getContentType() == null || !request.getContentType().equals("application/json")) {

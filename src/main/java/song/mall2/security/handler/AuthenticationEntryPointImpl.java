@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import song.mall2.domain.common.api.ResponseApi;
+import song.mall2.security.cors.CorsFactory;
 
 import java.io.IOException;
 
@@ -18,10 +19,11 @@ public class AuthenticationEntryPointImpl implements AuthenticationEntryPoint {
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
-        response.setStatus(HttpStatus.UNAUTHORIZED.value());
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
+        HttpServletResponse httpServletResponse = CorsFactory.setCors(request, response);
+        httpServletResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
+        httpServletResponse.setContentType("application/json");
+        httpServletResponse.setCharacterEncoding("UTF-8");
 
-        response.getWriter().write(objectMapper.writeValueAsString(new ResponseApi<>(response.getStatus(), authException.getClass(), "unauthorized")));
+        httpServletResponse.getWriter().write(objectMapper.writeValueAsString(new ResponseApi<>(response.getStatus(), authException.getClass(), "unauthorized")));
     }
 }
