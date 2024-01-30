@@ -84,11 +84,11 @@ public class JwtFilter extends OncePerRequestFilter {
     private void doResponse(HttpServletRequest request, HttpServletResponse response, int status, Exception e, String message) throws IOException {
         SecurityContextHolder.clearContext();
 
-        HttpServletResponse httpServletResponse = CorsFactory.setCors(request, response);
-        httpServletResponse.setStatus(status);
-        httpServletResponse.setContentType("application/json");
-        httpServletResponse.setCharacterEncoding("UTF-8");
+        response = CorsFactory.setCors(request, response);
+        response.setStatus(status);
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
 
-        httpServletResponse.getWriter().write(objectMapper.writeValueAsString(new ResponseApi<>(response.getStatus(), e.getClass(), message)));
+        response.getWriter().write(objectMapper.writeValueAsString(new ResponseApi<>(response.getStatus(), e.getClass(), message)));
     }
 }

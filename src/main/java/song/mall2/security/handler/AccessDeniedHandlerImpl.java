@@ -19,11 +19,11 @@ public class AccessDeniedHandlerImpl implements AccessDeniedHandler {
 
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
-        HttpServletResponse httpServletResponse = CorsFactory.setCors(request, response);
-        httpServletResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
-        httpServletResponse.setContentType("application/json");
-        httpServletResponse.setCharacterEncoding("UTF-8");
+        response = CorsFactory.setCors(request, response);
+        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
 
-        httpServletResponse.getWriter().write(objectMapper.writeValueAsString(new ResponseApi<>(response.getStatus(), accessDeniedException.getClass(), "unauthorized")));
+        response.getWriter().write(objectMapper.writeValueAsString(new ResponseApi<>(response.getStatus(), accessDeniedException.getClass(), "unauthorized")));
     }
 }

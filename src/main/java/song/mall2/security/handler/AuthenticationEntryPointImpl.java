@@ -19,11 +19,11 @@ public class AuthenticationEntryPointImpl implements AuthenticationEntryPoint {
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
-        HttpServletResponse httpServletResponse = CorsFactory.setCors(request, response);
-        httpServletResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
-        httpServletResponse.setContentType("application/json");
-        httpServletResponse.setCharacterEncoding("UTF-8");
+        response = CorsFactory.setCors(request, response);
+        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
 
-        httpServletResponse.getWriter().write(objectMapper.writeValueAsString(new ResponseApi<>(response.getStatus(), authException.getClass(), "unauthorized")));
+        response.getWriter().write(objectMapper.writeValueAsString(new ResponseApi<>(response.getStatus(), authException.getClass(), "unauthorized")));
     }
 }

@@ -26,18 +26,18 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
-        HttpServletResponse httpServletResponse = CorsFactory.setCors(request, response);
+        response = CorsFactory.setCors(request, response);
 
         JwtService.TokenDto tokenDto = jwtService.createJwt(userPrincipal);
 
         Cookie refreshToken = new Cookie("refreshToken", tokenDto.getRefreshToken());
         refreshToken.setHttpOnly(true);
         refreshToken.setMaxAge(10 * 60 * 60);
-        httpServletResponse.addCookie(refreshToken);
+        response.addCookie(refreshToken);
 
-        httpServletResponse.setStatus(HttpStatus.OK.value());
-        httpServletResponse.setContentType("application/json");
-        httpServletResponse.setCharacterEncoding("UTF-8");
-        httpServletResponse.getWriter().write(objectMapper.writeValueAsString(new ResponseApi<>(response.getStatus(), "인증 성공", tokenDto.getAccessToken())));
+        response.setStatus(HttpStatus.OK.value());
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        response.getWriter().write(objectMapper.writeValueAsString(new ResponseApi<>(response.getStatus(), "인증 성공", tokenDto.getAccessToken())));
     }
 }

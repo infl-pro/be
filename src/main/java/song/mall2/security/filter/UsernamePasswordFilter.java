@@ -20,7 +20,6 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import song.mall2.security.cors.CorsFactory;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 @Slf4j
 public class UsernamePasswordFilter extends AbstractAuthenticationProcessingFilter {
@@ -35,14 +34,13 @@ public class UsernamePasswordFilter extends AbstractAuthenticationProcessingFilt
 
 
     @Override
-    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException {
+    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         if (request.getMethod().equals("OPTIONS")) {
-            HttpServletResponse httpServletResponse = CorsFactory.setCors(request, response);
-
-            httpServletResponse.setStatus(HttpStatus.OK.value());
+            response = CorsFactory.setCors(request, response);
+            response.setStatus(HttpStatus.OK.value());
             return null;
-        } 
-	if (this.postOnly && !request.getMethod().equals("POST")) {
+        }
+        if (this.postOnly && !request.getMethod().equals("POST")) {
             throw new AuthenticationServiceException("Authentication method not supported: " + request.getMethod());
         }
         if (request.getContentType() == null || !request.getContentType().equals("application/json")) {
