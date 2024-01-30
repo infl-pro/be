@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -35,6 +36,10 @@ public class UsernamePasswordFilter extends AbstractAuthenticationProcessingFilt
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         if (this.postOnly && !request.getMethod().equals("POST")) {
             throw new AuthenticationServiceException("Authentication method not supported: " + request.getMethod());
+        }
+        if (request.getMethod().equals("OPTIONS")) {
+            response.setStatus(HttpStatus.OK.value());
+            return null;
         }
         if (request.getContentType() == null || !request.getContentType().equals("application/json")) {
             throw new AuthenticationServiceException("Authentication Content-Type not supported");
