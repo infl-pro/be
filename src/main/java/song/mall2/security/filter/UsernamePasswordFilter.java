@@ -35,7 +35,7 @@ public class UsernamePasswordFilter extends AbstractAuthenticationProcessingFilt
 
 
     @Override
-    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
+    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException {
         if (this.postOnly && !request.getMethod().equals("POST")) {
             throw new AuthenticationServiceException("Authentication method not supported: " + request.getMethod());
         }
@@ -43,6 +43,7 @@ public class UsernamePasswordFilter extends AbstractAuthenticationProcessingFilt
             HttpServletResponse httpServletResponse = CorsFactory.setCors(request, response);
 
             httpServletResponse.setStatus(HttpStatus.OK.value());
+            httpServletResponse.flushBuffer();
             return null;
         }
         if (request.getContentType() == null || !request.getContentType().equals("application/json")) {
