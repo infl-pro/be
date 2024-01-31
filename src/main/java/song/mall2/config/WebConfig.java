@@ -22,7 +22,7 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedMethods(HttpMethod.GET.name(), HttpMethod.POST.name(),
                         HttpMethod.DELETE.name(), HttpMethod.OPTIONS.name(),
                         HttpMethod.PATCH.name(), HttpMethod.PUT.name())
-                .allowedHeaders("*")
+                .allowedHeaders("Content-Type", "Authorization", "X-Requested-With")
                 .allowCredentials(true);
     }
 
