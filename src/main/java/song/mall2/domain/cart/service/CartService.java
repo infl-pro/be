@@ -31,7 +31,7 @@ public class CartService {
         User user = getUser(userId);
         Product product = getProduct(productId);
 
-        Cart cart = Cart.create(user, product, quantity);
+        Cart cart = Cart.of(user, product, quantity);
         Cart saveCart = cartRepository.save(cart);
 
         return new CartDto(saveCart.getId(), saveCart.getQuantity(), saveCart.getProduct().getId(), saveCart.getProduct().getName(),

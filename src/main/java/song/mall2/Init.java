@@ -171,7 +171,7 @@ public class Init {
         }
 
         private Cart addCart(User user, Product product, Integer quantity) {
-            Cart cart = Cart.create(user, product, quantity);
+            Cart cart = Cart.of(user, product, quantity);
 
             return cartRepository.save(cart);
         }

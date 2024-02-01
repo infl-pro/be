@@ -30,7 +30,7 @@ public class Cart {
         this.quantity = quantity;
     }
 
-    public static Cart create(User user, Product product, Integer quantity) {
+    public static Cart of(User user, Product product, Integer quantity) {
         return new Cart(user, product, quantity);
     }
 
