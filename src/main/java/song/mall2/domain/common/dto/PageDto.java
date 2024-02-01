@@ -19,7 +19,7 @@ public class PageDto {
     Long totalElements;
     Integer pageNumber;
 
-    public PageDto(Page page) {
+    public PageDto(Page<?> page) {
         this.content = Collections.unmodifiableList(page.getContent());
         this.totalPage = page.getTotalPages();
         this.totalElements = page.getTotalElements();

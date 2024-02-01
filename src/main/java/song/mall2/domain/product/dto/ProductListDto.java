@@ -13,6 +13,5 @@ public class ProductListDto {
     private String productName;
     private Integer productPrice;
     private String productThumbnail;
-
-    private String brandName;
+    private String sellerName;
 }
