@@ -1,6 +1,5 @@
 package song.mall2.domain.common.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -54,7 +53,6 @@ public class ExceptionController {
             errors.put(field, message);
         });
 
-        ObjectMapper objectMapper = new ObjectMapper();
         return new ResponseApi<>(HttpStatus.BAD_REQUEST.value(), exception.getClass(), errors);
     }
 
