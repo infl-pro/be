@@ -31,7 +31,7 @@ public class JwtFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String uri = request.getRequestURI();
 
-        if (uri.equals("/refreshToken")) {
+        if (uri.equals("/refreshToken") || uri.equals("/productList")) {
             filterChain.doFilter(request, response);
             return;
         }
