@@ -4,6 +4,7 @@ import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -25,22 +26,19 @@ import java.util.Map;
 @ControllerAdvice
 @RequiredArgsConstructor
 public class ExceptionController {
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler({NotFoundException.class})
-    public ResponseApi<String, String> notFoundExceptionHandler(NotFoundException exception) {
-        return new ResponseApi<>(HttpStatus.NOT_FOUND.value(), exception.getClass(), exception.getMessage());
-    }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler({InvalidException.class})
-    public ResponseApi<String, String> invalidExceptionHandler(InvalidException exception) {
-        return new ResponseApi<>(HttpStatus.BAD_REQUEST.value(), exception.getClass(), exception.getMessage());
-    }
-
-    @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
-    @ExceptionHandler({IllegalException.class})
-    public ResponseApi<String, String> IllegalExceptionHandler(IllegalException exception) {
-        return new ResponseApi<>(HttpStatus.NOT_ACCEPTABLE.value(), exception.getClass(), exception.getMessage());
+    @ExceptionHandler({NotFoundException.class, InvalidException.class, IllegalException.class})
+    public ResponseEntity<ResponseApi<String, String>> requestExceptionHandler(Exception e) {
+        if (e instanceof NotFoundException) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseApi<>(HttpStatus.NOT_FOUND.value(), e.getClass(), e.getMessage()));
+        }
+        if (e instanceof InvalidException) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseApi<>(HttpStatus.BAD_REQUEST.value(), e.getClass(), e.getMessage()));
+        }
+        if (e instanceof IllegalException) {
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(new ResponseApi<>(HttpStatus.NOT_ACCEPTABLE.value(), e.getClass(), e.getMessage()));
+        }
+        return ResponseEntity.badRequest().body(new ResponseApi<>(HttpStatus.BAD_REQUEST.value(), e.getClass(), e.getMessage()));
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
