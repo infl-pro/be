@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 import song.mall2.domain.common.api.ResponseApi;
 import song.mall2.domain.jwt.service.JwtService;
@@ -20,6 +21,7 @@ import song.mall2.security.authentication.userprincipal.UserPrincipal;
 import song.mall2.security.cors.CorsFactory;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
@@ -29,9 +31,14 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String uri = request.getRequestURI();
+        AntPathMatcher pathMatcher = new AntPathMatcher();
 
-        if (uri.equals("/refreshToken") || uri.equals("/productList")) {
+        String uri = request.getRequestURI();
+        boolean isSkip = Arrays.asList("/refreshToken", "/productList", "/account/**")
+                .stream()
+                .anyMatch(pattern -> pathMatcher.match(pattern, uri));
+
+        if (isSkip) {
             filterChain.doFilter(request, response);
             return;
         }
