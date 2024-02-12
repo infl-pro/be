@@ -23,6 +23,6 @@ public class PageDto {
         this.content = Collections.unmodifiableList(page.getContent());
         this.totalPage = page.getTotalPages();
         this.totalElements = page.getTotalElements();
-        this.pageNumber = page.getNumber();
+        this.pageNumber = page.getNumber() + 1;
     }
 }
