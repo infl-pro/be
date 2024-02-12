@@ -17,6 +17,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsUtils;
 import song.mall2.domain.jwt.service.JwtService;
 import song.mall2.security.handler.AccessDeniedHandlerImpl;
 import song.mall2.security.handler.AuthenticationEntryPointImpl;
@@ -46,6 +47,7 @@ public class SecurityConfig {
                 .sessionManagement(sessionManagement -> sessionManagement
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers(request -> CorsUtils.isPreFlightRequest(request)).permitAll()
                         .requestMatchers("/refreshToken/**").permitAll()
                         .requestMatchers("/cart/**").authenticated()
                         .requestMatchers(regexMatcher("^/product/[0-9]+$")).permitAll()
