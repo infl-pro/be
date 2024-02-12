@@ -31,7 +31,7 @@ public class HomeController {
                                                 @RequestParam(value = "order", required = false, defaultValue = "DESC") String order) {
         try {
             String searchOption = option.toLowerCase();
-            PageRequest pageRequest = PageRequest.of(pageable.getPageNumber() - 1, 6, Sort.by(Sort.Direction.valueOf(order.toUpperCase()), searchOption));
+            PageRequest pageRequest = PageRequest.of(pageable.getPageNumber() > 0 ? pageable.getPageNumber() - 1 : pageable.getPageNumber(), 6, Sort.by(Sort.Direction.valueOf(order.toUpperCase()), searchOption));
             if (searchValue == null && searchCategory == null) {
                 return new ResponseApi<>(HttpStatus.OK.value(), "상품 목록 조회", productService.findProductList(pageRequest));
             }
