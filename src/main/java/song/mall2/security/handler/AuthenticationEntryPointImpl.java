@@ -24,6 +24,6 @@ public class AuthenticationEntryPointImpl implements AuthenticationEntryPoint {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
 
-        response.getWriter().write(objectMapper.writeValueAsString(new ResponseApi<>(response.getStatus(), authException.getClass(), "unauthorized")));
+        response.getWriter().write(objectMapper.writeValueAsString(new ResponseApi<>(response.getStatus(), authException.getClass(), "인증되지 않은 사용자입니다.")));
     }
 }

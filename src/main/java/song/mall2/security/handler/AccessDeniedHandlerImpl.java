@@ -20,10 +20,10 @@ public class AccessDeniedHandlerImpl implements AccessDeniedHandler {
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
         response = CorsFactory.setCors(request, response);
-        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+        response.setStatus(HttpStatus.FORBIDDEN.value());
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
 
-        response.getWriter().write(objectMapper.writeValueAsString(new ResponseApi<>(response.getStatus(), accessDeniedException.getClass(), "unauthorized")));
+        response.getWriter().write(objectMapper.writeValueAsString(new ResponseApi<>(response.getStatus(), accessDeniedException.getClass(), "접근 권한이 없습니다.")));
     }
 }

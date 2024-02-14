@@ -49,11 +49,14 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(request -> CorsUtils.isPreFlightRequest(request)).permitAll()
                         .requestMatchers("/refreshToken/**").permitAll()
-                        .requestMatchers("/cart/**").authenticated()
+                        .requestMatchers("/productList/**").permitAll()
+                        .requestMatchers("/account/**").permitAll()
+                        .requestMatchers("/file/**").permitAll()
                         .requestMatchers(regexMatcher("^/product/[0-9]+$")).permitAll()
+                        .requestMatchers("/orders/carttest").permitAll()
+                        .requestMatchers("/cart/**").authenticated()
                         .requestMatchers("/product/**").authenticated()
                         .requestMatchers("/payment/callback").authenticated()
-                        .requestMatchers("/orders/carttest").permitAll()
                         .requestMatchers("/orders/**").authenticated()
                         .requestMatchers("/orderProduct/**").authenticated()
                         .requestMatchers("/user/**").authenticated()
@@ -64,7 +67,7 @@ public class SecurityConfig {
                         .accessDeniedHandler(new AccessDeniedHandlerImpl()))
                 .logout(logout -> logout.disable())
                 .addFilterBefore(new UsernamePasswordFilter(authenticationManager(configuration), authenticationSuccessHandler(), authenticationFailureHandler()), UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(new JwtFilter(objectMapper), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtFilter(), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(new LogFilter(), JwtFilter.class)
                 .build();
     }

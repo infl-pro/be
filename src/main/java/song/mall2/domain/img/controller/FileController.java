@@ -44,16 +44,4 @@ public class FileController {
         }
         return "application/octet-stream";
     }
-
-    @GetMapping("/getfile")
-    public String getFile() {
-
-        return "filepage";
-    }
-
-    @GetMapping("/getfiles")
-    public String getFiles() {
-
-        return "filespage";
-    }
 }
