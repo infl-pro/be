@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import song.mall2.domain.common.api.ResponseApi;
@@ -21,6 +22,13 @@ import song.mall2.domain.product.service.ProductService;
 public class HomeController {
     private final ProductService productService;
     private final JwtService jwtService;
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/home")
+    public ResponseEntity<Object> home() {
+
+        return ResponseEntity.ok().build();
+    }
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/productList")
