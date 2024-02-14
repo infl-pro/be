@@ -43,6 +43,15 @@ logging:
       springframework:
         security: DEBUG
 
+server:
+  port: 443
+  ssl:
+    enabled: true
+    key-store: src/main/resources/bootsecurity.p12
+    key-store-password: ENC(ZpEbthwv2p7jy3UTpjw3uw==)
+    key-store-type: PKCS12
+    key-alias: bootsecurity
+
 portone:
   imp-key: ENC(VRhFgoeDw8uh5RrElc7ZVsfRptSvDq2qt8sO00XjZJg=)
   imp-secret: ENC(Z6ylug0kRPSCp2NBU7WKNdHVHwNZeHLvWrdn8FLmrSoXHG3blxkH8hnF7T+RTPmab8oR9ev+VvLSJtN5/NblMXDm09FBB+w0xJvMg0Dx8j6WQVJI9lTimqVEJHfkajVB)
