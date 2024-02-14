@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingRequestCookieException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -66,10 +67,16 @@ public class ExceptionController {
         return new ResponseApi<>(HttpStatus.SERVICE_UNAVAILABLE.value(), exception.getClass(), exception.getMessage());
     }
 
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler({JwtException.class})
     public ResponseApi<String, String> jwtExceptionHandler(JwtException exception) {
-        return new ResponseApi<>(HttpStatus.UNAUTHORIZED.value(), exception.getClass(), "유효하지 않은 인증 토큰입니다.");
+        return new ResponseApi<>(HttpStatus.BAD_REQUEST.value(), exception.getClass(), "유효하지 않은 인증 토큰입니다.");
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler({MissingRequestCookieException.class})
+    public ResponseApi<String, String> cookieExceptionHandler(MissingRequestCookieException exception) {
+        return new ResponseApi<>(HttpStatus.BAD_REQUEST.value(), exception.getClass(), "유효하지 않은 쿠키입니다.");
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)

@@ -85,7 +85,8 @@ public class JwtService {
     private String createRefreshToken(String username, LocalDateTime now) {
         return Jwts.builder()
                 .subject(username)
-                .expiration(Timestamp.valueOf(now.plus(Duration.ofMillis(36000000))))
+//                .expiration(Timestamp.valueOf(now.plus(Duration.ofMillis(36000000))))
+                .expiration(Timestamp.valueOf(now.plus(Duration.ofMillis(1))))
                 .issuedAt(Timestamp.valueOf(now))
                 .signWith(REFRESH_KEY)
                 .compact();
