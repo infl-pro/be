@@ -2,6 +2,7 @@ package song.mall2.security.filter;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +36,14 @@ public class LogFilter extends OncePerRequestFilter {
         String method = request.getMethod();
 
         log.info("[Log Filter] ipAddress = {}, origin = {}, name = {}, uri = {}, method = {}", ipAddress, origin, name, requestURI, method);
+
+        Cookie[] cookies = request.getCookies();
+        log.info("cookie check");
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                log.info("cookie name = {} value = {}", cookie.getName(), cookie.getValue());
+            }
+        }
 
         filterChain.doFilter(request, response);
     }

@@ -33,7 +33,9 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
         Cookie refreshToken = new Cookie("refreshToken", tokenDto.getRefreshToken());
         refreshToken.setHttpOnly(true);
         refreshToken.setMaxAge(10 * 60 * 60);
-        response.addCookie(refreshToken);
+//        response.addCookie(refreshToken);
+
+        response.addHeader("Set-Cookie", "refreshToken="+tokenDto.getRefreshToken()+"; Max-Age=36000; Path=/; SameSite=None; HttpOnly; Secure");
 
         response.setStatus(HttpStatus.OK.value());
         response.setContentType("application/json");
