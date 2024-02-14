@@ -27,6 +27,7 @@ public class HomeController {
     @GetMapping("/home")
     public ResponseEntity<Object> home() {
 
+        log.info("get Home");
         return ResponseEntity.ok().build();
     }
 
