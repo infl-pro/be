@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import song.mall2.domain.cart.dto.CartIdDto;
 import song.mall2.domain.common.api.ResponseApi;
 import song.mall2.domain.order.dto.OrderFormDto;
 import song.mall2.domain.order.dto.OrderProductListDto;

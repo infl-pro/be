@@ -40,28 +40,10 @@ public class CartController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @PostMapping("/delete")
-    public ResponseApi<Object, String> postDeleteCart(@AuthenticationPrincipal UserPrincipal userPrincipal,
-                                                      @Valid @RequestBody List<CartIdDto> cartIdList) {
-        cartService.deleteCart(userPrincipal.getId(), cartIdList);
-
-        return new ResponseApi<>(HttpStatus.OK.value(), "장바구니 삭제", null);
-    }
-
-    @ResponseStatus(HttpStatus.OK)
     @DeleteMapping("/delete")
     public ResponseApi<Object, String> deleteCartId(@AuthenticationPrincipal UserPrincipal userPrincipal,
                                                       @Valid @RequestBody DeleteCartDto deleteCartDto) {
-        cartService.deleteCartId(userPrincipal.getId(), deleteCartDto.getCartId());
-
-        return new ResponseApi<>(HttpStatus.OK.value(), "장바구니 삭제", null);
-    }
-
-    @ResponseStatus(HttpStatus.OK)
-    @DeleteMapping("/delete/{cartId}")
-    public ResponseApi<Object, String> deleteCart(@PathVariable Long cartId,
-                                                  @AuthenticationPrincipal UserPrincipal userPrincipal) {
-        cartService.deleteCart(userPrincipal.getId(), cartId);
+        cartService.deleteCart(userPrincipal.getId(), deleteCartDto.getCartId());
 
         return new ResponseApi<>(HttpStatus.OK.value(), "장바구니 삭제", null);
     }

@@ -6,9 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
-import song.mall2.domain.cart.dto.CartIdDto;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -42,11 +40,7 @@ class CartServiceTest {
     @DisplayName("장바구니 삭제")
     @Test
     void deleteCart() {
-        List<CartIdDto> cartIdDtoList = new ArrayList<>();
-        CartIdDto cartIdDto = new CartIdDto();
-        cartIdDto.setCartId(cart1Id);
-        cartIdDtoList.add(cartIdDto);
-        assertDoesNotThrow(() -> cartService.deleteCart(userAId, cartIdDtoList));
+        assertDoesNotThrow(() -> cartService.deleteCart(userAId, List.of(cart1Id)));
     }
 
     @Test
