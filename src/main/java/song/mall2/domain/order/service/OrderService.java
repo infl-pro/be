@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import song.mall2.domain.cart.dto.CartIdDto;
 import song.mall2.domain.cart.entity.Cart;
 import song.mall2.domain.cart.repository.CartJpaRepository;
 import song.mall2.domain.order.dto.OrderProductDto;
@@ -48,15 +47,14 @@ public class OrderService {
     private String channelKey;
 
     @Transactional
-    public OrderFormDto getOrderForm(Long userId, List<CartIdDto> cartDtoList) {
+    public OrderFormDto getOrderForm(Long userId, List<Long> cartIdList) {
         User user = getUser(userId);
 
-        List<Long> cartIdList = cartDtoList.stream().map(CartIdDto::getCartId).toList();
         List<Cart> cartList = getCartList(user.getId(), cartIdList);
 
         List<OrderFormDto.Products> productsList = getProductsList(cartList);
 
-        return new OrderFormDto(storeId, channelKey, getTotalAmount(cartList), user.getId(), productsList, cartIdList);
+        return new OrderFormDto(storeId, channelKey, getTotalAmount(cartList), user.getId(), productsList, cartList.stream().map(Cart::getId).toList());
     }
 
     @Transactional

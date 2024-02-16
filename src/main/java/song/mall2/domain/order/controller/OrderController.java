@@ -13,6 +13,7 @@ import song.mall2.domain.common.api.ResponseApi;
 import song.mall2.domain.order.dto.OrderFormDto;
 import song.mall2.domain.order.dto.OrderProductListDto;
 import song.mall2.domain.order.dto.OrdersDto;
+import song.mall2.domain.order.dto.PostOrderFromDto;
 import song.mall2.domain.order.service.OrderService;
 import song.mall2.security.authentication.userprincipal.UserPrincipal;
 
@@ -29,9 +30,9 @@ public class OrderController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/form")
-    public ResponseApi<OrderFormDto, String> getOrderForm(@AuthenticationPrincipal UserPrincipal userPrincipal,
-                                                  @Valid @RequestBody List<CartIdDto> cartIdList) {
-        OrderFormDto orderRequest = orderService.getOrderForm(userPrincipal.getId(), cartIdList);
+    public ResponseApi<OrderFormDto, String> postOrderForm(@AuthenticationPrincipal UserPrincipal userPrincipal,
+                                                           @Valid @RequestBody PostOrderFromDto postOrderFromDto) {
+        OrderFormDto orderRequest = orderService.getOrderForm(userPrincipal.getId(), postOrderFromDto.getCartId());
 
         return new ResponseApi<>(HttpStatus.OK.value(), "주문 폼 생성", orderRequest);
     }
@@ -64,9 +65,9 @@ public class OrderController {
 
     @GetMapping("/carttest")
     public ResponseEntity<OrderFormDto> getCarttestOrder() {
-        List<CartIdDto> cartIdList = new ArrayList<>();
-        cartIdList.add(new CartIdDto(1L));
-        cartIdList.add(new CartIdDto(2L));
+        List<Long> cartIdList = new ArrayList<>();
+        cartIdList.add(1L);
+        cartIdList.add(2L);
         OrderFormDto orderRequest = orderService.getOrderForm(1L, cartIdList);
 
         return ResponseEntity.ok(orderRequest);

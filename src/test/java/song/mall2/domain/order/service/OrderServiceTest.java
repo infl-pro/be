@@ -41,7 +41,7 @@ class OrderServiceTest {
 
     @Test
     void getOrderForm() {
-        OrderFormDto orderForm = orderService.getOrderForm(userAId, cartIdDtoList);
+        OrderFormDto orderForm = orderService.getOrderForm(userAId, List.of(1L, 2L));
 
         assertThat(orderForm.getCustomer().getUserId())
                 .isEqualTo(userAId.toString());

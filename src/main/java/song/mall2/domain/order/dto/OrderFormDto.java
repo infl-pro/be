@@ -62,8 +62,10 @@ public class OrderFormDto {
         @NoArgsConstructor
         @AllArgsConstructor
         public static class Address {
-            private String addressLine1 = "서울시";
-            private String addressLine2 = "집";
+//            private String addressLine1 = "서울시";
+//            private String addressLine2 = "집";
+            private String addressLine1;
+            private String addressLine2;
         }
     }
 
