@@ -1,5 +1,7 @@
 package song.mall2.domain.cart.dto;
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,5 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DeleteCartDto {
+    @NotNull
+    @Size(min = 1, max = 10)
     private List<Long> cartId = new ArrayList<>();
 }
