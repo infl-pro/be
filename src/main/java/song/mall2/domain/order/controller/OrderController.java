@@ -28,7 +28,7 @@ public class OrderController {
     private final OrderService orderService;
 
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/form")
+    @PostMapping("/form")
     public ResponseApi<OrderFormDto, String> postOrderForm(@AuthenticationPrincipal UserPrincipal userPrincipal,
                                                            @Valid @RequestBody PostOrderFromDto postOrderFromDto) {
         OrderFormDto orderRequest = orderService.getOrderForm(userPrincipal.getId(), postOrderFromDto.getCartId());
