@@ -41,4 +41,8 @@ public class Cart {
     public void updateQuantity(Integer quantity) {
         this.quantity = quantity;
     }
+
+    public boolean isOwner(Long userId) {
+        return this.user.getId().equals(userId);
+    }
 }

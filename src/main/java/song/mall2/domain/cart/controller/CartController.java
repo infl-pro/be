@@ -7,10 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import song.mall2.domain.cart.dto.CartDto;
-import song.mall2.domain.cart.dto.CartIdDto;
-import song.mall2.domain.cart.dto.SaveCartDto;
-import song.mall2.domain.cart.dto.UpdateCartQuantity;
+import song.mall2.domain.cart.dto.*;
 import song.mall2.domain.cart.service.CartService;
 import song.mall2.domain.common.api.ResponseApi;
 import song.mall2.security.authentication.userprincipal.UserPrincipal;
@@ -45,8 +42,17 @@ public class CartController {
     @ResponseStatus(HttpStatus.OK)
     @DeleteMapping("/delete")
     public ResponseApi<Object, String> postDeleteCart(@AuthenticationPrincipal UserPrincipal userPrincipal,
-                                              @Valid @RequestBody List<CartIdDto> cartIdDtoList) {
-        cartService.deleteCart(userPrincipal.getId(), cartIdDtoList);
+                                                      @Valid @RequestBody List<CartIdDto> cartIdList) {
+        cartService.deleteCart(userPrincipal.getId(), cartIdList);
+
+        return new ResponseApi<>(HttpStatus.OK.value(), "장바구니 삭제", null);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @DeleteMapping("/delete/{cartId}")
+    public ResponseApi<Object, String> deleteCart(@PathVariable Long cartId,
+                                                  @AuthenticationPrincipal UserPrincipal userPrincipal) {
+        cartService.deleteCart(userPrincipal.getId(), cartId);
 
         return new ResponseApi<>(HttpStatus.OK.value(), "장바구니 삭제", null);
     }

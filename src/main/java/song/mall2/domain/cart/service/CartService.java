@@ -12,11 +12,13 @@ import song.mall2.domain.product.entity.Product;
 import song.mall2.domain.product.repository.ProductJpaRepository;
 import song.mall2.domain.user.entity.User;
 import song.mall2.domain.user.repository.UserJpaRepository;
+import song.mall2.exception.invalid.exceptions.InvalidUserException;
 import song.mall2.exception.notfound.exceptions.CartNotFoundException;
 import song.mall2.exception.notfound.exceptions.ProductNotFoundException;
 import song.mall2.exception.notfound.exceptions.UserNotFoundException;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -56,6 +58,23 @@ public class CartService {
                 .map(CartIdDto::getCartId)
                 .toList();
         cartRepository.deleteAllByIdAndUserId(cartIdList, user.getId());
+    }
+
+    @Transactional
+    public void deleteCart(Long userId, Long cartId) {
+        User user = getUser(userId);
+
+        Optional<Cart> cartOptional = cartRepository.findById(cartId);
+        if (cartOptional.isEmpty()) {
+            return;
+        }
+
+        Cart cart = cartOptional.get();
+        if (!cart.isOwner(user.getId())) {
+            throw new InvalidUserException("접근 권한이 없습니다.");
+        }
+
+        cartRepository.delete(cart);
     }
 
     @Transactional
