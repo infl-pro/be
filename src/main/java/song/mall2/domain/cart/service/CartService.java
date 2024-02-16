@@ -61,6 +61,18 @@ public class CartService {
     }
 
     @Transactional
+    public void deleteCartId(Long userId, List<Long> cartIdList) {
+        User user = getUser(userId);
+
+        List<Cart> cartList = cartRepository.findAllById(cartIdList);
+        List<Cart> carts = cartList.stream()
+                .filter(cart -> cart.isOwner(user.getId()))
+                .toList();
+
+        cartRepository.deleteAll(carts);
+    }
+
+    @Transactional
     public void deleteCart(Long userId, Long cartId) {
         User user = getUser(userId);
 

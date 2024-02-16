@@ -12,5 +12,5 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DeleteCartDto {
-    private List<CartIdDto> cartIdList = new ArrayList<>();
+    private List<Long> cartId = new ArrayList<>();
 }
