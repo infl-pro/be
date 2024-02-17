@@ -54,7 +54,7 @@ public class OrderService {
 
         List<OrderFormDto.Products> productsList = getProductsList(cartList);
 
-        return new OrderFormDto(storeId, channelKey, getTotalAmount(cartList), user.getId(), productsList, cartList.stream().map(Cart::getId).toList());
+        return new OrderFormDto(storeId, channelKey, getTotalAmount(cartList), user, productsList, cartList.stream().map(Cart::getId).toList());
     }
 
     @Transactional
@@ -112,7 +112,7 @@ public class OrderService {
         List<OrderFormDto.Products> productsList = new ArrayList<>();
         for (Cart cart : cartList) {
             Product product = cart.getProduct();
-            productsList.add(new OrderFormDto.Products(product.getId().toString(), product.getName(), product.getPrice(), cart.getQuantity()));
+            productsList.add(new OrderFormDto.Products(product.getId().toString(), product.getName(), product.getPrice(), cart.getQuantity(), product.getUser().getName(), product.getThumbnailUrl()));
         }
         return productsList;
     }

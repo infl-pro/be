@@ -8,6 +8,7 @@
             fetch('/orders/carttest')
                 .then(response => response.json())
                 .then(orderRequest => {
+                    console.log("Order Request:", JSON.stringify(orderRequest, null, 2));
                     PortOne.requestPayment({
                         storeId: orderRequest.storeId,
                         channelKey: orderRequest.channelKey,
@@ -19,6 +20,8 @@
                         customData: orderRequest.customData,
                         customer: {
                             customerId: orderRequest.customer.userId,
+                            name: orderRequest.customer.name,
+                            email: orderRequest.customer.email,
                             address: {
                                 addressLine1: orderRequest.customer.address.addressLine1,
                                 addressLine2: orderRequest.customer.address.addressLine2
@@ -29,7 +32,7 @@
                         console.log(response);
 
                         jQuery.ajax({
-                            url: "/payment/callback",
+                            url: "/payment",
                             method: "POST",
                             headers: { "Content-Type": "application/json" },
                             data: JSON.stringify(response)

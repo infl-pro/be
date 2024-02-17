@@ -56,7 +56,7 @@ public class SecurityConfig {
                         .requestMatchers("/orders/carttest").permitAll()
                         .requestMatchers("/cart/**").authenticated()
                         .requestMatchers("/product/**").authenticated()
-                        .requestMatchers("/payment/callback").authenticated()
+                        .requestMatchers("/payment").authenticated()
                         .requestMatchers("/orders/**").authenticated()
                         .requestMatchers("/orderProduct/**").authenticated()
                         .requestMatchers("/user/**").authenticated()

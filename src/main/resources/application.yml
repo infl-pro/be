@@ -21,6 +21,7 @@ server:
   servlet:
     session:
       tracking-modes: cookie
+#    context-path: /api
 
 logging.level:
   org.hibernate.SQL: debug
