@@ -23,13 +23,13 @@
                             name: orderRequest.customer.name,
                             email: orderRequest.customer.email,
                             address: {
-                                addressLine1: orderRequest.customer.address.addressLine1,
-                                addressLine2: orderRequest.customer.address.addressLine2
+                                addressLine1: "seoul",
+                                addressLine2: "korea"
                             }
                         },
                         products: orderRequest.products
                     }).then(function (response) {
-                        console.log(response);
+                        console.log("=================="+JSON.stringify(response, null, 2));
 
                         jQuery.ajax({
                             url: "/payment",

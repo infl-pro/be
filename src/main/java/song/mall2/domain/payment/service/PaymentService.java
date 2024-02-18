@@ -62,8 +62,12 @@ public class PaymentService {
         PortonePaymentsResponse portonePayment = getPortonePayment(webhook.getPayment_id());
 
         if ("Paid".equals(webhook.getStatus())) {
+            log.info("==paid==");
             completePayment(portonePayment);
             deleteCart(Long.valueOf(portonePayment.getCustomer().getId()), portonePayment.getCustomData().getCartList());
+        }
+        if ("Cancelled".equals(webhook.getStatus())) {
+
         }
     }
 
