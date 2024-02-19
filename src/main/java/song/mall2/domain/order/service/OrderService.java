@@ -75,7 +75,7 @@ public class OrderService {
 
         List<OrderProductDto> orderProductDtoList = getOrderProductDtoList(orders);
 
-        return new OrdersDto(orders.getId(), orders.getCreateAt(), orderProductDtoList, orders.getPayment().getTotalAmount(), orders.getPayment().getStatus());
+        return new OrdersDto(orders.getId(), orders.getCreateAt(), orders.getUser(), orders.getPayment().getAddressLine(), orderProductDtoList, orders.getPayment().getTotalAmount(), orders.getPayment().getStatus());
     }
 
     @Transactional
@@ -95,8 +95,7 @@ public class OrderService {
         payment.cancel(cancellationResponse.getCancellation().getCancelledAt());
         Payment cancelledPayment = paymentRepository.save(payment);
 
-        return new OrdersDto(orders.getId(), orders.getCreateAt(), orderProductDtoList,
-                cancelledPayment.getTotalAmount(), cancelledPayment.getStatus());
+        return new OrdersDto(orders.getId(), orders.getCreateAt(), orders.getUser(), orders.getPayment().getAddressLine(), orderProductDtoList, orders.getPayment().getTotalAmount(), orders.getPayment().getStatus());
     }
 
     private User getUser(Long userId) {
