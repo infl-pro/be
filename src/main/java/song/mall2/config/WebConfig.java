@@ -20,7 +20,8 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedOrigins("http://localhost:8080", "http://52.79.222.161:8080",
                         "http://localhost:3000", "http://52.79.222.161:3000",
                         "https://localhost:443", "https://52.79.222.161:443",
-                        "https://shapp.shop")
+                        "https://shapp.shop", "https://shapp.shop:443",
+                        "http://localhost")
                 .allowedMethods(HttpMethod.GET.name(), HttpMethod.POST.name(),
                         HttpMethod.DELETE.name(), HttpMethod.OPTIONS.name(),
                         HttpMethod.PATCH.name(), HttpMethod.PUT.name())

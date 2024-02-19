@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -17,7 +18,10 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.CorsUtils;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import song.mall2.domain.jwt.service.JwtService;
 import song.mall2.security.handler.AccessDeniedHandlerImpl;
 import song.mall2.security.handler.AuthenticationEntryPointImpl;
@@ -27,6 +31,8 @@ import song.mall2.security.authentication.userprincipal.service.UserDetailsServi
 import song.mall2.security.filter.JwtFilter;
 import song.mall2.security.filter.LogFilter;
 import song.mall2.security.filter.UsernamePasswordFilter;
+
+import java.util.Arrays;
 
 import static org.springframework.security.web.util.matcher.RegexRequestMatcher.regexMatcher;
 
@@ -43,7 +49,8 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationConfiguration configuration) throws Exception {
         return http
                 .csrf(csrf -> csrf.disable())
-                .cors(cors -> cors.disable())
+                .cors(cors -> cors
+                        .configurationSource(corsConfigurationSource()))
                 .sessionManagement(sessionManagement -> sessionManagement
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
@@ -98,5 +105,24 @@ public class SecurityConfig {
         provider.setPasswordEncoder(passwordEncoder());
         provider.setUserDetailsService(userDetailsService);
         return provider;
+    }
+
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowedOrigins(Arrays.asList("http://localhost:8080", "http://52.79.222.161:8080",
+                "http://localhost:3000", "http://52.79.222.161:3000",
+                "https://localhost:443", "https://52.79.222.161:443",
+                "https://shapp.shop", "https://shapp.shop:443",
+                "http://localhost"));
+        config.setAllowedMethods(Arrays.asList(HttpMethod.GET.name(), HttpMethod.POST.name(),
+                HttpMethod.DELETE.name(), HttpMethod.OPTIONS.name(),
+                HttpMethod.PATCH.name(), HttpMethod.PUT.name()));
+        config.setAllowedHeaders(Arrays.asList("Content-Type", "Authorization", "X-Requested-With"));
+        config.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+
+        return source;
     }
 }
