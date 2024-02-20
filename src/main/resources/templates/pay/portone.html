@@ -5,7 +5,7 @@
     <script src="https://cdn.portone.io/v2/browser-sdk.js"></script>
     <script>
         function paymentRequest() {
-            fetch('/orders/carttest')
+            fetch('/api/orders/carttest')
                 .then(response => response.json())
                 .then(orderRequest => {
                     console.log("Order Request:", JSON.stringify(orderRequest, null, 2));
@@ -32,7 +32,7 @@
                         console.log("=================="+JSON.stringify(response, null, 2));
 
                         jQuery.ajax({
-                            url: "/payment",
+                            url: "/api/payment",
                             method: "POST",
                             headers: { "Content-Type": "application/json" },
                             data: JSON.stringify(response)

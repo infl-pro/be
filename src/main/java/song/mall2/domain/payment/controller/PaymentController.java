@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import song.mall2.domain.common.api.ResponseApi;
 import song.mall2.domain.payment.dto.Callback;
 import song.mall2.domain.payment.dto.PaymentDto;
-import song.mall2.domain.payment.dto.Webhook;
+import song.mall2.domain.payment.dto.WebhookRequest;
 import song.mall2.domain.payment.service.PaymentService;
 import song.mall2.security.authentication.userprincipal.UserPrincipal;
 
@@ -33,7 +33,7 @@ public class PaymentController {
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/webhook")
-    public ResponseEntity<Object> postWebhook(@RequestBody Webhook webhook) {
+    public ResponseEntity<Object> postWebhook(@RequestBody WebhookRequest webhook) {
         log.info("webhook: {}", webhook);
         paymentService.paymentWebhook(webhook);
 
@@ -45,7 +45,7 @@ public class PaymentController {
 //    @GetMapping
     @PostMapping
     public ResponseApi<PaymentDto, String> getPayment(@RequestBody Callback callback,
-                                              @AuthenticationPrincipal UserPrincipal userPrincipal) {
+                                                      @AuthenticationPrincipal UserPrincipal userPrincipal) {
         PaymentDto payment = paymentService.getPayment(userPrincipal.getId(), callback.getPaymentId());
 
         return new ResponseApi<>(HttpStatus.OK.value(), "결제 조회", payment);

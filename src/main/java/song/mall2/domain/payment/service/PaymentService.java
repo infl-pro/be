@@ -11,8 +11,8 @@ import song.mall2.domain.orderproduct.entity.OrderProduct;
 import song.mall2.domain.order.entity.Orders;
 import song.mall2.domain.orderproduct.repository.OrdersJpaRepository;
 import song.mall2.domain.payment.dto.PaymentDto;
+import song.mall2.domain.payment.dto.WebhookRequest;
 import song.mall2.domain.payment.entity.Payment;
-import song.mall2.domain.payment.dto.Webhook;
 import song.mall2.domain.payment.portone.service.PortoneService;
 import song.mall2.domain.payment.repository.PaymentJpaRepository;
 import song.mall2.domain.product.entity.Product;
@@ -58,15 +58,15 @@ public class PaymentService {
     }
 
     @Transactional
-    public void paymentWebhook(Webhook webhook) {
-        PortonePaymentsResponse portonePayment = getPortonePayment(webhook.getPayment_id());
+    public void paymentWebhook(WebhookRequest webhookRequest) {
+        PortonePaymentsResponse portonePayment = getPortonePayment(webhookRequest.getTransaction().getPayment_id());
 
-        if ("Paid".equals(webhook.getStatus())) {
+        if ("Paid".equals(webhookRequest.getTransaction().getStatus())) {
             log.info("==paid==");
             completePayment(portonePayment);
             deleteCart(Long.valueOf(portonePayment.getCustomer().getId()), portonePayment.getCustomData().getCartList());
         }
-        if ("Cancelled".equals(webhook.getStatus())) {
+        if ("Cancelled".equals(webhookRequest.getTransaction().getStatus())) {
 
         }
     }
