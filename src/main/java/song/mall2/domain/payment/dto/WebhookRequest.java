@@ -9,7 +9,10 @@ import lombok.*;
 public class WebhookRequest {
     private String imp_uid;
     private String merchant_uid;
-    public Transaction Transaction;
+//    public Transaction Transaction;
+    private String tx_id;
+    private String payment_id;
+    private String status;
 
     @ToString
     @Getter @Setter

@@ -59,14 +59,14 @@ public class PaymentService {
 
     @Transactional
     public void paymentWebhook(WebhookRequest webhookRequest) {
-        PortonePaymentsResponse portonePayment = getPortonePayment(webhookRequest.getTransaction().getPayment_id());
+        PortonePaymentsResponse portonePayment = getPortonePayment(webhookRequest.getPayment_id());
 
-        if ("Paid".equals(webhookRequest.getTransaction().getStatus())) {
+        if ("Paid".equals(webhookRequest.getStatus())) {
             log.info("==paid==");
             completePayment(portonePayment);
             deleteCart(Long.valueOf(portonePayment.getCustomer().getId()), portonePayment.getCustomData().getCartList());
         }
-        if ("Cancelled".equals(webhookRequest.getTransaction().getStatus())) {
+        if ("Cancelled".equals(webhookRequest.getStatus())) {
 
         }
     }
